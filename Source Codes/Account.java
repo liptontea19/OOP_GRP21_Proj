@@ -7,6 +7,20 @@ public class Account {
     private Customer customer;
     private Insurance insurance;
 
+    public Account(Branch branch, int accountNumber, String accountType,
+                   Insurance insurance, Customer customer, double balance,
+                   double transferLimit, Credit_Card creditCard){
+        this.branch = branch;
+        this.accountNumber = accountNumber;
+        this.accountType = accountType;
+        this.insurance = insurance;
+        this.customer = customer;
+        this.balance = balance;
+        this.transferLimit = transferLimit;
+        this.creditCard = creditCard;
+
+    }
+
     public void addInsurance(Insurance insurance){
         //this.insurance += insurance;
     }
@@ -24,8 +38,12 @@ public class Account {
         return transferLimit;
     }
 
-    public void deposit(){
+    public void deposit(double amount){
         // deposit function
+        balance += amount;
+        System.out.println("Amount of " + amount + " has been deposited into " + accountNumber);
+        System.out.println("Current Balance: " + balance);
+
     }
 
     public int getAccountNumber(){
@@ -37,7 +55,7 @@ public class Account {
     }
 
     public int getInterestRate(){
-        return  interestRate;
+        return interestRate;
     }
 
     public void insuranceDeposit(){
@@ -47,10 +65,24 @@ public class Account {
     public void makePayment(double amount){
         // Make payment for credit balance.
         // creditCard.getCreditBalance() - amount;
+        double creditBalance = creditCard.getCreditBalance();
+        if(amount >= creditBalance){
+            balance -= amount;
+            creditBalance -= amount;
+            creditCard.setCreditBalance(creditBalance);
+            System.out.println("Payment Successful!");
+            System.out.println("Current Credit Balance: " + creditBalance);
+            System.out.println("Current Balance: " + balance);
+        }
+
     }
 
     public void printAccountDetails(){
-        System.out.println("Account Number: " + accountNumber + "\nAccount Type: " + accountType + "\nBalance: " + balance + "\nBranch: " + branch + "\nCredit Card: " + creditCard + "\nCustomer: " + customer + "\nInsurance: " + insurance + "\nInterest Rate: " + interestRate + "\nTransfer Limit: " + transferLimit);
+        System.out.println("Account Number: " + accountNumber +
+                "\nAccount Type: " + accountType + "\nBalance: " + balance +
+                "\nBranch: " + branch + "\nCredit Card: " + creditCard +
+                "\nCustomer: " + customer + "\nInsurance: " + insurance +
+                "\nInterest Rate: " + interestRate + "\nTransfer Limit: " + transferLimit);
     }
 
     public void setAccountNumber(int number){
@@ -73,11 +105,36 @@ public class Account {
         this.transferLimit = transferLimit;
     }
 
-    public void transfer(){
+    public void transfer(Account transferAcc, double transferAmt){
         // Transfer to another account
+        if(transferAmt > balance){
+            System.out.println("Your bank balance is insufficient for this transfer!");
+        }
+        else if(transferAmt > transferLimit){
+            System.out.println("The amount you are transferring has hit its limit!");
+        }
+        else {
+            balance -= transferAmt;
+            double transferAccBal = transferAcc.balance;
+            transferAccBal += transferAmt;
+            transferAcc.setBalance(transferAccBal);
+            System.out.println("Amount Transferred: " + transferAmt);
+            System.out.println("Current Balance: " + balance);
+
+        }
     }
 
-    public void withdraw(){
-        // Withdraw to another account
+    public void withdraw(int withdrawAmt){
+        // Withdraw to cash
+        if(balance >= withdrawAmt)
+        {
+            balance -= withdrawAmt;
+            System.out.println("Amount Withdrawn: " + withdrawAmt);
+            System.out.println("Current Balance: " + balance);
+        }
+        else{
+            System.out.println("Your bank balance is insufficient for this withdrawal!");
+        }
+
     }
 }
