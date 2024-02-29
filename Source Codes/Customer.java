@@ -6,6 +6,17 @@ public class Customer {
     private String address, id, customerName;
     private Date dateOfBirth;
 
+    public Customer(String customerName, String id, int age, String address, Date dateOfBirth){
+        this.customerName = customerName;
+        this.id = id;
+        this.age = age;
+        this.address = address;
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
     public int getCustomerAge(){
         return age;
     }
