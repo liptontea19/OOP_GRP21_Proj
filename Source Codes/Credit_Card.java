@@ -1,20 +1,28 @@
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Credit_Card {
     private double balance = 0, creditLimit;
     private String cardHolderName, id;
     private int cardNumber;
-    private Date expiryDate;
+    private LocalDate expiryDate;
+
+    public Credit_Card(String cardHolderName, String id, int cardNumber){
+        this.cardHolderName = cardHolderName;
+        this.id = id;
+        this.cardNumber = cardNumber;
+        LocalDate currentDate = LocalDate.now(); // LocalDate is to retrieve year-month-day
+        expiryDate = currentDate.plusYears(5);  // Expiry set to current date + 5 years
+    }
 
     public void chargeCredit(double amount){
-        this.balance += amount;
+        balance += amount;
     }
 
     public double getCreditBalance(){
         return balance;
     }
 
-    public Date getCardExpiry(){
+    public LocalDate getCardExpiry(){
         return expiryDate;
     }
 
@@ -38,7 +46,7 @@ public class Credit_Card {
         this.balance = balance;
     }
 
-    public void setCardExpiry(Date date){
+    public void setCardExpiry(LocalDate date){
         this.expiryDate = date;
     }
 
