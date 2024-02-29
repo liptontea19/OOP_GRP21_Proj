@@ -1,9 +1,26 @@
+import java.time.LocalDate;
+import java.time.LocalTime;
 public class Branch {
     private int branchCode;
     private String branchName;
     private double branchReserve;
 
+    public Branch(int branchCode, String branchName){
+        this.branchCode = branchCode;
+        this.branchName = branchName;
+    }
+
     public void checkAvailability(){
+        LocalTime open = LocalTime.of(9,0);
+        LocalTime close = LocalTime.of(18,0);
+        LocalTime current = LocalTime.now();
+
+        if( (current.isAfter(close)) || current.isBefore(open) ){
+            System.out.println("The branch is currently closed! Please come again tomorrow!");
+        }
+        else {
+            System.out.println("The branch is currently open!");
+        }
 
     }
 
