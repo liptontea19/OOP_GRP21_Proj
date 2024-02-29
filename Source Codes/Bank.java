@@ -31,6 +31,12 @@ public class Bank {
     public static void main(String[] args){
         accounts = new ArrayList<>();
         // Do the rest of the functions here.
+        Branch TPYbranch = new Branch(297, "Toa Payoh");
+        Branch AMKbranch = new Branch(560, "Ang Mo Kio");
+        Branch HOGbranch = new Branch(530, "Hougang");
+        Branch TMPbranch = new Branch(478, "Tampines");
+
+
     }
 
 
