@@ -1,3 +1,5 @@
+import java.util.Date;
+
 public class Account {
     private int accountNumber, interestRate;
     private String accountType;
@@ -8,21 +10,26 @@ public class Account {
     private Insurance insurance;
 
     public Account(Branch branch, int accountNumber, String accountType,
-                   Insurance insurance, Customer customer, double balance,
-                   double transferLimit, Credit_Card creditCard){
+                   Customer customer, double balance,
+                   double transferLimit){
         this.branch = branch;
         this.accountNumber = accountNumber;
         this.accountType = accountType;
-        this.insurance = insurance;
         this.customer = customer;
         this.balance = balance;
         this.transferLimit = transferLimit;
-        this.creditCard = creditCard;
-
     }
 
-    public void addInsurance(Insurance insurance){
-        //this.insurance += insurance;
+    public Account(Insurance insurance, Credit_Card creditCard){
+        this.insurance = insurance;
+        this.creditCard = creditCard;
+    }
+
+    public void addInsurance(String insuranceType, String policyName, String policyNumber,
+                             double premiumBalance, double coverageBalance, Date startDate,
+                             Date endDate){
+        Insurance newInsurance = new Insurance(insuranceType, policyName, policyNumber,
+                premiumBalance, coverageBalance, startDate, endDate);
     }
 
     public int calculateInterest(){
