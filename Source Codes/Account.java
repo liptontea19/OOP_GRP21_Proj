@@ -1,7 +1,8 @@
 import java.util.Date;
 
 public class Account {
-    private int accountNumber, interestRate;
+    private int accountNumber; 
+    private float interestRate;
     private String accountType;
     private double balance, transferLimit;
     private Branch branch;
@@ -32,7 +33,7 @@ public class Account {
                 premiumBalance, coverageBalance, startDate, endDate);
     }
 
-    public int calculateInterest(){
+    public float calculateInterest(){
         // Calculate Interest Function
         return interestRate;
     }
@@ -61,25 +62,41 @@ public class Account {
         return branch;
     }
 
-    public int getInterestRate(){
+    public float getInterestRate(){
         return interestRate;
     }
 
-    public void insuranceDeposit(){
-        // Function to deposit value into insurance;
+    public void insuranceDeposit(Insurance insurance){
+        // Function to pay for insurance premium
+        double insuranceBalance = insurance.getInsuranceBalance();
+        System.out.println("Account " + accountNumber + " has an insurance premium balance of $" + insuranceBalance + " outstanding.");
+        System.out.println("Input the amount to pay from account:");
+
+
+
+
     }
 
     public void makePayment(double amount){
         // Make payment for credit balance.
         // creditCard.getCreditBalance() - amount;
         double creditBalance = creditCard.getCreditBalance();
-        if(amount >= creditBalance){
+        if(amount <= creditBalance){
+            if (amount > balance){
+                System.out.println("There is insufficient balance in account to pay amount of " + amount);
+                System.out.println("Current Account balance: $" + balance);
+                return;
+            }
             balance -= amount;
             creditBalance -= amount;
             creditCard.setCreditBalance(creditBalance);
-            System.out.println("Payment Successful!");
+            System.out.println("Payment of $" + amount + ", Successful!");
             System.out.println("Current Credit Balance: " + creditBalance);
-            System.out.println("Current Balance: " + balance);
+            System.out.println("Current Account Balance: " + balance);
+        }
+        else {
+            System.out.println("Payment amount of $" + amount + " is higher than owed balance in credit card.");
+            System.out.println("Current Credit Balance: $" + creditBalance);
         }
 
     }
@@ -115,18 +132,18 @@ public class Account {
     public void transfer(Account transferAcc, double transferAmt){
         // Transfer to another account
         if(transferAmt > balance){
-            System.out.println("Your bank balance is insufficient for this transfer!");
+            System.out.println("Account balance is insufficient for this transfer!");
         }
         else if(transferAmt > transferLimit){
-            System.out.println("The amount you are transferring has hit its limit!");
+            System.out.println("Amount transferring exceeds account's transfer limit of " + transferAmt);
         }
         else {
             balance -= transferAmt;
-            double transferAccBal = transferAcc.balance;
+            double transferAccBal = transferAcc.checkBalance();
             transferAccBal += transferAmt;
             transferAcc.setBalance(transferAccBal);
-            System.out.println("Amount Transferred: " + transferAmt);
-            System.out.println("Current Balance: " + balance);
+            System.out.println("Amount Transferred: $" + transferAmt);
+            System.out.println("Current Balance: $" + balance);
 
         }
     }

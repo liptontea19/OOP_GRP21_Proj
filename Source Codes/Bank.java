@@ -24,7 +24,7 @@ public class Bank {
         System.out.println("Bank Name: " + bankName + "\nInsurance Policies available: " + insurancePolicies + "\nBranches available: " + branches + "\nAccounts: " + accounts);
     }
 
-    public void ProcessTransactions(){
+    public void processTransactions(){
         // Process Transactions here.
     }
 
