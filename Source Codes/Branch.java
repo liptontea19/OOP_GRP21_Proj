@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.time.LocalTime;
 public class Branch {
     private int branchCode;
@@ -8,6 +7,19 @@ public class Branch {
     public Branch(int branchCode, String branchName){
         this.branchCode = branchCode;
         this.branchName = branchName;
+
+        if(branchCode == 297){
+            branchReserve = 500000; //Toa Payoh branch has 500k
+        }
+        else if(branchCode == 560){
+            branchReserve = 450000; //Amk branch has 450k
+        }
+        else if(branchCode == 530){
+            branchReserve = 20000; //Hougang branch has 20k
+        }
+        else if(branchCode == 478){
+            branchReserve = 800000; //Tampines branch has 800k
+        }
     }
 
     public void checkAvailability(){
