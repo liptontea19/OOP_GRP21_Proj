@@ -1,12 +1,19 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
 
 public class Customer {
 
     private int age, ContactNo;
     private String address, id, customerName, MaritalStatus, Country, EmailAddress, Occupation, Employer;
     private Date dateOfBirth;
+    
 
-    public Customer(String customerName, String id, int age,int ContactNo, String address, String MaritalStatus, String Country, 
+    /* public Customer(String customerName, String id, int age,int ContactNo, String address, String MaritalStatus, String Country, 
     String EmailAddress, String Occupation, String Employer, Date dateOfBirth){
         this.customerName = customerName;
         this.id = id;
@@ -19,7 +26,39 @@ public class Customer {
         this.Occupation = Occupation;
         this.Employer = Employer;
         this.dateOfBirth = dateOfBirth;
+    } */
+
+    public Customer(int customerID){
+        String Path = "Source_Codes/Customer.csv";
+  
+        try (BufferedReader br = new BufferedReader(new FileReader(Path))) {
+            String line = "";
+            String delimiter = ",";
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("ddmmyyyy"); 
+            
+              while ((line = br.readLine()) != null) {
+                String[] data = line.split(delimiter);
+                String id = data[0];
+                String customerName = data[1];
+                int age = Integer.parseInt(data[2]);
+                int contactNo = Integer.parseInt(data[3]);
+                String address = data[4];
+                String maritalStatus = data[5];
+                String country = data[6];
+                String emailAddress = data[7];
+                String occupation = data[8];
+                String employer = data[9];
+                LocalDate localDate = LocalDate.parse(data[10], format);
+                this.dateOfBirth = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                //Date dateOfBirth =  new Date(data[10]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+
+
     public int getContactNo(){
         return ContactNo;
     }
@@ -107,3 +146,4 @@ public class Customer {
                 + "\nEmployer: " + Employer);
     }
 }
+
