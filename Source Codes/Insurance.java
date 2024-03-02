@@ -1,3 +1,5 @@
+package Project;
+
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -7,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Insurance {
     private double premiumBalance = 0; //To pay monthly for insurance
-    private double coverageBalance = 0; //To claim for coverage
+    private double coverageBalance = 0; //To claim when i got into an accident :<
     private LocalDate startDate;
     private LocalDate endDate;
     private ArrayList<ArrayList<String>> insuranceDetails;
@@ -26,10 +28,11 @@ public class Insurance {
         this.endDate = endDate;
     }
 
-    public Insurance(String filePath) {
+    public Insurance(String policyNumber){
+        this.policyNumber = policyNumber;
         insuranceDetails = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            BufferedReader reader = new BufferedReader(new FileReader("Project/Insurance.csv"));
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {
@@ -43,20 +46,30 @@ public class Insurance {
                     insurance.add(part.trim());
                 }
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                startDate = LocalDate.parse(insurance.get(3), formatter);
-                endDate = LocalDate.parse(insurance.get(4), formatter);
+                startDate = LocalDate.parse(insurance.get(4), formatter);
+                endDate = LocalDate.parse(insurance.get(5), formatter);
                 insuranceDetails.add(insurance);
             }
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        for (ArrayList<String> insurance : insuranceDetails) {
+            if (insurance.get(0).equals(policyNumber)){
+                setPolicyName(insurance.get(1));
+                setInsuranceType(insurance.get(2));
+                setPremiumBalance(Double.parseDouble(insurance.get(3)));
+                setStartDate(LocalDate.parse(insurance.get(4)));
+                setEndDate(LocalDate.parse(insurance.get(5)));
+            }
+        }
     }
-    public static void main(String[] args) {
-        Insurance insurance = new Insurance("src/Project/Insurance.csv");
-        insurance.printInsuranceDetail();
-        insurance.viewInsuranceMenu();
-    }
+    // public static void main(String[] args) {
+    //     //debugging purposes
+    //     Insurance insurance = new Insurance("MP01"); 
+    //     insurance.printInsuranceDetail();
+        
+    // }
 
     // Functions
     public void viewInsuranceMenu(){
@@ -67,7 +80,6 @@ public class Insurance {
             System.out.println("Policy Number: " + insurance.get(2));
             System.out.println("Start Date: " + insurance.get(3));
             System.out.println("End Date: " + insurance.get(4));
-            System.out.println(); // Add a newline for better readability
         }
     }
 
@@ -97,6 +109,14 @@ public class Insurance {
         return policyNumber;
     }
 
+    public LocalDate getStartDate(){
+        return startDate;
+    }
+
+    public LocalDate getEndDate(){
+        return endDate;
+    }
+
     public void setPremiumBalance(double balance){
         this.premiumBalance = balance;
     }
@@ -117,11 +137,21 @@ public class Insurance {
         this.policyNumber = number;
     }
 
+    public void setStartDate(LocalDate date){
+        this.startDate = date;
+    }
+
+    public void setEndDate(LocalDate date){
+        this.endDate = date;
+    }
+
     public void printInsuranceDetail(){
-        System.out.println("Insurance Balance: " + premiumBalance
-                        + "\nCoverage Balance: " + coverageBalance
-                        + "\nInsurance Type: " + insuranceType
-                        + "\nPolicy Name: " + policyName
-                        + "\nPolicy Number: " + policyNumber);
+        System.out.println(String.format("\nCoverage Balance: $%.2f\n",coverageBalance));
+        System.out.println(String.format("Premium Balance: $%.2f",premiumBalance));
+        System.out.println("Policy Number: " + policyNumber);
+        System.out.println("Policy Name: " + policyName);
+        System.out.println("Insurance Type: " + insuranceType);
+        System.out.println("Start Date: " + startDate);
+        System.out.println("End Date: " + endDate +"\n");
     }
 }
