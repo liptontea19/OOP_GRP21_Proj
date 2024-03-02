@@ -1,0 +1,10 @@
+﻿InsuranceType,PolicyName,PolicyNumber,StartDate,EndDate
+Health,HealthPolicy01,HP_01,2023-01-01,2025-12-31
+Health,HealthPolicy02,HP_02,2023-01-01,2025-12-31
+Health,HealthPolicy03,HP_03,2023-01-01,2025-12-31
+Property,PropertyPolicy01,PP_01,2023-01-01,2028-12-31
+Property,PropertyPolicy02,PP_02,2023-01-01,2028-12-31
+Property,PropertyPolicy03,PP_03,2023-01-01,2028-12-31
+Travel,TravelPolicy01,TP_01,2023-01-01,2029-12-31
+Travel,TravelPolicy02,TP_02,2023-01-01,2029-12-31
+Travel,TravelPolicy03,TP_03,2023-01-01,2029-12-31
