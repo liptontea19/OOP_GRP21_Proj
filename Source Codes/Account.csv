@@ -1,0 +1,3 @@
+AccNum,AccType,Balance,BranchCode,CustomerName,TransferLimit
+000001,"Normal",10000,297,"Janice",2000
+000002,"Special",25000,560,"Brandon",3660
