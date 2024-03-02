@@ -8,10 +8,11 @@ public class Account {
     private float interestRate;
     private String accountType;
     private double balance, transferLimit;
-    private Branch branch;
-    private Credit_Card creditCard;
+    private int branchCode;
+    private CreditCard creditCard;
     private Customer customer;
     private Insurance insurance;
+    private boolean insureFlag = false;
 
     /*public Account(int accountNumber, String accountType, int branchCode, 
                     double balance, Customer customer, double transferLimit){
@@ -30,29 +31,47 @@ public class Account {
         //Fetches account details from Account.csv using accountNumber and initialises into class attribute
         try{
             BufferedReader reader = new BufferedReader(new FileReader(filePath));   // Instantiates bufferedReader obj to read Account CSV file
-            String line;
+            String line, custId = "", cardNumber = "";
             String[] accDetail;
+            Boolean foundFlag = false;
             while ((line = reader.readLine()) != null){
                 accDetail = line.split(",");
                 if (accDetail[0] == Integer.toString(accountNumber)) {
+                    foundFlag = true;
                     this.accountType = accDetail[1];
                     this.balance = Double.parseDouble(accDetail[2]);
-                    //this.branch = new Branch(accDetail[3]);
-                    //this.Customer = new Customer(accDetail[4])// instantiates a Customer obj using the specified customer ID
+                    this.branchCode = Integer.parseInt(accDetail[3]);
+                    custId = accDetail[4];
                     this.transferLimit = Double.parseDouble(accDetail[5]);
+                    this.interestRate = Float.parseFloat(accDetail[6]);
+                    cardNumber = accDetail[7];
+                    try {
+                        this.insurance = new Insurance(accDetail[8]);
+                        insureFlag = true;
+                    }
+                    catch(ArrayIndexOutOfBoundsException error){
+                        error.printStackTrace();
+                    }
                 }
             }
             reader.close();
+            if (foundFlag == true){
+                this.customer = new Customer(custId);// replace with Customer csv constructor
+                if (cardNumber != ""){
+                    this.creditCard = new CreditCard(customer.getCustomerName(),Integer.toString(accountNumber), cardNumber, 5000);          
+                }
+                else {
+                    System.out.println("Account has no credit card.");
+                }
+
+            }
+            else {
+                System.out.println("Unable to locate account ID: " + Integer.toString(accountNumber));
+            }
         } catch (IOException e){
             e.printStackTrace();
-            System.out.println("Unable to locate account ID: " + Integer.toString(accountNumber));
-        }
+        } 
     }
-
-    /*public Account(Insurance insurance, Credit_Card creditCard){
-        this.insurance = insurance;
-        this.creditCard = creditCard;
-    }*/
 
     public void addInsurance(String insuranceType, String policyName, String policyNumber,
                              double premiumBalance, double coverageBalance, Date startDate,
@@ -88,8 +107,8 @@ public class Account {
         return accountNumber;
     }
 
-    public Branch getBranchCreated(){
-        return branch;
+    public int getBranchCreated(){
+        return branchCode;
     }
 
     public float getInterestRate(){
@@ -129,11 +148,11 @@ public class Account {
     }
 
     public void printAccountDetails(){
-        System.out.println("Account Number: " + accountNumber +
+        System.out.println("Account Number: " + Integer.toString(accountNumber) +
                 "\nAccount Type: " + accountType + "\nBalance: $" + balance +
-                "\nBranch: " + branch.getBranchName() + "\nCredit Card Number: " + creditCard.getCardNumber() +
+                "\nBranch: " + Integer.toString(branchCode) + "\nCredit Card Number: " + creditCard.getCardNumber() +
                 "\nCustomer: " + customer.getCustomerName() + "\nInsurance: " + insurance.getPolicyName() +
-                "\nInterest Rate: " + interestRate + "%\nTransfer Limit: $" + transferLimit);
+                "\nInterest Rate: " + Float.toString(interestRate*100) + "%\nTransfer Limit: $" + Double.toString(transferLimit));
     }
 
     public void setAccountNumber(int number){
@@ -144,8 +163,8 @@ public class Account {
         this.balance = balance;
     }
 
-    public void setBranch(Branch branch){
-        this.branch = branch;
+    public void setBranchCode(int branch){
+        this.branchCode = branch;
     }
 
     public void setInterestRate(int interestRate){

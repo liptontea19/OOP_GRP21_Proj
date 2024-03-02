@@ -8,8 +8,8 @@ import java.time.ZoneId;
 
 public class Customer {
 
-    private int age, ContactNo;
-    private String address, id, customerName, MaritalStatus, Country, EmailAddress, Occupation, Employer;
+    private int age, contactNo;
+    private String address, id, customerName, maritalStatus, country, emailAddress, occupation, employer;
     private Date dateOfBirth;
     
 
@@ -39,15 +39,15 @@ public class Customer {
               while ((line = br.readLine()) != null) {
                 String[] data = line.split(delimiter);
                 String id = data[0];
-                String customerName = data[1];
-                int age = Integer.parseInt(data[2]);
-                int contactNo = Integer.parseInt(data[3]);
-                String address = data[4];
-                String maritalStatus = data[5];
-                String country = data[6];
-                String emailAddress = data[7];
-                String occupation = data[8];
-                String employer = data[9];
+                this.customerName = data[1];
+                this.age = Integer.parseInt(data[2]);
+                this.contactNo = Integer.parseInt(data[3]);
+                this.address = data[4];
+                this.maritalStatus = data[5];
+                this.country = data[6];
+                this.emailAddress = data[7];
+                this.occupation = data[8];
+                this.employer = data[9];
                 LocalDate localDate = LocalDate.parse(data[10], format);
                 this.dateOfBirth = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 //Date dateOfBirth =  new Date(data[10]);
@@ -60,24 +60,24 @@ public class Customer {
 
 
     public int getContactNo(){
-        return ContactNo;
+        return contactNo;
     }
 
     public String getMaritalStatus(){
-        return MaritalStatus;
+        return maritalStatus;
     }
 
     public String getCountry(){
-        return Country;
+        return country;
     }
     public String getEmailAddress(){
-        return EmailAddress;
+        return emailAddress;
     }
     public String getOccupation(){
-        return Occupation;
+        return occupation;
     }
     public String getEmployer(){
-        return Employer;
+        return employer;
     }
     public String getCustomerName() {
         return customerName;
@@ -98,22 +98,22 @@ public class Customer {
         return id;
     }
     public void setContactNo(int ContactNo){
-        this.ContactNo = ContactNo;
+        this.contactNo = ContactNo;
     }
-    public void setMaritalStatus(String MaritalStatus){
-        this.MaritalStatus = MaritalStatus;
+    public void setMaritalStatus(String maritalStatus){
+        this.maritalStatus = maritalStatus;
     }
     public void setCountry(String Country){
-        this.Country = Country;
+        this.country = Country;
     }
-    public void setEmailAddress(String EmailAddress){
-        this.EmailAddress = EmailAddress;
+    public void setEmailAddress(String emailAddress){
+        this.emailAddress = emailAddress;
     }
-    public void setOccupation(String Occupation){
-        this.Occupation = Occupation;
+    public void setOccupation(String occupation){
+        this.occupation = occupation;
     }
-    public void setEmployer(String Employer){
-        this.Employer = Employer;
+    public void setEmployer(String employer){
+        this.employer = employer;
     }
     public void setCustomerAge(int age){
         this.age = age;
@@ -138,12 +138,12 @@ public class Customer {
                 + "\nAddress: " + address
                 + "\nDate of Birth: " + dateOfBirth
                 + "\nID: " + id
-                + "\nContact Number: " + ContactNo
-                + "\nMarital Status: " + MaritalStatus
-                + "\nCountry: " + Country
-                + "\nEmail Address: " + EmailAddress
-                + "\nOccupation: " + Occupation
-                + "\nEmployer: " + Employer);
+                + "\nContact Number: " + contactNo
+                + "\nMarital Status: " + maritalStatus
+                + "\nCountry: " + country
+                + "\nEmail Address: " + emailAddress
+                + "\nOccupation: " + occupation
+                + "\nEmployer: " + employer);
     }
 }
 

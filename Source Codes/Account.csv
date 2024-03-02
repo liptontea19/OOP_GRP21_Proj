@@ -1,4 +1,7 @@
-AccNum,AccType,Balance,BranchCode,CustomerName,TransferLimit
-000001,"Normal",10000,297,"Janice",2000
-000002,"Special",25000,560,"Brandon",3660
-000003,"Savings",15000,
+AccNum,AccType,Balance,BranchCode,CustomerId,TransferLimit,InterestRate,CardNumber,InsurPolNum
+000001,"Current",10000,297,"S1234A",2000,0.03,0949123482,"MP_01"
+000002,"Multiplier",25000,560,"S1235B",3660,0.041,9012837091,"PP_01"
+000003,"Savings",15000,730,"S1236E",5000,0.023,9875234856,"TP_01"
+000004,"Savings",20000,478,"T1237Z",800,0.023,5237895347,"MP_02"
+000005,"Deposit",40000,530,"S1238A",10000,0.03,32840577812,"PP_02"
+000006,"Savings",4500,297,"S1239Y",1000,0.023,1234709812
