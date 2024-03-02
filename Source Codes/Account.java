@@ -123,12 +123,7 @@ public class Account {
             System.out.println("Current Account Balance: $" + balance);
         }
         else {
-            balance -= amount;
-            creditBalance -= amount;
-            creditCard.setCreditBalance(creditBalance);
-            System.out.println("Payment of $" + amount + ", successful!");
-            System.out.println("Current Credit Balance: $" + creditBalance);
-            System.out.println("Current Account Balance: $" + balance);
+            creditCard.payBill(amount);
         }
 
     }
@@ -163,17 +158,18 @@ public class Account {
 
     public void transfer(Account transferAcc, double transferAmt){
         // Transfer to another account
+        //check that transfer amount is not more than the user's balance
         if(transferAmt > balance){
             System.out.println("Account balance $" + balance + " is insufficient for this transfer!");
         }
+        //check that the transfer amount is not higher than the transfer limit
         else if(transferAmt > transferLimit){
-            System.out.println("Amount to transfer exceeds account's transfer limit of " + transferAmt);
+            System.out.println("Amount to transfer exceeds account's transfer limit of $" + transferAmt);
         }
         else {
             balance -= transferAmt;
-            double transferAccBal = transferAcc.checkBalance();
-            transferAccBal += transferAmt;
-            transferAcc.setBalance(transferAccBal);
+            //transfer to receiver by adding transferAmt to transfer acc balance and setting as new balance value
+            transferAcc.setBalance(transferAcc.checkBalance()+transferAmt);
             System.out.println("Amount Transferred: $" + transferAmt);
             System.out.println("Current Balance: $" + balance);
 
