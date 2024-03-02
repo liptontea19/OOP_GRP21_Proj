@@ -14,7 +14,7 @@ public class Credit_Card {
         this.accountID = accountID;
         this.cardNumber = cardNumber;
         LocalDate currentDate = LocalDate.now(); // LocalDate is to retrieve year-month-day
-        expiryDate = currentDate.plusYears(5);  // Expiry set to current date + 5 years
+        this.expiryDate = currentDate.plusYears(5);  // Expiry set to current date + 5 years
         this.creditLimit = creditLimit;
         this.transactionHistory = new ArrayList<>();
     }
