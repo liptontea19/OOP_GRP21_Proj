@@ -1,7 +1,7 @@
-customerName,id,age,ContactNo,address,MaritalStatus,Country,Email Address,Occupation,Employer,dateofBirth
-John,S1234A,34,82341678,Blk 628A Pasir Ris Dr 3 #01-326  S(511628),Single,Singapore,John@example.com,Plumber,AH HUAT,22111990
-Mary,S1235B,38,98456789,19 Woodlands Terrace S(738444),Married,Singapore,Mary@example.com,Doctor,SGH,11031986
-Joey,S1236E,36,82315687, 8 Cross Street 27-01 S(048424),Single,Singapore,Joey@example.com,Lawyer,TS,2091988
-Alan,T1237Z,22,84178867,395 JOO CHIAT ROAD S(427627),Married,Singapore,Alan@gmail.com,Engineer,DSTA,9082002
-Jane,S1238A,37,91578096, 19 Teck Whye Lane S(680019),Divorce,Singapore,Jane@yahoo.com,Manager,NEC,7111987
-Judy,S1239Y,33,99546097,177 Bukit Batok West Avenue 8 S(650177),Single,Singapore,Judy@outlook.com,Director,NCS,9051991
+id,customerName,age,ContactNo,address,MaritalStatus,Country,Email Address,Occupation,Employer,dateofBirth
+S1234A,John,34,82341678,Blk 628A Pasir Ris Dr 3 #01-326  S(511628),Single,Singapore,John@example.com,Plumber,AH HUAT,22111990
+S1235B,Mary,38,98456789,19 Woodlands Terrace S(738444),Married,Singapore,Mary@example.com,Doctor,SGH,11031986
+S1236E,Joey,36,82315687, 8 Cross Street 27-01 S(048424),Single,Singapore,Joey@example.com,Lawyer,TS,2091988
+T1237Z,Alan,22,84178867,395 JOO CHIAT ROAD S(427627),Married,Singapore,Alan@gmail.com,Engineer,DSTA,9082002
+S1238A,Jane,37,91578096, 19 Teck Whye Lane S(680019),Divorce,Singapore,Jane@yahoo.com,Manager,NEC,7111987
+S1239Y,Judy,33,99546097,177 Bukit Batok West Avenue 8 S(650177),Single,Singapore,Judy@outlook.com,Director,NCS,9051991
