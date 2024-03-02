@@ -1,4 +1,7 @@
+package CreditCard;
+
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -7,15 +10,13 @@ import java.util.List;
 
 public class CreditCard {
     private double balance = 0, creditLimit;
-    private String cardHolderName, accountID;
-    private String cardNumber;
+    private String cardHolderName, cardNumber;
+    private Integer accountID;
     private LocalDate expiryDate;
     private List<String> transactionHistory;
-    private double annualPercentageRate;
-    private ArrayList<ArrayList<String>> creditCardDetails;
+    private ArrayList<ArrayList<String>> creditDetails;
 
-    //Constructors
-    public CreditCard(String cardHolderName, String accountID, String cardNumber, double creditLimit){
+    public CreditCard(String cardHolderName, Integer accountID, String cardNumber, double creditLimit){
         this.cardHolderName = cardHolderName;
         this.accountID = accountID;
         this.cardNumber = cardNumber;
@@ -23,11 +24,11 @@ public class CreditCard {
         this.expiryDate = currentDate.plusYears(5);  // Expiry set to current date + 5 years
         this.creditLimit = creditLimit;
         this.transactionHistory = new ArrayList<>();
-        this.annualPercentageRate = 20;
     }
 
+
     public CreditCard(String filePath) {
-        creditCardDetails = new ArrayList<>();
+        creditDetails = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
             String line;
@@ -42,7 +43,7 @@ public class CreditCard {
                 for (String part : parts) {
                     creditCard.add(part.trim());
                 }
-                creditCardDetails.add(creditCard);
+                creditDetails.add(creditCard);
             }
             reader.close();
         } catch (IOException e) {
@@ -50,25 +51,13 @@ public class CreditCard {
         }
     }
 
-    public static void main(String[] args) {
-        CreditCard creditCard = new CreditCard("src/Project/CreditCard.csv");
-        creditCard.printCreditCardDetails();
+    /* Testing Purposes
+    public static void main(String[] args){
 
     }
 
-    //Methods
-    public void applyMonthlyInterest(){
-        //interest is compounded monthly but calculated daily
-        int daysInMonth = LocalDate.now().lengthOfMonth();
-        double dailyRate = annualPercentageRate/365/100;
-        double interestForMonth = balance * dailyRate * daysInMonth;
+     */
 
-        //charge the monthly interest to the balance
-        balance += interestForMonth;
-        transactionHistory.add("[" + LocalDate.now() + "] Interest of " + interestForMonth + " applied to balance.");
-
-        }
-    
 
     public void chargeCredit(double amount){
         if (LocalDate.now().isAfter(expiryDate)){
@@ -124,7 +113,7 @@ public class CreditCard {
         return cardNumber;
     }
 
-    public String getAccountID(){
+    public Integer getAccountNumber(){
         return accountID;
     }
 
@@ -144,8 +133,8 @@ public class CreditCard {
         this.cardNumber = number;
     }
 
-    public void setAccountID(String id){
-        this.accountID = id;
+    public void setAccountNumber(Integer accountID){
+        this.accountID = accountID;
     }
 
     public void printCreditCardDetails(){
@@ -156,4 +145,6 @@ public class CreditCard {
                 + "\nExpiry Date: " + expiryDate
                 + "\nAccount ID: " + accountID);
     }
+
+
 }
