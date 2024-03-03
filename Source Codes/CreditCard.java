@@ -31,6 +31,7 @@ public class CreditCard {
 
     public CreditCard(long cardNumber) {
         this.cardNumber = cardNumber;
+        this.transactionHistory = new ArrayList<>();
         creditDetails = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader("CreditCard/CreditCard.csv"));
