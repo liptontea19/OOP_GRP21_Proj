@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Account {
     private int accountNumber; 
@@ -26,16 +28,20 @@ public class Account {
     }*/
 
     public Account(int accountNumber){
-        String filePath = "Source_Codes/Account.csv";
+        String filePath = "src\\data\\Account.csv";
         //Fetches account details from Account.csv using accountNumber and initialises into class attribute
         try{
             BufferedReader reader = new BufferedReader(new FileReader(filePath));   // Instantiates bufferedReader obj to read Account CSV file
             String line, custId = "", cardNumber = "";
             String[] accDetail;
-            Boolean foundFlag = false;
+            Boolean foundFlag = false, firstLine = true;
             while ((line = reader.readLine()) != null){
+                if (firstLine == true){
+                    firstLine = false;
+                    continue;
+                }
                 accDetail = line.split(",");
-                if (accDetail[0] == Integer.toString(accountNumber)) {
+                if (Integer.parseInt(accDetail[0]) == accountNumber) {
                     foundFlag = true;
                     this.accountType = accDetail[1];
                     this.balance = Double.parseDouble(accDetail[2]);
@@ -68,9 +74,11 @@ public class Account {
             }
             else {
                 System.err.println("Unable to locate account ID: " + Integer.toString(accountNumber));
+                System.out.println("Unable to locate ID");
             }
         } catch (IOException e){
             e.printStackTrace();
+            System.err.println("Unable to locate file in path " + filePath);
         } 
     }
 
@@ -243,5 +251,19 @@ public class Account {
             System.out.println("Bank balance of $" + balance + " is insufficient for this withdrawal!");
         }
 
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Account myAccount = new Account(1);
+        System.out.println("Welcome!");
+                myAccount.printAccountDetails();
+                System.out.println("""
+                        Enter your input:
+                        (1): Deposit
+                        (2): Withdraw
+                        (3): Transfer""");
+                int userChoice = scanner.nextInt();
+        scanner.close();
     }
 }
