@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Account {
@@ -10,7 +9,7 @@ public class Account {
     private String accountType;
     private double balance, transferLimit;
     private int branchCode;
-    private CreditCard creditCard;
+    public CreditCard creditCard;
     public Customer customer;
     public Insurance insurance;
     private boolean insureFlag = false, cardFlag = false;
@@ -43,6 +42,7 @@ public class Account {
                 accDetail = line.split(",");
                 if (Integer.parseInt(accDetail[0]) == accountNumber) {
                     foundFlag = true;
+                    this.accountNumber = accountNumber;
                     this.accountType = accDetail[1];
                     this.balance = Double.parseDouble(accDetail[2]);
                     this.branchCode = Integer.parseInt(accDetail[3]);
@@ -50,14 +50,11 @@ public class Account {
                     this.transferLimit = Double.parseDouble(accDetail[5]);
                     this.interestRate = Float.parseFloat(accDetail[6]);
                     cardNumber = accDetail[7];
-                    try {
+                    if (!accDetail[8].equals("-")){
                         this.insurance = new Insurance(accDetail[8]);
                         insureFlag = true;
                     }
-                    catch(ArrayIndexOutOfBoundsException error){
-                        error.printStackTrace();
-                        System.err.println("Account does not have insurance.");
-                    }
+                    break;
                 }
             }
             reader.close();
@@ -216,7 +213,12 @@ public class Account {
     }
 
     public void setTransferLimit(double transferLimit){
-        this.transferLimit = transferLimit;
+        if (transferLimit > 0 && transferLimit <= 20000){
+            this.transferLimit = transferLimit;
+            System.out.println("Transfer limit has been changed to $" + Double.toString(transferLimit));
+        }else {
+            System.out.println("The transfer limit of $" + Double.toString(transferLimit) + " you have entered is invalid.");
+        }
     }
 
     public void transfer(Account transferAcc, double transferAmt){
