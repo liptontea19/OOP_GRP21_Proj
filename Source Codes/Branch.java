@@ -23,10 +23,11 @@ public class Branch {
 
     }
 
-    public Branch(String filePath) {
+    public Branch(int branchCode) {
+        this.branchCode = branchCode;
         branchDetails = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            BufferedReader reader = new BufferedReader(new FileReader("src/Project/Branch.csv"));
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {
@@ -45,10 +46,18 @@ public class Branch {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        for (ArrayList<String> branch : branchDetails) {
+            if (Double.parseDouble(branch.get(0)) == branchCode){
+                setBranchName(branch.get(1));
+                setBranchReserve(Double.parseDouble(branch.get(2)));
+                setOpeningHours(LocalTime.parse(branch.get(3)));
+                setClosingHours(LocalTime.parse(branch.get(4)));
+            }
+        }
     }
 
     public static void main(String[] args) {
-        Branch branch = new Branch("src/Project/Branch.csv");
+        Branch branch = new Branch(530);
         branch.printBranchDetails();
         branch.viewBranches();
         branch.checkAvailability();
@@ -67,8 +76,8 @@ public class Branch {
     }
 
     public void checkAvailability(){
-        LocalTime open = openingHours;
-        LocalTime close = closingHours;
+        LocalTime open = getOpeninghours();
+        LocalTime close = getClosingHours();
         LocalTime current = LocalTime.now();
 
         if( (current.isAfter(close)) || current.isBefore(open) ){
@@ -77,6 +86,7 @@ public class Branch {
         else {
             System.out.println("The branch is currently open!");
         }
+
 
     }
 
@@ -102,6 +112,22 @@ public class Branch {
 
     public void setBranchReserve(double branchReserve){
         this.branchReserve = branchReserve;
+    }
+
+    public LocalTime getOpeninghours(){
+        return openingHours;
+    }
+
+    public LocalTime getClosingHours(){
+        return closingHours;
+    }
+
+    public void setOpeningHours(LocalTime openingHours){
+        this.openingHours = openingHours;
+    }
+
+    public void setClosingHours(LocalTime closingHours){
+        this.closingHours = closingHours;
     }
 
     public void printBranchDetails(){
