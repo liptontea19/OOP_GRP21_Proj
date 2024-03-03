@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Account {
-    private int accountNumber; 
+    private int accountNumber;
     private float interestRate;
     private String accountType;
     private double balance, transferLimit;
@@ -14,7 +14,7 @@ public class Account {
     public Insurance insurance;
     private boolean insureFlag = false, cardFlag = false;
 
-    /*public Account(int accountNumber, String accountType, int branchCode, 
+    /*public Account(int accountNumber, String accountType, int branchCode,
                     double balance, Customer customer, double transferLimit){
         //this.branch = branch;
         this.accountNumber = accountNumber;
@@ -27,7 +27,7 @@ public class Account {
     }*/
 
     public Account(int accountNumber){
-        String filePath = "src\\data\\Account.csv";
+        String filePath = "src/Project/data/Account.csv";
         //Fetches account details from Account.csv using accountNumber and initialises into class attribute
         try{
             BufferedReader reader = new BufferedReader(new FileReader(filePath));   // Instantiates bufferedReader obj to read Account CSV file
@@ -62,7 +62,7 @@ public class Account {
                 this.customer = new Customer(custId);// replace with Customer csv constructor
                 if (cardNumber != ""){
                     cardFlag = true;
-                    this.creditCard = new CreditCard(Long.parseLong(cardNumber));          
+                    this.creditCard = new CreditCard(Long.parseLong(cardNumber));
                 }
                 else {
                     System.err.println("Account has no credit card.");
@@ -76,7 +76,7 @@ public class Account {
         } catch (IOException e){
             e.printStackTrace();
             System.err.println("Unable to locate file in path " + filePath);
-        } 
+        }
     }
 
     public void addInsurance(String policyNumber){
@@ -99,7 +99,7 @@ public class Account {
     }
 
     public double calculateInterest(){
-        // Calculate Interest per annum 
+        // Calculate Interest per annum
         double interest = balance * interestRate;
 
         return interest;
@@ -182,7 +182,7 @@ public class Account {
     public void printAccountDetails(){
         System.out.println("Account Number: " + Integer.toString(accountNumber) +
                 "\nAccount Type: " + accountType + "\nBalance: $" + Double.toString(balance) +
-                "\nBranch: " + Integer.toString(branchCode) + "\nInterest Rate: " + Float.toString(interestRate*100) + 
+                "\nBranch: " + Integer.toString(branchCode) + "\nInterest Rate: " + Float.toString(interestRate*100) +
                 "%\nTransfer Limit: $" + Double.toString(transferLimit));
         if (cardFlag == true){
             System.out.println("\nCredit Card Number: " + creditCard.getCardNumber());
@@ -255,13 +255,13 @@ public class Account {
         Scanner scanner = new Scanner(System.in);
         Account myAccount = new Account(1);
         System.out.println("Welcome!");
-                myAccount.printAccountDetails();
-                System.out.println("""
+        myAccount.printAccountDetails();
+        System.out.println("""
                         Enter your input:
                         (1): Deposit
                         (2): Withdraw
                         (3): Transfer""");
-                int userChoice = scanner.nextInt();
+        int userChoice = scanner.nextInt();
         scanner.close();
     }
 }
