@@ -185,8 +185,7 @@ public class Account {
     public void printAccountDetails(){
         System.out.println("Account Number: " + Integer.toString(accountNumber) +
                 "\nAccount Type: " + accountType + "\nBalance: $" + Double.toString(balance) +
-                "\nBranch: " + Integer.toString(branchCode) + "\nCustomer: " + 
-                customer.getCustomerName() + "\nInterest Rate: " + Float.toString(interestRate*100) + 
+                "\nBranch: " + Integer.toString(branchCode) + "\nInterest Rate: " + Float.toString(interestRate*100) + 
                 "%\nTransfer Limit: $" + Double.toString(transferLimit));
         if (cardFlag == true){
             System.out.println("\nCredit Card Number: " + creditCard.getCardNumber());
