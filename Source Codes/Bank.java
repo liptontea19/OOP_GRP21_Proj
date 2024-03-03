@@ -25,8 +25,31 @@ public class Bank {
         return accounts;
     }
 
-    public void printBankDetails(){
-        System.out.println("Project.Bank Name: " + bankName + "\nInsurance Policies available: " + insurancePolicies + "\nBranches available: " + branches + "\nAccounts: " + accounts);
+    public void DisplayBankUI(int[] listofAccs){
+        System.out.println("Welcome to " + bankName + " bank!");
+        System.out.print("""
+                Enter your input:
+                (1): View all Accounts
+                (2): View all Branches
+                (3): View all Insurances
+                """);
+
+        int accNum;
+        String name = "";
+        double amt;
+        int branchC;
+        
+        for(int i = 1; i<listofAccs.length; i++)
+        {
+            Account account = new Account(i);
+            accNum = account.getAccountNumber();
+            name = account.customer.getCustomerName();
+            amt = account.checkBalance();
+            branchC = account.getBranchCreated();
+            System.out.println(i + " " + accNum + " " + name + " " + amt + " " + branchC);
+
+        }
+
     }
 
     public void ProcessTransactions(Account account, int choice, int[] acclist){
@@ -72,6 +95,7 @@ public class Bank {
             }
             System.out.println("Enter the account to transfer to: ");
             int accChoice = scanner.nextInt();
+            scanner.nextLine();
 
             boolean transferExist = false;
             for(int num : acclist){
@@ -90,7 +114,7 @@ public class Bank {
                 System.out.println("You have entered an account not from this bank.");
                 System.out.println("Would you like to transfer to a third party bank?");
                 String thirdParty = scanner.nextLine();
-                System.out.println("Processing....Thank you for waiting!");
+                System.out.println("Transferring you to another page...");
             }
         }
 
@@ -100,10 +124,9 @@ public class Bank {
     public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);
         accounts = new ArrayList<>();
-        // Do the rest of the functions here.
         Bank myBank = new Bank();
 
-        String csvFile = "src/Project/Bank.csv"; // Path to your CSV file
+        String csvFile = "src/Project/data/Bank.csv"; // Path to your CSV file
         List<String> branchCodes = new ArrayList<>();
         List<String> branchNames = new ArrayList<>();
         List<String> accNumbers = new ArrayList<>();
@@ -116,7 +139,7 @@ public class Bank {
                 String[] values = line.split(","); // Split the line based on comma
 
                 if (values.length >= 4) {
-                    // Add the first value to the list
+                    bankName = (values[0].trim());
                     branchCodes.add(values[1].trim());
                     branchNames.add(values[2].trim());
                     accNumbers.add(values[3].trim());
@@ -127,7 +150,6 @@ public class Bank {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
         String branchCArray = branchCodes.get(1);
         String branchNArray = branchNames.get(1);
         String accArray = accNumbers.get(1);
@@ -156,33 +178,22 @@ public class Bank {
             Insurancelist[i] = splitInsurance[i];
         }
 
-        int[] acclist = new int[Accountlist.length];
-        for (int i = 0; i < Accountlist.length; i++) {
-            acclist[i] = Integer.parseInt(Accountlist[i]);
+        int[] acclist = new int[Accountlist.length];    //Creating an int array for acc numbers
+        for (int i = 0; i < Accountlist.length; i++) {  //for loop to iterate through the array
+            acclist[i] = Integer.parseInt(Accountlist[i]); //Changing the elements in the array to int
         }
 
-        int[] branchcodelist = new int[BranchClist.length];
-        for (int i = 0; i < BranchClist.length; i++) {
-            branchcodelist[i] = Integer.parseInt(BranchClist[i]);
+        int[] branchcodelist = new int[BranchClist.length]; //Creating an int array for branch codes
+        for (int i = 0; i < BranchClist.length; i++) {      //for loop to iterate through the array
+            branchcodelist[i] = Integer.parseInt(BranchClist[i]);   //Changing the elements in the array to int
         }
 
-       /* System.out.println(Arrays.toString(newBranchC));
-        System.out.println(Arrays.toString(newBranchN));
-
-        System.out.println(Arrays.toString(newInsurance));*/
-
-        System.out.print("""
-                Welcome to UOB Bank!
-                Enter your input:
-                (1): View all Accounts
-                (2): View all Branches
-                (3): View all Insurances
-                """);
+        myBank.DisplayBankUI(acclist);
         int firstChoice = scanner.nextInt();
+        scanner.nextLine();
 
         if(firstChoice == 1)
         {
-            //Do all the account transaction
             System.out.println("List of accounts");
             System.out.println(Arrays.toString(Accountlist));
             System.out.print("Enter the account to login: ");
@@ -197,34 +208,63 @@ public class Bank {
 
             if(userExist)
             {
-                Account myAccount = new Account(userAcc);
                 System.out.println("Welcome!");
-                myAccount.printAccountDetails();
+                Account myAccount = new Account(userAcc);
+                //myAccount.printAccountDetails();
                 System.out.println("""
                         Enter your input:
                         (1): Deposit
                         (2): Withdraw
                         (3): Transfer""");
                 int userChoice = scanner.nextInt();
-                myBank.ProcessTransactions(myAccount, userChoice,acclist);
+                scanner.nextLine();
+                myBank.ProcessTransactions(myAccount,userChoice,acclist);
 
             }
             else{
                 System.out.println("Sorry, this account does not exist!");
             }
-
-
-
         }
         else if(firstChoice == 2)
         {
-            Branch branch = new Branch(530);
-            branch.viewBranches();
+            System.out.println(Arrays.toString(BranchNlist));
+            System.out.println(Arrays.toString(branchcodelist));
+            System.out.print("Enter a branch code to view more details:");
+            int branchSelect = scanner.nextInt();
+            scanner.nextLine();
+            boolean branchExist = false;
+            for(int i = 0; i < branchcodelist.length; i++){
+                if(branchSelect == branchcodelist[i]){
+                    branchExist = true;
+                }
+            }
+
+            if(branchExist){
+                branches = new Branch(branchSelect);
+                branches.printBranchDetails();
+            }
+            else {
+                System.out.println("You have entered an invalid branch!");
+            }
         }
         else if(firstChoice == 3)
         {
-            Insurance insurance = new Insurance("MP01");
-            insurance.viewInsuranceMenu();
+            System.out.println(Arrays.toString(Insurancelist));
+            System.out.println("Enter a policy number to view more details:");
+            String policySelect = scanner.nextLine();
+            boolean insuranceExist = false;
+            for(int i = 0; i < Insurancelist.length; i++){
+                if(policySelect.equals(Insurancelist[i])){
+                    insuranceExist = true;
+                }
+            }
+            if(insuranceExist){
+                insurancePolicies = new Insurance(policySelect);
+                insurancePolicies.printInsuranceDetail();
+            }
+            else {
+                System.out.println("You have entered an invalid insurance policy!");
+            }
         }
 
 
