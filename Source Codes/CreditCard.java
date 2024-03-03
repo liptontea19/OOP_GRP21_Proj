@@ -67,6 +67,7 @@ public class CreditCard {
                 setCreditLimit(Double.parseDouble(creditCard.get(2)));
                 setCardExpiry(LocalDate.parse(creditCard.get(3)));
                 setAccountID(Integer.parseInt(creditCard.get(4)));
+                setBalance(Double.parseDouble(creditCard.get(5)));
             }
         }
     }
@@ -129,6 +130,8 @@ public class CreditCard {
         }
     }
 
+
+
     public double getCreditBalance(){
         return balance;
     }
@@ -153,12 +156,26 @@ public class CreditCard {
         return accountID;
     }
 
+    public void setCreditLimit(double creditLimit){
+        if (creditLimit > 0 && creditLimit <= 10000){
+            this.creditLimit = creditLimit;
+            System.out.println("Credit limit has been changed to $" + Double.toString(creditLimit));
+        }else {
+            System.out.println("The transfer limit of $" + Double.toString(creditLimit) + " you have entered is invalid.");
+        }
+    }
+
     public void setCardExpiry(LocalDate date){
         this.expiryDate = date;
     }
 
+
     public void setCustomerName(String name){
         this.customerName = name;
+    }
+
+    public void setBalance(double balance){
+        this.balance = balance;
     }
 
     public void setCreditLimit(double limit){
@@ -178,7 +195,8 @@ public class CreditCard {
                 + "\nCustomer Name: " + customerName
                 + "\nCredit Limit: " + creditLimit
                 + "\nExpiry Date: " + expiryDate
-                + "\nAccount ID: " + accountID);
+                + "\nAccount ID: " + accountID
+                + "\nBalance " + balance);
     }
 
 
