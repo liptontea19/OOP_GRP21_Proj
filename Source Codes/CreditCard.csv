@@ -1,10 +1,10 @@
-CardNumber	CardHolderName	CreditLimit	ExpiryDate	AccountID
-949123482	Lucille Owen	50000		1
-9012837091	Trinity Vasquez	70000		2
-9875234856	Carolyn Garner	45000		3
-5237895347	Kobe Levy	20000		4
-32840577812	Maddison Dean	37500		5
-1234709812	Timothy Clarkson	39000		6
-				
-				
-				
+CardNumber,CustomerName,CreditLimit,ExpiryDate,AccountID
+"0949123482	",John,50000,2028-01-01,1
+"9012837091	",Mary,35000,2028-01-01,2
+"9875234856	",Joey,40000,2028-01-01,3
+"5237895347	",Alan,27500,2028-01-01,4
+"32840577812	",Jane,48250,2028-01-01,5
+"1234709812	",Judy,39000,2028-01-01,6
+"				",,,,
+"				",,,,
+"				",,,,
