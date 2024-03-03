@@ -105,6 +105,7 @@ public class Bank {
                     System.out.println("You have entered an account not from this bank.");
                     System.out.println("Would you like to transfer to a third party bank?");
                     String thirdParty = scanner.nextLine();
+                    System.out.println("Processing....Thank you for waiting!");
                 }
             }
 
@@ -120,13 +121,47 @@ public class Bank {
 
         System.out.print("""
                 Enter your input:
+                (1): View all Accounts
+                (2): View all Branches
+                (3): View all Insurances
+                """);
+        int firstChoice = scanner.nextInt();
+
+        if(firstChoice == 1)
+        {
+            //Do all the account transaction
+            System.out.println("List of accounts");
+            Account myAccount = new Account(000001);
+            myAccount.printAccountDetails();
+            System.out.print("""
+                Enter your input:
                 (1): Deposit
                 (2): Withdraw
                 (3): Transfer 
                 """);
 
-        //int userChoice = scanner.nextInt();
-        //myBank.ProcessTransactions(Project.Account myAcc, userChoice);
+            //int userChoice = scanner.nextInt();
+            //myBank.ProcessTransactions(myAccount, userChoice);
+        }
+        else if(firstChoice == 2)
+        {
+            Branch branch = new Branch(530);
+            branch.viewBranches();
+        }
+        else if(firstChoice == 3)
+        {
+            Insurance insurance = new Insurance("MP01");
+            insurance.viewInsuranceMenu();
+        }
+
+
+
+
+
+
+
+
+
 
 
 
