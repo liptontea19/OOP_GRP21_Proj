@@ -26,29 +26,34 @@ public class Bank {
     }
 
     public void DisplayBankUI(int[] listofAccs){
-        System.out.println("Welcome to " + bankName + " bank!");
+        System.out.println("_____________________");
+        System.out.println("|Welcome to " + bankName + " bank|");
+        System.out.println("---------------------");
+        int displayaccNum;
+        String displayname = "";
+        double displayamt;
+        int displaybranchC;
+        double displaycreditamt;
+
+        System.out.println(" Acc No.  Name    Bank Balance   Branch Code    Credit Bal");
+
+        for(int i = 1; i<=listofAccs.length; i++)
+        {
+            Account account = new Account(i);
+            displayaccNum = account.getAccountNumber();
+            displayname = account.customer.getCustomerName();
+            displayamt = account.checkBalance();
+            displaybranchC = account.getBranchCreated();
+            displaycreditamt = account.creditCard.getCreditBalance();
+            System.out.println(i + ":   " + displayaccNum + "    " + displayname + "    " + displayamt + "        " + displaybranchC + "            " + displaycreditamt);
+        }
         System.out.print("""
+                
                 Enter your input:
-                (1): View all Accounts
+                (1): Login to an Account
                 (2): View all Branches
                 (3): View all Insurances
                 """);
-
-        int accNum;
-        String name = "";
-        double amt;
-        int branchC;
-        
-        for(int i = 1; i<listofAccs.length; i++)
-        {
-            Account account = new Account(i);
-            accNum = account.getAccountNumber();
-            name = account.customer.getCustomerName();
-            amt = account.checkBalance();
-            branchC = account.getBranchCreated();
-            System.out.println(i + " " + accNum + " " + name + " " + amt + " " + branchC);
-
-        }
 
     }
 
@@ -56,12 +61,22 @@ public class Bank {
         // Process Transactions here.
         Scanner scanner = new Scanner(System.in);
         if(choice == 1){
-            System.out.print("Enter the amount you want to deposit: ");
-            double amt = scanner.nextDouble();
-            account.deposit(amt);
-        }
-        else if(choice == 2){
             System.out.println("""
+                        Select your choice:
+                        (1): Deposit
+                        (2): Withdraw
+                        (3): Transfer""");
+            int nextChoice = scanner.nextInt();
+            scanner.nextLine();
+            if(nextChoice == 1){
+                System.out.print("Enter the amount you want to deposit: ");
+                double amt = scanner.nextDouble();
+                account.deposit(amt);
+
+
+            }
+            else if(nextChoice == 2){
+                System.out.println("""
                     Choose the amount of your withdrawal:
                     (1): $30
                     (2): $50
@@ -69,55 +84,110 @@ public class Bank {
                     (4): $200
                     (5): $250
                     """);
-            int amtChoice = scanner.nextInt();
-            int amt = 0;
-            if(amtChoice == 1){
-                amt = 30;
-            }
-            else if(amtChoice ==2){
-                amt = 50;
-            }
-            else if(amtChoice == 3){
-                amt = 100;
-            }
-            else if(amtChoice == 4){
-                amt = 200;
-            }
-            else if(amtChoice == 5){
-                amt = 250;
-            }
-            account.withdraw(amt);
 
-        }
-        else if(choice == 3){
-            for (int transferAccs : acclist){
-                System.out.println("Account: " + transferAccs);
+                int amtChoice = scanner.nextInt();
+                int amt = 0;
+                if(amtChoice == 1){
+                    amt = 30;
+                }
+                else if(amtChoice ==2){
+                    amt = 50;
+                }
+                else if(amtChoice == 3){
+                    amt = 100;
+                }
+                else if(amtChoice == 4){
+                    amt = 200;
+                }
+                else if(amtChoice == 5){
+                    amt = 250;
+                }
+                account.withdraw(amt);
             }
-            System.out.println("Enter the account to transfer to: ");
-            int accChoice = scanner.nextInt();
-            scanner.nextLine();
+            else if(choice == 3){
+                System.out.println("Enter the account to transfer to: ");
+                int accChoice = scanner.nextInt();
+                scanner.nextLine();
 
-            boolean transferExist = false;
-            for(int num : acclist){
-                if(num == accChoice){
-                    transferExist = true;
+                boolean transferExist = false;
+                for(int num : acclist){
+                    if(num == accChoice){
+                        transferExist = true;
+                    }
+                }
+                if(transferExist)
+                {
+                    Account transferAcc = new Account(accChoice);
+                    System.out.print("Enter the amount to transfer: ");
+                    double transferAmt = scanner.nextDouble();
+                    account.transfer(transferAcc,transferAmt);
+                }
+                else {
+                    System.out.println("You have entered an account not from this bank.");
+                    System.out.println("Would you like to transfer to a third party bank?");
+                    String thirdParty = scanner.nextLine();
+                    System.out.println("Transferring you to another page...");
                 }
             }
-            if(transferExist)
+        }
+        else if(choice == 2){
+            if(!account.getCardFlag())
             {
-                Account transferAcc = new Account(accChoice);
-                System.out.print("Enter the amount to transfer: ");
-                double transferAmt = scanner.nextDouble();
-                account.transfer(transferAcc,transferAmt);
+                System.out.println("You do not have a credit card! Would you like to apply one now?");
             }
-            else {
-                System.out.println("You have entered an account not from this bank.");
-                System.out.println("Would you like to transfer to a third party bank?");
-                String thirdParty = scanner.nextLine();
-                System.out.println("Transferring you to another page...");
+            else{
+                System.out.println("""
+                        Select your choice:
+                        (1): Pay outstanding balance
+                        (2): Increase Transfer Limit""");
+                int nextChoice = scanner.nextInt();
+                scanner.nextLine();
+
+                if(nextChoice == 1){
+                    double creditbal = account.creditCard.getCreditBalance();
+                    System.out.println("Outstanding Credit Balance: " + creditbal);
+                    if(creditbal > 0)
+                    {
+                        System.out.print("Enter amount to pay: ");
+                        double payCreditbal = scanner.nextDouble();
+                        scanner.nextLine();
+                        account.makeCCPayment(payCreditbal);
+                    }
+                    else{
+                        System.out.println("You do not have any credit balance!");
+                    }
+                }
+                else if(nextChoice == 2){
+                    System.out.print("Enter new credit limit: ");
+                    double newcreditLimit = scanner.nextDouble();
+                    scanner.nextLine();
+                    account.creditCard.setCreditLimit(newcreditLimit);
+                }
             }
         }
+        else if(choice == 3){
+            if(!account.getInsurFlag())
+            {
+                System.out.println("You do not have an Insurance plan! Would you like to apply one now?");
+            }
+            else{
+                System.out.println("""
+                        Select your choice:
+                        (1): View current plan
+                        (2): Pay outstanding premium""");
+                int nextChoice = scanner.nextInt();
+                scanner.nextLine();
 
+                if(nextChoice == 1){
+                    account.insurance.printInsuranceDetail();
+                }
+                else if(nextChoice == 2){
+                    double premiumBal = account.insurance.getPremiumBalance();
+                    System.out.println("Current Outstanding Balance: " + premiumBal);
+                    account.payInsurancePremium();
+                }
+            }
+        }
         scanner.close();
     }
 
@@ -188,7 +258,7 @@ public class Bank {
             branchcodelist[i] = Integer.parseInt(BranchClist[i]);   //Changing the elements in the array to int
         }
 
-        myBank.DisplayBankUI(acclist);
+        myBank.DisplayBankUI(acclist);      //Calling the Display UI function for the layout
         int firstChoice = scanner.nextInt();
         scanner.nextLine();
 
@@ -196,7 +266,7 @@ public class Bank {
         {
             System.out.println("List of accounts");
             System.out.println(Arrays.toString(Accountlist));
-            System.out.print("Enter the account to login: ");
+            System.out.print("Enter account no. to login: ");
             int userAcc = scanner.nextInt();
             boolean userExist = false;
 
@@ -208,14 +278,14 @@ public class Bank {
 
             if(userExist)
             {
-                System.out.println("Welcome!");
                 Account myAccount = new Account(userAcc);
-                //myAccount.printAccountDetails();
+                System.out.println("\nWelcome " + myAccount.customer.getCustomerName() + "!");
+                myAccount.printAccountDetails();
                 System.out.println("""
-                        Enter your input:
-                        (1): Deposit
-                        (2): Withdraw
-                        (3): Transfer""");
+                        Select your choice:
+                        (1): Deposit,Withdraw,Transfer
+                        (2): View Credit Card Options
+                        (3): View Insurance Options""");
                 int userChoice = scanner.nextInt();
                 scanner.nextLine();
                 myBank.ProcessTransactions(myAccount,userChoice,acclist);
@@ -266,8 +336,6 @@ public class Bank {
                 System.out.println("You have entered an invalid insurance policy!");
             }
         }
-
-
         scanner.close();
     }
 
