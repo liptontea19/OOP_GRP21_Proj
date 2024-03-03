@@ -1,5 +1,3 @@
-package CreditCard;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.time.format.DateTimeFormatter;
@@ -38,7 +36,7 @@ public class CreditCard {
         creditDetails = new ArrayList<>();
         allCreditCards.add(this);
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("CreditCard/CreditCard.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("src/Project/data/CreditCard.csv"));
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {
@@ -64,7 +62,7 @@ public class CreditCard {
             if (Long.parseLong(creditCard.get(0)) == cardNumber){
                 setCardNumber(Long.parseLong(creditCard.get(0)));
                 setCustomerName(creditCard.get(1));
-                setCreditLimit(Double.parseDouble(creditCard.get(2)));
+                setCreditLimitQuiet(Double.parseDouble(creditCard.get(2)));
                 setCardExpiry(LocalDate.parse(creditCard.get(3)));
                 setAccountID(Integer.parseInt(creditCard.get(4)));
                 setBalance(Double.parseDouble(creditCard.get(5)));
@@ -115,7 +113,7 @@ public class CreditCard {
             if (card.getAccountID() == accountID){
                 card.printCreditCardDetails();
                 System.out.println();
-            }    
+            }
         }
     }
 
@@ -157,11 +155,11 @@ public class CreditCard {
     }
 
     public void setCreditLimit(double creditLimit){
-        if (creditLimit > 0 && creditLimit <= 10000){
+        if (creditLimit > 0 && creditLimit <= 100000){
             this.creditLimit = creditLimit;
             System.out.println("Credit limit has been changed to $" + Double.toString(creditLimit));
         }else {
-            System.out.println("The transfer limit of $" + Double.toString(creditLimit) + " you have entered is invalid.");
+            System.out.println("The credit limit of $" + Double.toString(creditLimit) + " you have entered is invalid.");
         }
     }
 
@@ -178,8 +176,8 @@ public class CreditCard {
         this.balance = balance;
     }
 
-    public void setCreditLimit(double limit){
-        this.creditLimit = limit;
+    public void setCreditLimitQuiet(double creditLimit){
+        this.creditLimit = creditLimit;
     }
 
     public void setCardNumber(long number){
