@@ -1,4 +1,4 @@
-package Project;
+//package Project;
 
 import java.util.ArrayList;
 import java.io.BufferedReader;
@@ -28,11 +28,11 @@ public class Insurance {
         this.endDate = endDate;
     }
 
-    public Insurance(String policyNumber){
-        this.policyNumber = policyNumber;
+    public Insurance(){  // constructor for all insurance obj
+        //this.policyNumber = policyNumber;
         insuranceDetails = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("Project/Insurance.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("src\\data\\Insurance.csv"));
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {
@@ -55,24 +55,48 @@ public class Insurance {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (ArrayList<String> insurance : insuranceDetails) {
-            if (insurance.get(0).equals(policyNumber)){
-                setPolicyName(insurance.get(1));
-                setInsuranceType(insurance.get(2));
-                setPremiumBalance(Double.parseDouble(insurance.get(3)));
-                setStartDate(LocalDate.parse(insurance.get(4)));
-                setEndDate(LocalDate.parse(insurance.get(5)));
+    }
+    
+    public Insurance(String policyNumber){   //constructor for one insurance object
+        String Path = "src\\data\\Insurance.csv";
+  
+        try (BufferedReader br = new BufferedReader(new FileReader(Path))) {
+            String line = "";
+            String delimiter = ",";
+            Boolean firstLine = true;
+              while ((line = br.readLine()) != null) {
+                if (firstLine == true){
+                    firstLine = false;
+                    continue;
+                }
+                String[] data = line.split(delimiter);
+                if (data[0].equals(policyNumber)){
+                    this.policyNumber = data[0];
+                    this.policyName = data[1];
+                    this.insuranceType = data[2];
+                    this.premiumBalance = Double.parseDouble(data[3]);
+                    this.startDate = LocalDate.parse(data[4]);
+                    this.endDate = LocalDate.parse(data[5]);
+                    break;
+                }
+                
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Unable to locate Customer.csv");
         }
     }
+
     public static void main(String[] args) {
         //debugging purposes
-        Insurance insurance = new Insurance("MP01"); 
-        insurance.printInsuranceDetail();
+        Insurance insur1 = new Insurance("MP01"); 
+        insur1.printInsuranceDetail();
+        Insurance insurMenu = new Insurance();
+        insurMenu.viewInsuranceMenu();
     }
 
     // Functions
-    public void viewInsuranceMenu(){
+    public void viewInsuranceMenu(){    // for insurance menu object
         //Print all data
         for (ArrayList<String> insurance : insuranceDetails) {
             System.out.println("Insurance Type: " + insurance.get(0));
@@ -145,7 +169,7 @@ public class Insurance {
         this.endDate = date;
     }
 
-    public void printInsuranceDetail(){
+    public void printInsuranceDetail(){ // for normal insurance object
         System.out.println(String.format("\nCoverage Balance: $%.2f\n",coverageBalance));
         System.out.println(String.format("Premium Balance: $%.2f",premiumBalance));
         System.out.println("Policy Number: " + policyNumber);
