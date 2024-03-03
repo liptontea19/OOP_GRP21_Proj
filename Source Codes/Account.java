@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Date;
 
 public class Account {
     private int accountNumber; 
@@ -12,7 +11,7 @@ public class Account {
     private CreditCard creditCard;
     private Customer customer;
     private Insurance insurance;
-    private boolean insureFlag = false;
+    private boolean insureFlag = false, cardFlag = false;
 
     /*public Account(int accountNumber, String accountType, int branchCode, 
                     double balance, Customer customer, double transferLimit){
@@ -51,6 +50,7 @@ public class Account {
                     }
                     catch(ArrayIndexOutOfBoundsException error){
                         error.printStackTrace();
+                        System.err.println("Account does not have insurance.");
                     }
                 }
             }
@@ -58,26 +58,29 @@ public class Account {
             if (foundFlag == true){
                 this.customer = new Customer(custId);// replace with Customer csv constructor
                 if (cardNumber != ""){
-                    this.creditCard = new CreditCard(customer.getCustomerName(),Integer.toString(accountNumber), cardNumber, 5000);          
+                    cardFlag = true;
+                    this.creditCard = new CreditCard(customer.getCustomerName(),accountNumber,Long.valueOf(cardNumber), 3000);          
                 }
                 else {
-                    System.out.println("Account has no credit card.");
+                    System.err.println("Account has no credit card.");
                 }
 
             }
             else {
-                System.out.println("Unable to locate account ID: " + Integer.toString(accountNumber));
+                System.err.println("Unable to locate account ID: " + Integer.toString(accountNumber));
             }
         } catch (IOException e){
             e.printStackTrace();
         } 
     }
 
-    public void addInsurance(String insuranceType, String policyName, String policyNumber,
-                             double premiumBalance, double coverageBalance, Date startDate,
-                             Date endDate){
-        //Insurance newInsurance = new Insurance(insuranceType, policyName, policyNumber,
-                //premiumBalance, coverageBalance, startDate, endDate);
+    public void addInsurance(String policyNumber){
+        if (insureFlag == false){
+            this.insurance = new Insurance(policyNumber); // carry out function to add insurance object to system
+        }
+        else {
+            System.err.println("User already has existing insurance policy.");
+        }
     }
 
     public double calculateInterest(){
@@ -116,9 +119,14 @@ public class Account {
     }
 
     public void insuranceDeposit(Insurance insurance){
+        if (insureFlag == false){   // checks if there is an insurance class instantiated in account
+            System.out.println("Account does not have insurance plan... yet!");
+            return;
+        }
         // Function to pay for insurance premium
-        double insuranceBalance = insurance.getInsuranceBalance();
-        System.out.println("Account " + accountNumber + " has an insurance premium balance of $" + insuranceBalance + " outstanding for " + insurance.getPolicyName() + " policy.");
+        double insuranceBalance = insurance.getPremiumBalance();
+        System.out.println("Account " + accountNumber + " has an insurance premium balance of $" + 
+            insuranceBalance + " outstanding for " + insurance.getPolicyName() + " policy.");
         if (balance > insuranceBalance){
             balance -= insuranceBalance;
             insurance.payOffPremium(insuranceBalance);
@@ -132,6 +140,10 @@ public class Account {
     public void makePayment(double amount){
         // Make payment for outstanding credit card balance.
         // creditCard.getCreditBalance() - amount;
+        if (cardFlag == false){
+            System.out.println("Account does not have a credit card associated with it.");
+            return;
+        }
         double creditBalance = creditCard.getCreditBalance();
         if (amount > creditBalance){
             System.out.println("Payment amount of $" + amount + " is higher than owed balance in credit card.");
@@ -149,10 +161,16 @@ public class Account {
 
     public void printAccountDetails(){
         System.out.println("Account Number: " + Integer.toString(accountNumber) +
-                "\nAccount Type: " + accountType + "\nBalance: $" + balance +
-                "\nBranch: " + Integer.toString(branchCode) + "\nCredit Card Number: " + creditCard.getCardNumber() +
-                "\nCustomer: " + customer.getCustomerName() + "\nInsurance: " + insurance.getPolicyName() +
-                "\nInterest Rate: " + Float.toString(interestRate*100) + "%\nTransfer Limit: $" + Double.toString(transferLimit));
+                "\nAccount Type: " + accountType + "\nBalance: $" + Double.toString(balance) +
+                "\nBranch: " + Integer.toString(branchCode) + "\nCustomer: " + 
+                customer.getCustomerName() + "\nInterest Rate: " + Float.toString(interestRate*100) + 
+                "%\nTransfer Limit: $" + Double.toString(transferLimit));
+        if (cardFlag == true){
+            System.out.println("\nCredit Card Number: " + creditCard.getCardNumber());
+        }
+        if (insureFlag == true){
+            System.out.println("\nInsurance: " + insurance.getPolicyName());
+        }
     }
 
     public void setAccountNumber(int number){
