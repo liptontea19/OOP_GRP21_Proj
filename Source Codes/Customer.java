@@ -7,9 +7,9 @@ public class Customer {
 
     private int Age, ContactNo;
     private String Address, ID, CustomerName, MaritalStatus, Country, EmailAddress, Occupation, Employer, DateOfBirth;
-    
 
-    /* public Customer(String customerName, String id, int age,int ContactNo, String address, String MaritalStatus, String Country, 
+
+    /* public Customer(String customerName, String id, int age,int ContactNo, String address, String MaritalStatus, String Country,
     String EmailAddress, String Occupation, String Employer, Date dateOfBirth){
         this.customerName = customerName;
         this.id = id;
@@ -25,28 +25,37 @@ public class Customer {
     } */
 
     public Customer(String customerID){
-        String Path = "Source_Codes/Customer.csv";
-  
+        String Path = "src/Project/data/Customer.csv";
+
         try (BufferedReader br = new BufferedReader(new FileReader(Path))) {
             String line = "";
             String delimiter = ",";
-            
-              while ((line = br.readLine()) != null) {
+            Boolean firstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (firstLine == true){
+                    firstLine = false;
+                    continue;
+                }
                 String[] data = line.split(delimiter);
-                this.ID = data[0];
-                this.CustomerName = data[1];
-                this.Age = Integer.parseInt(data[2]);
-                this.ContactNo = Integer.parseInt(data[3]);
-                this.Address = data[4];
-                this.MaritalStatus = data[5];
-                this.Country = data[6];
-                this.EmailAddress = data[7];
-                this.Occupation = data[8];
-                this.Employer = data[9];
-                this.DateOfBirth = data[10];
+                if (data[0].equals(customerID)){
+                    this.ID = data[0];
+                    this.CustomerName = data[1];
+                    this.Age = Integer.parseInt(data[2]);
+                    this.ContactNo = Integer.parseInt(data[3]);
+                    this.Address = data[4];
+                    this.MaritalStatus = data[5];
+                    this.Country = data[6];
+                    this.EmailAddress = data[7];
+                    this.Occupation = data[8];
+                    this.Employer = data[9];
+                    this.DateOfBirth = data[10];
+                    break;
+                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
+            System.err.println("Unable to locate Customer.csv");
         }
     }
 
@@ -139,4 +148,3 @@ public class Customer {
                 + "\nEmployer: " + Employer);
     }
 }
-
