@@ -9,8 +9,8 @@ public class Account {
     private double balance, transferLimit;
     private int branchCode;
     private CreditCard creditCard;
-    private Customer customer;
-    private Insurance insurance;
+    public Customer customer;
+    public Insurance insurance;
     private boolean insureFlag = false, cardFlag = false;
 
     /*public Account(int accountNumber, String accountType, int branchCode, 
@@ -59,7 +59,7 @@ public class Account {
                 this.customer = new Customer(custId);// replace with Customer csv constructor
                 if (cardNumber != ""){
                     cardFlag = true;
-                    this.creditCard = new CreditCard(customer.getCustomerName(),accountNumber,Long.valueOf(cardNumber), 3000);          
+                    this.creditCard = new CreditCard(Long.parseLong(cardNumber));          
                 }
                 else {
                     System.err.println("Account has no credit card.");
@@ -80,6 +80,16 @@ public class Account {
         }
         else {
             System.err.println("User already has existing insurance policy.");
+        }
+    }
+
+    public void addCard(){
+        if (cardFlag == false){
+            this.creditCard = new CreditCard(customer.getCustomerName(), accountNumber, 3108398698038531L,3000);
+            cardFlag = true;
+        }
+        else {
+            System.err.println("Account " + Integer.toString(accountNumber) + " already has existing card");
         }
     }
 
@@ -106,8 +116,16 @@ public class Account {
 
     }
 
+    public Boolean getCardFlag(){
+        return cardFlag;
+    }
+
     public int getAccountNumber(){
         return accountNumber;
+    }
+
+    public Boolean getInsurFlag(){
+        return insureFlag;
     }
 
     public int getBranchCreated(){
