@@ -141,15 +141,13 @@ public class Account {
         return interestRate;
     }
 
-    public void insuranceDeposit(Insurance insurance){
+    public void payInsurancePremium(){
         if (insureFlag == false){   // checks if there is an insurance class instantiated in account
             System.out.println("Account does not have insurance plan... yet!");
             return;
         }
         // Function to pay for insurance premium
         double insuranceBalance = insurance.getPremiumBalance();
-        System.out.println("Account " + accountNumber + " has an insurance premium balance of $" + 
-            insuranceBalance + " outstanding for " + insurance.getPolicyName() + " policy.");
         if (balance > insuranceBalance){
             balance -= insuranceBalance;
             insurance.payOffPremium(insuranceBalance);
@@ -160,7 +158,7 @@ public class Account {
         }
     }
 
-    public void makePayment(double amount){
+    public void makeCCPayment(double amount){
         // Make payment for outstanding credit card balance.
         // creditCard.getCreditBalance() - amount;
         if (cardFlag == false){
@@ -179,7 +177,6 @@ public class Account {
         else {
             creditCard.payBill(amount);
         }
-
     }
 
     public void printAccountDetails(){
