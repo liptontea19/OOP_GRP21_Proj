@@ -27,7 +27,7 @@ public class Branch {
         this.branchCode = branchCode;
         branchDetails = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("src/Project/Branch.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("src/Project/data/Branch.csv"));
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {
@@ -108,6 +108,25 @@ public class Branch {
 
     public void setBranchName(String branchName){
         this.branchName = branchName;
+    }
+
+    public void withdrawReserve(double amount){
+        if(amount > 0){
+            branchReserve -= amount;
+        }
+        else{
+            System.out.println("This is an invalid amount!");
+        }
+
+    }
+
+    public void depositReserve(double amount){
+        if(amount > 0){
+            branchReserve += amount;
+        }
+        else{
+            System.out.println("This is an invalid amount!");
+        }
     }
 
     public void setBranchReserve(double branchReserve){
