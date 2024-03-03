@@ -17,6 +17,8 @@ public class CreditCard {
     private LocalDate expiryDate;
     private List<String> transactionHistory;
     private ArrayList<ArrayList<String>> creditDetails;
+    private static List<CreditCard> allCreditCards = new ArrayList<>();
+
 
     public CreditCard(String customerName, int accountID, long cardNumber, double creditLimit){
         this.customerName = customerName;
@@ -26,6 +28,7 @@ public class CreditCard {
         this.expiryDate = currentDate.plusYears(5);  // Expiry set to current date + 5 years
         this.creditLimit = creditLimit;
         this.transactionHistory = new ArrayList<>();
+        allCreditCards.add(this);
     }
 
 
@@ -33,6 +36,7 @@ public class CreditCard {
         this.cardNumber = cardNumber;
         this.transactionHistory = new ArrayList<>();
         creditDetails = new ArrayList<>();
+        allCreditCards.add(this);
         try {
             BufferedReader reader = new BufferedReader(new FileReader("CreditCard/CreditCard.csv"));
             String line;
@@ -62,7 +66,7 @@ public class CreditCard {
                 setCustomerName(creditCard.get(1));
                 setCreditLimit(Double.parseDouble(creditCard.get(2)));
                 setCardExpiry(LocalDate.parse(creditCard.get(3)));
-                setAccountNumber(Integer.parseInt(creditCard.get(4)));
+                setAccountID(Integer.parseInt(creditCard.get(4)));
             }
         }
     }
@@ -70,7 +74,13 @@ public class CreditCard {
     //Testing Purposes
     public static void main(String[] args){
         CreditCard creditCard = new CreditCard(3108398698038530L);
-        creditCard.printCreditCardDetails();
+        CreditCard creditCard2 = new CreditCard(8108372529219270L);
+        creditCard.chargeCredit(2000);
+        creditCard.chargeCredit(5000);
+        creditCard.payBill(1900);
+        System.out.println(creditCard.availableCredit());
+        creditCard.printTransactionHistory();
+        creditCard.printAllCreditCards(3);
     }
 
 
@@ -97,6 +107,17 @@ public class CreditCard {
             transactionHistory.add("[" + LocalDate.now() + "] Payment of " + amount + " deducted from balance");
         }
     }
+
+    public static void printAllCreditCards(int accountID){
+        System.out.println("\n List of all Credit Cards for accountID " + accountID + ": \n");
+        for (CreditCard card : allCreditCards){
+            if (card.getAccountID() == accountID){
+                card.printCreditCardDetails();
+                System.out.println();
+            }    
+        }
+    }
+
     public double availableCredit(){
         return creditLimit - balance;
     }
@@ -128,7 +149,7 @@ public class CreditCard {
         return cardNumber;
     }
 
-    public Integer getAccountNumber(){
+    public Integer getAccountID(){
         return accountID;
     }
 
@@ -148,7 +169,7 @@ public class CreditCard {
         this.cardNumber = number;
     }
 
-    public void setAccountNumber(Integer accountID){
+    public void setAccountID(Integer accountID){
         this.accountID = accountID;
     }
 
