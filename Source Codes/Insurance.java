@@ -1,5 +1,3 @@
-//package Project;
-
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -32,7 +30,7 @@ public class Insurance {
         //this.policyNumber = policyNumber;
         insuranceDetails = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("src\\data\\Insurance.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("src/Project/data/Insurance.csv"));
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {
@@ -45,7 +43,7 @@ public class Insurance {
                 for (String part : parts) {
                     insurance.add(part.trim());
                 }
-                
+
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 startDate = LocalDate.parse(insurance.get(4), formatter);
                 endDate = LocalDate.parse(insurance.get(5), formatter);
@@ -56,15 +54,15 @@ public class Insurance {
             e.printStackTrace();
         }
     }
-    
+
     public Insurance(String policyNumber){   //constructor for one insurance object
-        String Path = "src\\data\\Insurance.csv";
-  
+        String Path = "src/Project/data/Insurance.csv";
+
         try (BufferedReader br = new BufferedReader(new FileReader(Path))) {
             String line = "";
             String delimiter = ",";
             Boolean firstLine = true;
-              while ((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 if (firstLine == true){
                     firstLine = false;
                     continue;
@@ -79,7 +77,7 @@ public class Insurance {
                     this.endDate = LocalDate.parse(data[5]);
                     break;
                 }
-                
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,7 +87,7 @@ public class Insurance {
 
     public static void main(String[] args) {
         //debugging purposes
-        Insurance insur1 = new Insurance("MP01"); 
+        Insurance insur1 = new Insurance("MP01");
         insur1.printInsuranceDetail();
         Insurance insurMenu = new Insurance();
         insurMenu.viewInsuranceMenu();
@@ -108,7 +106,7 @@ public class Insurance {
     }
 
     public void payOffPremium(double amt){
-        premiumBalance += amt;
+        premiumBalance -= amt;
         System.out.println("This amount of " + amt + " has been paid!");
         System.out.println("This is the current premium balance: " + premiumBalance);
     }
