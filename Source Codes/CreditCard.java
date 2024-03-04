@@ -228,32 +228,52 @@ public class CreditCard {
             System.out.println("The credit limit of $" + Double.toString(creditLimit) + " you have entered is invalid.");
         }
     }
-
+    /**
+     * Sets credit card's new expiry date based on the input argument
+     * @param date retrieves the current date and adds 5 years which will be the new exipiry date to set to.
+     */
     public void setCardExpiry(LocalDate date){
         this.expiryDate = date;
     }
-
+    /**
+     * Sets the customer name to the value specified in the input argument
+     * @param name the new customer name to set to
+     */
 
     public void setCustomerName(String name){
         this.customerName = name;
     }
-
+    /**
+     * Sets the credit card's balance to the value specified in the input arguemnt
+     * @param balance the new credit card balance to set to
+     */
     public void setBalance(double balance){
         this.balance = balance;
     }
-
+    /**
+     * Silently sets a new credit card limit to the value specified in the input arugment
+     * @param creditLimit the new credit limit to set to
+     */
     public void setCreditLimitQuiet(double creditLimit){
         this.creditLimit = creditLimit;
     }
-
+    /**
+     * Sets the credit card's number to the value specified in the input arguemnt
+     * @param number the new card number to set to
+     */
     public void setCardNumber(long number){
         this.cardNumber = number;
     }
-
+    /**
+     * Sets the credit card's account ID to the value specified in the input argument
+     * @param accountID the new account ID to set to
+     */
     public void setAccountID(Integer accountID){
         this.accountID = accountID;
     }
-
+    /**
+     * This method prints out the credit card object's attributes on System Terminal for viewing.
+     */
     public void printCreditCardDetails(){
         System.out.println("Card Number: " + cardNumber
                 + "\nCustomer Name: " + customerName
