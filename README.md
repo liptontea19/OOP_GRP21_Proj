@@ -1,33 +1,10 @@
 # Group 21's Bank OOP Project
 ## Read this before you do anything to the files pls
 
-## Folder structure
-.
-└── OOP_GRP21_Proj/
-    ├── bin (.class files go here)/
-    │   ├── Account.class
-    │   └── ...
-    ├── data (.csv files go here)/
-    │   ├── Account.csv
-    │   └── ...
-    ├── doc (javadoc files go here)/
-    │   ├── account docs package
-    │   ├── bank docs package
-    │   └── Account.html
-    └── src (.java files go here)/
-        ├── account (put classes that mainly interface through account here)/
-        │   ├── Account.java
-        │   ├── CreditCard.java
-        │   ├── Customer.java
-        │   └── Insurance.java
-        └── bank (put bank package classes in here)/
-            ├── Bank.java
-            ├── Branch.java
-            └── InsuranceCatalog.java
-### Data Files
+## Data Files
 Use relative pathing in your code to navigate to them ("data\[file_name.csv]")
-### Class Files
-class files are stored in the src/[package name]/ areas respectively
+## Class Files
+class files are stored in the src/[package name]/ areas respectively. If a file interfaces mainly through accounts.class, put them in the accounts package. Same for bank.
 
 
 ## Use this command to generate javadocs for the two packages from your terminal
