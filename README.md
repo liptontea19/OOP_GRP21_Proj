@@ -3,7 +3,9 @@
 
 ## Data Files
 Use relative pathing in your code to navigate to them ("data\[file_name.csv]")
+
 Windows Users (VS Code): 'data\[file_name.csv]' or 'data\\[file_name.csv]' Use backslash "\" or double backslash "\\"
+
 Mac Users: 'data/[file_name.csv]' use normal slash "/"
 ## Class Files
 class files are stored in the src/[package name]/ areas respectively. If a file interfaces mainly through accounts.class, put them in the accounts package. Same for bank.
