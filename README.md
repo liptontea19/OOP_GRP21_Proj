@@ -2,11 +2,28 @@
 ## Read this before you do anything to the files pls
 
 ## Folder structure
-OOP_GRP21_Proj
-|- bin (.class files go here)
-|- data (.csv files go here)
-|- doc (javadoc files go here)
-|- src (.java files go here)
+.
+└── OOP_GRP21_Proj/
+    ├── bin (.class files go here)/
+    │   ├── Account.class
+    │   └── ...
+    ├── data (.csv files go here)/
+    │   ├── Account.csv
+    │   └── ...
+    ├── doc (javadoc files go here)/
+    │   ├── account docs package
+    │   ├── bank docs package
+    │   └── Account.html
+    └── src (.java files go here)/
+        ├── account (put classes that mainly interface through account here)/
+        │   ├── Account.java
+        │   ├── CreditCard.java
+        │   ├── Customer.java
+        │   └── Insurance.java
+        └── bank (put bank package classes in here)/
+            ├── Bank.java
+            ├── Branch.java
+            └── InsuranceCatalog.java
 ### Data Files
 Use relative pathing in your code to navigate to them ("data\[file_name.csv]")
 ### Class Files
