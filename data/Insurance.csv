@@ -1,0 +1,10 @@
+﻿PolicyNumber,PolicyName,InsuranceType,PremiumBalance,StartDate,EndDate
+MP01,Medical Policy 01,Medical,100,2023-01-01,2025-12-31
+MP02,Medical Policy 02,Medical,150,2023-01-01,2026-12-31
+MP03,Medical Policy 03,Medical,200,2023-01-01,2027-12-31
+PP01,Property Policy 01,Property,300,2023-01-01,2025-12-31
+PP02,Property Policy 02,Property,400,2023-01-01,2026-12-31
+PP03,Property Policy 03,Property,500,2023-01-01,2027-12-31
+TP01,Travel Policy 01,Travel,30,2023-01-01,2025-12-31
+TP02,Travel Policy 02,Travel,35,2023-01-01,2026-12-31
+TP03,Travel Policy 03,Travel,40,2023-01-01,2027-12-31
