@@ -26,6 +26,8 @@ public class Account {
     private int branchCode;
     public CreditCard creditCard;
     public Customer customer;
+
+    public ForeignX foreignX;
     public Insurance insurance;
     private boolean insureFlag = false, cardFlag = false;
 
@@ -54,7 +56,7 @@ public class Account {
      * @param accountNumber unique account ID used as search value for 
      */
     public Account(int accountNumber){
-        String filePath = "data\\Account.csv";
+        String filePath = "OOP_GRP21_Proj-main/data/Account.csv";
         //Fetches account details from Account.csv using accountNumber and initialises into class attribute
         try(BufferedReader reader = new BufferedReader(new FileReader(filePath))){
             //BufferedReader reader = new BufferedReader(new FileReader(filePath));   // Instantiates bufferedReader obj to read Account CSV file
@@ -81,6 +83,7 @@ public class Account {
                         this.insurance = new Insurance(accDetail[8]);
                         insureFlag = true;
                     }
+                    this.foreignX = new ForeignX(accountNumber,Float.parseFloat(accDetail[2]));
                     break;
                 }
             }
