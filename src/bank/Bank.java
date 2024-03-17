@@ -226,7 +226,7 @@ public class Bank {
 
             }
             else if(foreignChoice == 2){
-                account.foreignX.printForeignCurrencies();
+                account.foreignX.printCurrencies();
                 System.out.println("Enter an amount you want to convert");
                 int foreignamount = scanner.nextInt();
                 scanner.nextLine();
@@ -234,7 +234,7 @@ public class Bank {
 
             }
             else if(foreignChoice == 3){
-                account.foreignX.printForeignCurrencies();
+                account.foreignX.printCurrencies();
             }
         }
         //scanner.close();
