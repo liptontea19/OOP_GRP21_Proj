@@ -108,8 +108,7 @@ public class Bank {
                     amt = 250;
                 }
                 account.withdraw(amt);
-            }
-            else if(choice == 3){
+            } else if(nextChoice == 3){
                 System.out.println("Enter the account to transfer to: ");
                 int accChoice = scanner.nextInt();
                 scanner.nextLine();
@@ -193,15 +192,60 @@ public class Bank {
                 }
             }
         }
-        scanner.close();
+        else if(choice == 4){
+            System.out.println("""
+                        Select your choice:
+                        (1): Convert SGD to Foreign
+                        (2): Convert Foreign to SGD
+                        (3): View all Foreign balances""");
+
+            int foreignChoice = scanner.nextInt();
+            scanner.nextLine();
+
+            if(foreignChoice == 1){
+                account.foreignX.viewCurrencies();
+                System.out.println("Enter an amount you want to convert");
+                int SGDamount = scanner.nextInt();
+                scanner.nextLine();
+                double currentAmount = account.checkBalance();
+                if(SGDamount <= currentAmount)
+                {
+                    System.out.println("""
+                Which country you want to exchange to?
+                (1): United States (USD)
+                (2): Japan (JPY)
+                (3): Malaysia (MYR)
+                (4): Australia (AUD)
+                (5): United Kingdom (GBP)""");
+                    int exchangeChoice = scanner.nextInt();
+                    account.foreignX.exchangeToForeign(SGDamount,exchangeChoice);
+                }
+                else {
+                    System.out.println("Insufficient balance!");
+                }
+
+            }
+            else if(foreignChoice == 2){
+                account.foreignX.printForeignCurrencies();
+                System.out.println("Enter an amount you want to convert");
+                int foreignamount = scanner.nextInt();
+                scanner.nextLine();
+                account.foreignX.exchangeToSGD(foreignamount);
+
+            }
+            else if(foreignChoice == 3){
+                account.foreignX.printForeignCurrencies();
+            }
+        }
+        //scanner.close();
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         accounts = new ArrayList<>();
         Bank myBank = new Bank();
 
-        String csvFile = "data\\Bank.csv"; // Path to your CSV file
+        String csvFile = "OOP_GRP21_Proj-main/data/Bank.csv"; // Path to your CSV file
         List<String> branchCodes = new ArrayList<>();
         List<String> branchNames = new ArrayList<>();
         List<String> accNumbers = new ArrayList<>();
@@ -263,83 +307,88 @@ public class Bank {
             branchcodelist[i] = Integer.parseInt(BranchClist[i]);   //Changing the elements in the array to int
         }
 
-        myBank.DisplayBankUI(acclist);      //Calling the Display UI function for the layout
-        int firstChoice = scanner.nextInt();
-        scanner.nextLine();
+        boolean continueRunning = true;
+        while (continueRunning) {
 
-        if(firstChoice == 1)
-        {
-            System.out.println("List of accounts");
-            System.out.println(Arrays.toString(Accountlist));
-            System.out.print("Enter account no. to login: ");
-            int userAcc = scanner.nextInt();
-            boolean userExist = false;
 
-            for(int i = 0; i < acclist.length; i++){
-                if(userAcc == acclist[i]){
-                    userExist = true;
-                }
-            }
-
-            if(userExist)
-            {
-                Account myAccount = new Account(userAcc);
-                System.out.println("\nWelcome " + myAccount.customer.getCustomerName() + "!");
-                myAccount.printAccountDetails();
-                System.out.println("""
-                        Select your choice:
-                        (1): Deposit,Withdraw,Transfer
-                        (2): View Credit Card Options
-                        (3): View Insurance Options""");
-                int userChoice = scanner.nextInt();
-                scanner.nextLine();
-                myBank.ProcessTransactions(myAccount,userChoice,acclist);
-
-            }
-            else{
-                System.out.println("Sorry, this account does not exist!");
-            }
-        }
-        else if(firstChoice == 2)
-        {
-            System.out.println(Arrays.toString(BranchNlist));
-            System.out.println(Arrays.toString(branchcodelist));
-            System.out.print("Enter a branch code to view more details:");
-            int branchSelect = scanner.nextInt();
+            myBank.DisplayBankUI(acclist);      //Calling the Display UI function for the layout
+            int firstChoice = scanner.nextInt();
             scanner.nextLine();
-            boolean branchExist = false;
-            for(int i = 0; i < branchcodelist.length; i++){
-                if(branchSelect == branchcodelist[i]){
-                    branchExist = true;
+
+            if (firstChoice == 1) {
+                System.out.println("List of accounts");
+                System.out.println(Arrays.toString(Accountlist));
+                System.out.print("Enter account no. to login: ");
+                int userAcc = scanner.nextInt();
+                scanner.nextLine();
+                boolean userExist = false;
+
+                for (int i = 0; i < acclist.length; i++) {
+                    if (userAcc == acclist[i]) {
+                        userExist = true;
+                    }
                 }
+
+                if (userExist) {
+                    Account myAccount = new Account(userAcc);
+                    System.out.println("\nWelcome " + myAccount.customer.getCustomerName() + "!");
+                    myAccount.printAccountDetails();
+                    System.out.println("""
+                            Select your choice:
+                            (1): Deposit,Withdraw,Transfer
+                            (2): View Credit Card Options
+                            (3): View Insurance Options
+                            (4): View Foreign Currency Options""");
+                    int userChoice = scanner.nextInt();
+                    scanner.nextLine();
+                    myBank.ProcessTransactions(myAccount, userChoice, acclist);
+                } else {
+                    System.out.println("Sorry, this account does not exist!");
+                }
+            } else if (firstChoice == 2) {
+                System.out.println(Arrays.toString(BranchNlist));
+                System.out.println(Arrays.toString(branchcodelist));
+                System.out.print("Enter a branch code to view more details:");
+                int branchSelect = scanner.nextInt();
+                scanner.nextLine();
+                boolean branchExist = false;
+                for (int i = 0; i < branchcodelist.length; i++) {
+                    if (branchSelect == branchcodelist[i]) {
+                        branchExist = true;
+                    }
+                }
+
+                if (branchExist) {
+                    branches = new Branch(branchSelect);
+                    branches.printBranchDetails();
+                } else {
+                    System.out.println("You have entered an invalid branch!");
+                }
+            } else if (firstChoice == 3) {
+                System.out.println(Arrays.toString(Insurancelist));
+                System.out.println("Enter a policy number to view more details:");
+                String policySelect = scanner.nextLine();
+                boolean insuranceExist = false;
+                for (int i = 0; i < Insurancelist.length; i++) {
+                    if (policySelect.equals(Insurancelist[i])) {
+                        insuranceExist = true;
+                    }
+                }
+                if (insuranceExist) {
+                    insurancePolicies = new Insurance(policySelect);
+                    insurancePolicies.printInsuranceDetail();
+                } else {
+                    System.out.println("You have entered an invalid insurance policy!");
+                }
+            }
+            System.out.print("Do you want to continue? (yes/no): ");
+            String continueChoice = scanner.nextLine().trim().toLowerCase();
+            continueRunning = continueChoice.equals("yes");
+            if(continueChoice.equals("no")){
+                System.out.println("Exiting " + bankName + " Bank System...");
             }
 
-            if(branchExist){
-                branches = new Branch(branchSelect);
-                branches.printBranchDetails();
-            }
-            else {
-                System.out.println("You have entered an invalid branch!");
-            }
-        }
-        else if(firstChoice == 3)
-        {
-            System.out.println(Arrays.toString(Insurancelist));
-            System.out.println("Enter a policy number to view more details:");
-            String policySelect = scanner.nextLine();
-            boolean insuranceExist = false;
-            for(int i = 0; i < Insurancelist.length; i++){
-                if(policySelect.equals(Insurancelist[i])){
-                    insuranceExist = true;
-                }
-            }
-            if(insuranceExist){
-                insurancePolicies = new Insurance(policySelect);
-                insurancePolicies.printInsuranceDetail();
-            }
-            else {
-                System.out.println("You have entered an invalid insurance policy!");
-            }
+
         }
         scanner.close();
     }
