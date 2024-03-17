@@ -29,7 +29,8 @@ public class Account {
 
     public ForeignX foreignX;
     public Insurance insurance;
-    private boolean insureFlag = false, cardFlag = false;
+    public Loan loan;
+    private boolean insureFlag = false, cardFlag = false, loanFlag = false;
 
     /*public Account(int accountNumber, String accountType, int branchCode,
                     double balance, Customer customer, double transferLimit){
@@ -108,6 +109,22 @@ public class Account {
         }
     }
 
+    public void addLoan(double principalAmount, double interestRate, int termInMonths, String accountNumber, String customerID, int creditScore){
+        if (loanFlag == false){
+            Loan newLoan = Loan.applyForLoan(principalAmount, interestRate, termInMonths, accountNumber, customerID, creditScore);
+            if (newLoan != null){
+                this.loan = newLoan;
+                loanFlag = true;
+            }
+            else{
+                System.err.println("Loan application failed.");
+            }
+        }
+        else{
+            System.err.println("User already has an existing Loan.");
+        }
+    }
+
     public void addInsurance(String policyNumber){
         if (insureFlag == false){
             this.insurance = new Insurance(policyNumber); // carry out function to add insurance object to system
@@ -165,12 +182,31 @@ public class Account {
         return insureFlag;
     }
 
+    public Boolean getLoanFlag(){
+        return loanFlag;
+    }
+
     public int getBranchCreated(){
         return branchCode;
     }
 
     public float getInterestRate(){
         return interestRate;
+    }
+
+    public void makeLoanPayment(){
+        if (loanFlag == false){     // checks if there is a Loan class instantiated in account
+            System.out.println("Account does not have a Loan associated with it");
+            return;
+        }
+        double monthlyLoanPaymentAmount = loan.getMonthlyPayment();
+        if (monthlyLoanPaymentAmount > balance){        //checks if balance is sufficient to pay of monthly Loan
+            System.out.println("There is insufficient balance in account to pay amount of " + monthlyLoanPaymentAmount);
+            System.out.println("Current Account Balance: $" + balance);
+        }
+        else {
+            this.balance = loan.repay(accountNumber, balance) //used to update the new balance after payment
+        }    
     }
 
     public void payInsurancePremium(){
@@ -221,6 +257,9 @@ public class Account {
         }
         if (insureFlag == true){
             System.out.println("\nInsurance: " + insurance.getPolicyName());
+        }
+        if (loanFlag == true){
+            System.out.println("\nLoan: " + loan.getLoanID());
         }
     }
 
