@@ -1,7 +1,5 @@
 package account;
-//package Project;
 
-import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,8 +20,6 @@ public class Insurance {
     private LocalDate startDate;
     /** End date of insurance policy coverage */
     private LocalDate endDate;
-    /** Arraylist that stores all available insurance policy details */
-    private ArrayList<ArrayList<String>> insuranceDetails;
     /** Type of insurance coverage: Medical/Property/Travel */
     private String insuranceType;
     /** Name of insurance policy */
@@ -52,41 +48,6 @@ public class Insurance {
         this.coverageBalance = coverageBalance;
         this.startDate = startDate;
         this.endDate = endDate;
-    }
-    
-    /**
-     * Special constructor that fetches all insurance policy records and places them into the insuranceDetails arraylist.
-     * Used for storing and displaying all available policies found in the Insurance.csv file in the Bank main method.
-     * Does not have a specific insurance policy's attributes and cannot be used with most methods in the class.
-     * Use only with: viewInsuranceMenu() method
-     */
-    public Insurance(){  // constructor for all insurance obj
-        //this.policyNumber = policyNumber;
-        insuranceDetails = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("data\\Insurance.csv"));
-            String line;
-            boolean firstLine = true; // Flag to skip the first line
-            while ((line = reader.readLine()) != null) {
-                if (firstLine) {
-                    firstLine = false;
-                    continue; // Skip the first line
-                }
-                String[] parts = line.split(","); // Split by comma since it's CSV
-                ArrayList<String> insurance = new ArrayList<>();
-                for (String part : parts) {
-                    insurance.add(part.trim());
-                }
-                
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                startDate = LocalDate.parse(insurance.get(4), formatter);
-                endDate = LocalDate.parse(insurance.get(5), formatter);
-                insuranceDetails.add(insurance);
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     
     /**
@@ -132,24 +93,6 @@ public class Insurance {
         //debugging purposes
         Insurance insur1 = new Insurance("MP01"); 
         insur1.printInsuranceDetail();
-        Insurance insurMenu = new Insurance();
-        insurMenu.viewInsuranceMenu();
-    }
-
-    /**
-     * Displays all data stored in the insuranceDetails arrayList in sequential order in the system output terminal.
-     * Format: Insurance Type, Policy Name, Policy Number, Start Date, End Date
-     * Requires special Insurance constructor, new Insurance() object to use method with. 
-     */
-    public void viewInsuranceMenu(){    // for insurance menu object
-        //Print all data
-        for (ArrayList<String> insurance : insuranceDetails) {
-            System.out.println("Insurance Type: " + insurance.get(0));
-            System.out.println("Policy Name: " + insurance.get(1));
-            System.out.println("Policy Number: " + insurance.get(2));
-            System.out.println("Start Date: " + insurance.get(3));
-            System.out.println("End Date: " + insurance.get(4));
-        }
     }
 
     /**
