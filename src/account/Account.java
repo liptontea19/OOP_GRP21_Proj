@@ -125,6 +125,22 @@ public class Account {
         }
     }
 
+    public void approveLoan(){
+        if (this.loan !=null && "Pending".equals(this.loan.getStatus())){
+            this.loan.approveLoan();
+        }else {
+            System.err.println("No pending loan to approve.");
+        }
+    }
+
+    public void rejectLoan(){
+        if (this.loan!=null && "Pending".equals(this.loan.getStatus())){
+            this.loan.rejectLoan();
+        }else {
+            System.err.println("No pending loan to reject.");
+        }
+    }
+
     public void addInsurance(String policyNumber){
         if (insureFlag == false){
             this.insurance = new Insurance(policyNumber); // carry out function to add insurance object to system
@@ -205,7 +221,7 @@ public class Account {
             System.out.println("Current Account Balance: $" + balance);
         }
         else {
-            this.balance = loan.repay(accountNumber, balance) //used to update the new balance after payment
+            this.balance = loan.repay(accountNumber, balance); //used to update the new balance after payment
         }    
     }
 
