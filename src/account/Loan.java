@@ -25,7 +25,7 @@ public class Loan {
     private double totalPayment;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Int accountID;
+    private int accountID;
     private String status;
     private ArrayList<LocalDate> paymentDates;
 
@@ -36,7 +36,7 @@ public class Loan {
      * @param termInMonths the Loan term in months
      * @param accountID the customerID associated with the Loan
      */
-    public Loan(double principalAmount, float interestRate, int termInMonths, Int accountID) {
+    public Loan(double principalAmount, float interestRate, int termInMonths, int accountID) {
         this.loanID = UUID.randomUUID();
         this.principalAmount = principalAmount;
         this.interestRate = interestRate;
@@ -209,7 +209,7 @@ public class Loan {
      * 
      * @return the accountID
      */
-    public Int getAccountID(){
+    public int getAccountID(){
         return accountID;
     }
     /**
@@ -217,8 +217,8 @@ public class Loan {
      * 
      * @param accountID the accountID to set for the Loan.
      */
-    public Int setAccountID(Int accountID){
-        this.accountID = accountID
+    public void setAccountID(int accountID){
+        this.accountID = accountID;
     }
 
     /**
@@ -277,7 +277,6 @@ public class Loan {
     /**
      * Applies for new Loan.
      *
-     * @param loanList The list of Loans.
      * @param principalAmount The principal amount of the Loan.
      * @param interestRate The annual interest rate for the Loan.
      * @param termInMonths The Loan term in months.
@@ -285,13 +284,13 @@ public class Loan {
      * @param creditScore The credit score of customer applying for the Loan.
      * @return Loan object for successful application, otherwise return null.
      */
-    public static Loan applyForLoan(double principalAmount, float interestRate, int termInMonths,Int accountID, int creditScore) {
+    public static Loan applyForLoan(double principalAmount, float interestRate, int termInMonths,int accountID, int creditScore) {
         if (principalAmount <= 0 || interestRate <= 0 || termInMonths <= 0) {
             System.out.println("Error. Please provide non-negative values for principal amount, interest rate, and term in months.");
             return null;
         }
-        if (accountID == null){
-            System.out.println("Error. Account ID cannot be null.");
+        if (accountID <= 0){
+            System.out.println("Error. Account ID cannot be a negative number.");
             return null;
         }
         if (creditScore < 0) {
@@ -406,7 +405,7 @@ public class Loan {
                     double interestPayment = outstandingAmount * (interestRate / 12/ 100);
                     double principalPayment = monthlyPayment - interestPayment;
                     outstandingAmount -= principalPayment;
-                    String formattedAccountString = String.format("Account ID: %s. Original Account Balance: $%.2f. ", accountID, balance);
+                    String formattedAccountString = String.format("Account ID: %d. Original Account Balance: $%.2f. ", accountID, balance);
                     System.out.println(formattedAccountString);
                     String formattedString = String.format("Repaid $%.2f. Outstanding Amount to pay: $%.2f.", monthlyPayment, outstandingAmount);
                     System.out.println(formattedString);
@@ -453,7 +452,8 @@ public class Loan {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-                if(data[9] == accountID && data[10].equalsIgnoreCase("Approved")) {
+                int fileAccountID = Integer.parseInt(data[9]); // parse accountID from CSV
+                if(fileAccountID == accountID && data[10].equalsIgnoreCase("Approved")) {
                     UUID loanID = UUID.fromString(data[0]);
                     double principalAmount = Double.parseDouble(data[1]);
                     float interestRate = Float.parseFloat(data[2]);
@@ -463,7 +463,6 @@ public class Loan {
                     double totalPayment = Double.parseDouble(data[6]);
                     LocalDate startDate = LocalDate.parse(data[7]);
                     LocalDate endDate = LocalDate.parse(data[8]);
-                    int fileAccountID = Integer.parseInt(data[9]);
                     String status = data[10];
                     ArrayList<LocalDate> paymentDates = new ArrayList<>();
                     for (int i = 11; i < data.length; i++) {
@@ -477,7 +476,7 @@ public class Loan {
                     loan.setTotalPayment(totalPayment);
                     loan.setStartDate(startDate);
                     loan.setEndDate(endDate);
-                    loan.setStatus(status);
+                    loan.setStatus("Approved");
                     loan.setPaymentDates(paymentDates);
                     loanList.add(loan);
                 }   
