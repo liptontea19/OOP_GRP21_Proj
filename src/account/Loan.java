@@ -25,8 +25,7 @@ public class Loan {
     private double totalPayment;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String customerID;
-    private String accountID;
+    private Int accountID;
     private String status;
     private ArrayList<LocalDate> paymentDates;
 
@@ -37,7 +36,7 @@ public class Loan {
      * @param termInMonths the Loan term in months
      * @param accountID the customerID associated with the Loan
      */
-    public Loan(double principalAmount, float interestRate, int termInMonths, String accountID, String customerID) {
+    public Loan(double principalAmount, float interestRate, int termInMonths, Int accountID) {
         this.loanID = UUID.randomUUID();
         this.principalAmount = principalAmount;
         this.interestRate = interestRate;
@@ -47,7 +46,6 @@ public class Loan {
         this.totalPayment = monthlyPayment * termInMonths;
         this.startDate = LocalDate.now();
         this.endDate = startDate.plusMonths(termInMonths);
-        this.customerID = customerID;
         this.accountID = accountID;
         this.status = "Pending";
         this.paymentDates = new ArrayList<LocalDate>();
@@ -206,25 +204,21 @@ public class Loan {
         this.endDate = endDate;
     }
 
-    /**
-     * Gets the customerID associated with the Loan.
-     *
-     * @return The customerID.
+    /** 
+     * Gets the accountID associated with the Loan
+     * 
+     * @return the accountID
      */
-    public String getCustomerID() {
-        return customerID;
-    }
-    /**
-     * Sets the customerID associated with the Loan.
-     *
-     * @param customerID The customerID to set for the Loan.
-     */
-
-    public String getAccountID(){
+    public Int getAccountID(){
         return accountID;
     }
-    public void setCustomerID(String customerID) {
-        this.customerID = customerID;
+    /**
+     * Sets the accountID associated with the Loan.
+     * 
+     * @param accountID the accountID to set for the Loan.
+     */
+    public Int setAccountID(Int accountID){
+        this.accountID = accountID
     }
 
     /**
@@ -287,17 +281,13 @@ public class Loan {
      * @param principalAmount The principal amount of the Loan.
      * @param interestRate The annual interest rate for the Loan.
      * @param termInMonths The Loan term in months.
-     * @param customerID The customerID of customer applying for the Loan.
+     * @param accountID The accountID of customer applying for the Loan.
      * @param creditScore The credit score of customer applying for the Loan.
      * @return Loan object for successful application, otherwise return null.
      */
-    public static Loan applyForLoan(double principalAmount, float interestRate, int termInMonths,String accountID, String customerID, int creditScore) {
+    public static Loan applyForLoan(double principalAmount, float interestRate, int termInMonths,Int accountID, int creditScore) {
         if (principalAmount <= 0 || interestRate <= 0 || termInMonths <= 0) {
             System.out.println("Error. Please provide non-negative values for principal amount, interest rate, and term in months.");
-            return null;
-        }
-        if (customerID == null) {
-            System.out.println("Error. Customer ID cannot be null.");
             return null;
         }
         if (accountID == null){
@@ -308,9 +298,8 @@ public class Loan {
             System.out.println("Error. Please provide non-negative value for credit score.");
             return null;
         }
-
         if(Loan.checkEligiblity(creditScore) == true) {
-            Loan loan = new Loan(principalAmount, interestRate, termInMonths, accountID, customerID);
+            Loan loan = new Loan(principalAmount, interestRate, termInMonths, accountID);
             System.out.println("Applying for Loan.");
             return loan;
         }
@@ -354,7 +343,7 @@ public class Loan {
         System.out.println(formattedTotalPayment);
         System.out.println("Start Date: " + startDate);
         System.out.println("End Date: " + endDate);
-        System.out.println("Customer ID: " + customerID);
+        System.out.println("Account ID: " + accountID);
         System.out.println("Payment Dates: " + paymentDates);
         System.out.println("Status: " + status);
         for (int i = 0; i < paymentDates.size(); i++) {
@@ -395,7 +384,7 @@ public class Loan {
      * @param accountID The accountID of the account to deduct balance for repayment of the Loan.
      * @param balance The balance of the account to deduct balance for repayment of the Loan.
      */
-    public double repay(String accountID, double balance) {
+    public double repay(int accountID, double balance) {
         if(this.getStatus().equalsIgnoreCase("Approved")) {
             LocalDate currentDate = LocalDate.now();
             int currentMonth = currentDate.getMonthValue();
@@ -451,10 +440,10 @@ public class Loan {
      * that match the specified customer and have the "Approved" status.
      *
      * @param filename The CSV filename.
-     * @param customerID The customerID of the specified customer to retrieve Loans associated with the specified customer
-     * @return A list of Loans with "Approved" status associated with the specified customer.
+     * @param accountID The accountID of the specified customer to retrieve Loans associated with the specified acount.
+     * @return A list of Loans with "Approved" status.
      */
-    public static List<Loan> readLoansFromCSV(String filename, String customerID) {
+    public static List<Loan> readLoansFromCSV(String filename, int accountID) {
         List<Loan> loanList = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -464,7 +453,7 @@ public class Loan {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-                if(data[9].equalsIgnoreCase(customerID) && data[10].equalsIgnoreCase("Approved")) {
+                if(data[9] == accountID && data[10].equalsIgnoreCase("Approved")) {
                     UUID loanID = UUID.fromString(data[0]);
                     double principalAmount = Double.parseDouble(data[1]);
                     float interestRate = Float.parseFloat(data[2]);
@@ -474,14 +463,14 @@ public class Loan {
                     double totalPayment = Double.parseDouble(data[6]);
                     LocalDate startDate = LocalDate.parse(data[7]);
                     LocalDate endDate = LocalDate.parse(data[8]);
-                    String userID = data[9];
+                    int fileAccountID = Integer.parseInt(data[9]);
                     String status = data[10];
                     ArrayList<LocalDate> paymentDates = new ArrayList<>();
                     for (int i = 11; i < data.length; i++) {
                         paymentDates.add(LocalDate.parse(data[i]));
                     }
 
-                    Loan loan = new Loan(principalAmount, interestRate, termInMonths, userID);
+                    Loan loan = new Loan(principalAmount, interestRate, termInMonths, fileAccountID);
                     loan.setLoanID(loanID);
                     loan.setMonthlyPayment(monthlyPayment);
                     loan.setOutstandingAmount(outstandingAmount);
