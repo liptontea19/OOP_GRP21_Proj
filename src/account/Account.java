@@ -109,9 +109,9 @@ public class Account {
         }
     }
 
-    public void addLoan(double principalAmount, double interestRate, int termInMonths, String accountNumber, String customerID, int creditScore){
+    public void addLoan(double principalAmount, float interestRate, int termInMonths, int accountNumber, int creditScore){
         if (loanFlag == false){
-            Loan newLoan = Loan.applyForLoan(principalAmount, interestRate, termInMonths, accountNumber, customerID, creditScore);
+            Loan newLoan = Loan.applyForLoan(principalAmount, interestRate, termInMonths, accountNumber, creditScore);
             if (newLoan != null){
                 this.loan = newLoan;
                 loanFlag = true;

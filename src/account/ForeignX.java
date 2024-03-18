@@ -233,17 +233,21 @@ public class ForeignX {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Which currency do you want to exchange to SGD?" +
                 "\n(1) USD balance: " + USDamt +
-                "\n(2) MYR balance: " + MYRamt +
-                "\n(3) JPY balance: " + JPYamt +
+                "\n(2) JPY balance: " + JPYamt +
+                "\n(3) MYR balance: " + MYRamt +
                 "\n(4) AUD balance: " + AUDamt +
                 "\n(5) GBP balance: " + GBPamt);
         int exchangeChoice = scanner.nextInt();
         scanner.nextLine();
+
+        String currencyCode = convertInput(exchangeChoice);
+        float exchangeRate = dictionary.get(currencyCode);
+
         switch(exchangeChoice){
             case 1:
                 if(amount <= USDamt){
                     USDamt -= amount;
-                    balance += amount * 1.3372f;
+                    balance += amount/exchangeRate;
                     System.out.println("Exchange successful!" +
                             "\nCurrent balance: " + balance +
                             "\nCurrent USD balance: " + USDamt);
@@ -257,7 +261,7 @@ public class ForeignX {
             case 2:
                 if(amount <= MYRamt){
                     MYRamt -= amount;
-                    balance += amount * 0.28409f;
+                    balance += amount/exchangeRate;
                     System.out.println("Exchange successful!" +
                             "\nCurrent balance: " + balance +
                             "\nCurrent MYR balance: " + MYRamt);
@@ -270,7 +274,7 @@ public class ForeignX {
             case 3:
                 if(amount <= JPYamt){
                     JPYamt -= amount;
-                    balance += amount * 0.00897f;
+                    balance += amount/exchangeRate;
                     System.out.println("Exchange successful!" +
                             "\nCurrent balance: " + balance +
                             "\nCurrent JPY balance: " + JPYamt);
@@ -283,7 +287,7 @@ public class ForeignX {
             case 4:
                 if(amount <= AUDamt){
                     AUDamt -= amount;
-                    balance += amount * 0.87696f;
+                    balance += amount/exchangeRate;
                     System.out.println("Exchange successful!" +
                             "\nCurrent balance: " + balance +
                             "\nCurrent AUD balance: " + AUDamt);
@@ -296,7 +300,7 @@ public class ForeignX {
             case 5:
                 if(amount <= GBPamt){
                     GBPamt -= amount;
-                    balance += amount * 1.70299f;
+                    balance += amount/exchangeRate;
                     System.out.println("Exchange successful!" +
                             "\nCurrent balance: " + balance +
                             "\nCurrent GBP balance: " + GBPamt);
