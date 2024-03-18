@@ -18,7 +18,7 @@ import java.io.FileWriter;
 public class Loan {
     private UUID loanID;
     private double principalAmount;
-    private double interestRate;
+    private float interestRate;
     private int termInMonths;
     private double monthlyPayment;
     private double outstandingAmount;
@@ -37,13 +37,13 @@ public class Loan {
      * @param termInMonths the Loan term in months
      * @param accountID the customerID associated with the Loan
      */
-    public Loan(double principalAmount, double interestRate, int termInMonths, String accountID, String customerID) {
+    public Loan(double principalAmount, float interestRate, int termInMonths, String accountID, String customerID) {
         this.loanID = UUID.randomUUID();
         this.principalAmount = principalAmount;
         this.interestRate = interestRate;
         this.termInMonths = termInMonths;
         this.monthlyPayment = calculateAmortizationPayment();
-        this.outstandingAmount = monthlyPayment * termInMonths;
+        this.outstandingAmount = principalAmount;
         this.totalPayment = monthlyPayment * termInMonths;
         this.startDate = LocalDate.now();
         this.endDate = startDate.plusMonths(termInMonths);
@@ -92,7 +92,7 @@ public class Loan {
      *
      * @return The Interest Rate of the Loan.
      */
-    public double getInterestRate() {
+    public float getInterestRate() {
         return interestRate;
     }
     /**
@@ -100,7 +100,7 @@ public class Loan {
      *
      * @param interestRate The Interest Rate to set for the Loan.
      */
-    public void setInterestRate(double interestRate) {
+    public void setInterestRate(float interestRate) {
         this.interestRate = interestRate;
     }
 
@@ -291,7 +291,7 @@ public class Loan {
      * @param creditScore The credit score of customer applying for the Loan.
      * @return Loan object for successful application, otherwise return null.
      */
-    public static Loan applyForLoan(double principalAmount, double interestRate, int termInMonths,String accountID, String customerID, int creditScore) {
+    public static Loan applyForLoan(double principalAmount, float interestRate, int termInMonths,String accountID, String customerID, int creditScore) {
         if (principalAmount <= 0 || interestRate <= 0 || termInMonths <= 0) {
             System.out.println("Error. Please provide non-negative values for principal amount, interest rate, and term in months.");
             return null;
@@ -414,7 +414,9 @@ public class Loan {
             }
             else {
                     addPaymentDate(currentDate);
-                    outstandingAmount -= monthlyPayment;
+                    double interestPayment = outstandingAmount * (interestRate / 12/ 100);
+                    double principalPayment = monthlyPayment - interestPayment;
+                    outstandingAmount -= principalPayment;
                     String formattedAccountString = String.format("Account ID: %s. Original Account Balance: $%.2f. ", accountID, balance);
                     System.out.println(formattedAccountString);
                     String formattedString = String.format("Repaid $%.2f. Outstanding Amount to pay: $%.2f.", monthlyPayment, outstandingAmount);
@@ -465,7 +467,7 @@ public class Loan {
                 if(data[9].equalsIgnoreCase(customerID) && data[10].equalsIgnoreCase("Approved")) {
                     UUID loanID = UUID.fromString(data[0]);
                     double principalAmount = Double.parseDouble(data[1]);
-                    double interestRate = Double.parseDouble(data[2]);
+                    float interestRate = Float.parseFloat(data[2]);
                     int termInMonths = Integer.parseInt(data[3]);
                     double monthlyPayment = Double.parseDouble(data[4]);
                     double outstandingAmount = Double.parseDouble(data[5]);
