@@ -41,7 +41,7 @@ public class ForeignX {
         this.accountID = accountID;
         this.balance = balance;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("OOP_GRP21_Proj-main/data/FXacc.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("data/FXacc.csv"));
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {
@@ -107,7 +107,7 @@ public class ForeignX {
      */
     public void ForeignCurrencies() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("OOP_GRP21_Proj-main/data/FX.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("data/FX.csv"));
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {

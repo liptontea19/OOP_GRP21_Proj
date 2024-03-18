@@ -36,7 +36,7 @@ public class Branch {
         this.branchCode = branchCode;
         branchDetails = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("src/Project/data/Branch.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("data\\Branch.csv"));
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {

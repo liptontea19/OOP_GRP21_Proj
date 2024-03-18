@@ -1,14 +1,20 @@
 package bank;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 import account.Account;
 import account.Insurance;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DecimalFormat;
 
 
 public class Bank {
@@ -17,20 +23,209 @@ public class Bank {
     private static String bankName;
     private static Insurance insurancePolicies;
     private static Branch branches;
+    private Security secSession;
+    private DecimalFormat moneyFormat = new DecimalFormat("#.00");
+    private Scanner input = new Scanner(System.in);
 
-    public void addAccount(Account account){
-        accounts.add(account);
+    /** Insurance Catalog Class Object */
+    private InsuranceCatalog insuranceCatalog;
+    /** Maps all brank branches. Key: Normal Integer Index Val: Branch Object */
+    private HashMap<Integer, Branch> branchMap;
+    /** Maps all user accounts. Key: Account ID, Value: Account Object connected to Account ID */
+    private HashMap<Integer, Account> accountMap;
+
+    public Bank(){
+        accounts = new ArrayList<>();
+        accountMap = new HashMap<>();
+        branchMap = new HashMap<>();
+        secSession = new Security(60);
+        String[] accountCSVLine, branchCodeCSVLine;
+
+        String csvFile = "data\\Bank.csv";
+        try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
+            String bankLine;
+            bankLine = reader.readLine();   // reads first line and skips lmao
+            bankLine = reader.readLine();   // reads the actual data in Bank.csv
+            String[] bankVals = bankLine.split(",");
+            this.bankName = bankVals[0];
+            branchCodeCSVLine = bankVals[1].split("\\.");
+            accountCSVLine = bankVals[3].split("\\.");
+
+            makeBranch(branchCodeCSVLine);  // creates branchMap 
+            makeAccounts(accountCSVLine);   // creates accountMap
+            insuranceCatalog = new InsuranceCatalog();  // initialises insuranceCatalog object            
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public String getName(){
         return bankName;
     }
 
-    public static List<Account> getAccounts() {
-        return accounts;
+    public void bankWelcomeMessage(){
+        System.out.println("_____________________");
+        System.out.println("|Welcome to " + bankName + " bank|");
+        System.out.println("---------------------");
     }
 
-    public void DisplayBankUI(int[] listofAccs){
+    /**
+     * Displays a main menu to choose values from. Rejects values not in display.
+     * @return Main Menu Choice value between 0 and 4
+     */
+    public int bankMainMenuSelect() {
+        int menuChoice = 0;
+        System.out.println("--------------------------------------------");
+        System.out.print("""                
+                Enter your input:
+                (1): Login to an Account
+                (2): View all Branches
+                (3): View all Insurance Policies
+                (4): Exit
+                """);
+
+        do{
+            try{
+                menuChoice = Integer.parseInt(input.nextLine());
+                if (1 <= menuChoice && menuChoice <= 4){    // menuchoice has to be between 1-3
+                    break;
+                } else {
+                    System.err.println("Invalid choice please try again."1);
+                } 
+            }catch (NumberFormatException e) {
+                System.err.println("Value entered was not an option.");
+            }
+        } while (menuChoice != 4);
+        return menuChoice;   //default value
+    }
+
+    /** Initialises hashmap with Branch objects based on their branch code */
+    public void makeBranch(String[] branchNumList){
+        for(int i=0;i<branchNumList.length;i++){
+            branchMap.put(i+1, new Branch(Integer.parseInt(branchNumList[i])));
+        }
+    }
+
+    public void makeAccounts(String[] accIdStrings){
+        for(int i=0;i<accIdStrings.length;i++){
+            accountMap.put(i+1, new Account(Integer.parseInt(accIdStrings[i])));
+            //accounts.add(new Account(Integer.parseInt(accIdStrings[i])));
+        }
+    }
+
+    /** Displays all bank customer account IDs and names */
+    public void displayAccounts(){
+        if (accountMap.size() < 1){
+            System.err.println("No accounts to display.");
+            return;
+        }
+        System.out.println("Acc No.   Name   ");
+        Account displayAccount;
+        for (int i=0;i<accountMap.size();i++){
+            displayAccount = accountMap.get(i+1);
+            System.out.println((i+1) + ":  " + displayAccount.getAccountNumber() + "    " + 
+            displayAccount.customer.getCustomerName());
+        }
+    }
+
+    /**
+     * Overload version that displays all account except the one specified in account ID
+     * @param userId Account ID of account to exclude from displayed list
+     */
+    public void displayAccounts(int userId){
+        if (accountMap.size() < 1){
+            System.err.println("No Accounts to display.");
+            return;
+        }
+        System.out.println("Acc No.   Name   ");
+        Account displayAccount;
+        for (int i=0;i<accountMap.size();i++){
+            displayAccount = accountMap.get(i+1);
+            if(displayAccount.getAccountNumber()==userId){continue;}    // skip displaying input userId account
+            System.out.println((i+1) + ":  " + displayAccount.getAccountNumber() + "    " + 
+            displayAccount.customer.getCustomerName());
+        }
+    }
+
+    /**
+     * Display all accounts and then prompts the user to enter their account credentials.
+     * User has 3 attempts to succesfully log into the account.
+     * @return Account ID of logged in account; else returns 0 on failure
+     */
+    public int accountLogin(){
+        displayAccounts();  // account display lmao 
+        int loginAccChoice = 0, attemptCount = 1;
+        String password;
+
+        while (attemptCount < 4){
+            System.out.println("Enter User ID:");
+            try {
+                loginAccChoice = Integer.parseInt(input.nextLine());
+                if(accountMap.containsKey(loginAccChoice)){
+                    System.out.println("Enter password:");
+                    password = input.nextLine();
+                    if(secSession.validatePassword(loginAccChoice, password)){
+                        break;
+                    }
+                } else {
+                    System.out.println("ID entered was not in database.");
+                }
+            } catch (NumberFormatException e){
+                System.out.println("Entered value was not an ID.");
+            }    
+            System.out.println("You have " + Integer.toString(3 - attemptCount) + " remaining attempts.");
+            attemptCount++;
+        }
+        return 0;
+    }
+
+    /** Handles the selection of Account option from main menu
+     * 1) Account login event
+     * 2) Begin account action loop
+     */
+    public void accountProcess(){
+        int accountId =0, userChoice;    //account ID of logged in account
+        boolean contAccount = true;
+        
+        accountId = accountLogin();   // user logs into account 
+        if (accountId == 0){
+            return;
+        }
+
+        while (contAccount) {
+            System.out.print(accountMap.get(accountId).customer.getCustomerName()+ " 's");
+            System.out.println("""
+                            Account Actions:
+                            (1): Deposit,Withdraw,Transfer
+                            (2): View Credit Card Options
+                            (3): View Insurance Options
+                            (4): View Foreign Currency Options
+                            (5): Exit""");
+            userChoice = input.nextInt();
+            switch (userChoice) {
+                case 1:
+                    
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void displayBranches() {
+        System.out.println("Branch Name    Branch Code    Current Reserves    Opening Hours");
+        Branch selectedBranch;
+        for (int i=1;i<branchMap.size()+1;i++){
+            selectedBranch = branchMap.get(i);
+            System.out.println(selectedBranch.getBranchName() + "    " + selectedBranch.getBranchCode() + 
+            "    $" + moneyFormat.format(selectedBranch.getBranchReserve()) + "    " + selectedBranch.getOpeninghours() + "~" + 
+            selectedBranch.getClosingHours());
+        }
+    }
+
+    public void DisplayBankUI(int[] listofAccs) {
         System.out.println("_____________________");
         System.out.println("|Welcome to " + bankName + " bank|");
         System.out.println("---------------------");
@@ -52,8 +247,7 @@ public class Bank {
             displaycreditamt = account.creditCard.getCreditBalance();
             System.out.println(i + ":   " + displayaccNum + "    " + displayname + "    " + displayamt + "        " + displaybranchC + "            " + displaycreditamt);
         }
-        System.out.print("""
-                
+        System.out.print("""                
                 Enter your input:
                 (1): Login to an Account
                 (2): View all Branches
@@ -62,7 +256,7 @@ public class Bank {
 
     }
 
-    public void ProcessTransactions(Account account, int choice, int[] acclist){
+    public void ProcessTransactions(Account account, int choice, int[] acclist) {
         // Process Transactions here.
         Scanner scanner = new Scanner(System.in);
         if(choice == 1){
@@ -237,15 +431,15 @@ public class Bank {
                 account.foreignX.printCurrencies();
             }
         }
-        //scanner.close();
+        scanner.close();
     }
 
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
         Scanner scanner = new Scanner(System.in);
         accounts = new ArrayList<>();
         Bank myBank = new Bank();
 
-        String csvFile = "OOP_GRP21_Proj-main/data/Bank.csv"; // Path to your CSV file
+        String csvFile = "data\\Bank.csv"; // Path to your CSV file
         List<String> branchCodes = new ArrayList<>();
         List<String> branchNames = new ArrayList<>();
         List<String> accNumbers = new ArrayList<>();
@@ -383,14 +577,42 @@ public class Bank {
             }
             System.out.print("Do you want to continue? (yes/no): ");
             String continueChoice = scanner.nextLine().trim().toLowerCase();
-            continueRunning = continueChoice.equals("yes");
+
             if(continueChoice.equals("no")){
                 System.out.println("Exiting " + bankName + " Bank System...");
             }
 
-
+            continueRunning = continueChoice.equals("yes");
         }
         scanner.close();
     }
+    
 
+    public static void main(String[] args) {
+        int menuChoice;
+        boolean endSession = false;
+        Bank bankSession = new Bank();
+
+        bankSession.bankWelcomeMessage();  // Displays welcome message
+        //bankSession.displayBranches();
+        while (endSession!=true) {
+            menuChoice = bankSession.bankMainMenuSelect();
+            switch(menuChoice) {
+                case 1: 
+                    bankSession.accountProcess();
+                    break;
+                case 2:
+                    bankSession.displayBranches();
+                    break;
+
+                case 3: // Display Insurance Policies
+                    break;
+
+                default:
+                System.out.println("Thank you for using the bank application.");
+                endSession = true;
+                break;
+            }
+        }
+    }
 }
