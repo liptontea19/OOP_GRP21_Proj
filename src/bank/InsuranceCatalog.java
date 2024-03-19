@@ -23,12 +23,8 @@ public class InsuranceCatalog {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("data\\Insurance.csv"));
             String line;
-            boolean firstLine = true; // Flag to skip the first line
+            reader.readLine();
             while ((line = reader.readLine()) != null) {    // skip column name line of CSV
-                if (firstLine) {
-                    firstLine = false;
-                    continue;
-                }
                 String[] parts = line.split(","); // Split by comma since it's CSV
                 policyInfo.add(parts);
             }
@@ -42,13 +38,11 @@ public class InsuranceCatalog {
      * Method to print information stored in the policyInfo arraylist for users to view available policies
      */
     public void printInsuranceCatalog(){
+        
+        System.out.println("Name                  Number     Annual Premium     Start     End");
         for (String[] policyDetails: this.policyInfo){
-            System.out.println("Insurance Type: " + policyDetails[0]);
-            System.out.println("Policy Name: " + policyDetails[1]);
-            System.out.println("Policy Number: " + policyDetails[2]);
-            System.out.println("Annual Premium Cost: $" + policyDetails[3]);
-            System.out.println("Start Date: " + policyDetails[4]);
-            System.out.println("End Date: " + policyDetails[5]);
+            System.out.println(policyDetails[1] + "       " + policyDetails[0] + "    $" + 
+            policyDetails[3] + "   " + policyDetails[4] + "   " + policyDetails[5]);
         }
     }
 

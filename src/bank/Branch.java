@@ -198,8 +198,11 @@ public class Branch {
      * With this amount it reduces the specific branch's reserve
      */
     public void withdrawReserve(double amount){
-        if(amount > 0){
+        if(amount > 0 && branchReserve > amount){
             branchReserve -= amount;
+        } 
+        else if (amount > branchReserve){
+            System.out.println("This branch has insufficient funds for your withdrawal, please try another branch.");
         }
         else{
             System.out.println("This is an invalid amount!");

@@ -2,6 +2,7 @@ package account;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 /**
@@ -24,9 +25,10 @@ public class Account {
     private String accountType;
     private double balance, transferLimit;
     private int branchCode;
+    private DecimalFormat moneyDecimalFormat = new DecimalFormat("#,###.00");
+
     public CreditCard creditCard;
     public Customer customer;
-
     public ForeignX foreignX;
     public Insurance insurance;
     public Loan loan;
@@ -181,8 +183,8 @@ public class Account {
     public void deposit(double amount){
         // deposit function
         balance += amount;
-        System.out.println("Amount of $" + amount + " has been deposited into " + accountNumber);
-        System.out.println("Current Balance: $" + balance);
+        System.out.println("Amount of $" + moneyDecimalFormat.format(amount) + " has been deposited into account: " + accountNumber);
+        //System.out.println("Current Balance: $" + balance);
 
     }
 
@@ -209,7 +211,7 @@ public class Account {
     public float getInterestRate(){
         return interestRate;
     }
-
+    
     public void makeLoanPayment(){
         if (loanFlag == false){     // checks if there is a Loan class instantiated in account
             System.out.println("Account does not have a Loan associated with it");
@@ -218,7 +220,7 @@ public class Account {
         double monthlyLoanPaymentAmount = loan.getMonthlyPayment();
         if (monthlyLoanPaymentAmount > balance){        //checks if balance is sufficient to pay of monthly Loan
             System.out.println("There is insufficient balance in account to pay amount of " + monthlyLoanPaymentAmount);
-            System.out.println("Current Account Balance: $" + balance);
+            System.out.println("Current Account Balance: $" + moneyDecimalFormat.format(balance));
         }
         else {
             this.balance = loan.repay(accountNumber, balance); //used to update the new balance after payment
@@ -238,7 +240,7 @@ public class Account {
         }
         else {
             System.out.println("There is insufficient balance in account.");
-            System.out.println("Current Account Balance: $" + balance);
+            System.out.println("Current Account Balance: $" + moneyDecimalFormat.format(balance));
         }
     }
 
@@ -251,12 +253,12 @@ public class Account {
         }
         double creditBalance = creditCard.getCreditBalance();
         if (amount > creditBalance){
-            System.out.println("Payment amount of $" + amount + " is higher than owed balance in credit card.");
-            System.out.println("Current Credit Balance: $" + creditBalance);
+            System.out.println("Payment amount of $" + moneyDecimalFormat.format(amount) + " is higher than owed balance in credit card.");
+            System.out.println("Current Credit Balance: $" + moneyDecimalFormat.format(creditBalance));
         }
         else if (amount > balance){
-            System.out.println("There is insufficient balance in account to pay amount of " + amount);
-            System.out.println("Current Account Balance: $" + balance);
+            System.out.println("There is insufficient balance in account to pay amount of " + moneyDecimalFormat.format(amount));
+            System.out.println("Current Account Balance: $" + moneyDecimalFormat.format(creditBalance));
         }
         else {
             creditCard.payBill(amount);
@@ -265,17 +267,20 @@ public class Account {
 
     public void printAccountDetails(){
         System.out.println("Account Number: " + Integer.toString(accountNumber) +
-                "\nAccount Type: " + accountType + "\nBalance: $" + Double.toString(balance) +
+                "\nAccount Type: " + accountType + "\nBalance: $" + moneyDecimalFormat.format(balance) +
                 "\nBranch: " + Integer.toString(branchCode) + "\nInterest Rate: " + Float.toString(interestRate*100) +
-                "%\nTransfer Limit: $" + Double.toString(transferLimit));
+                "%\nTransfer Limit: $" + moneyDecimalFormat.format(transferLimit));
         if (cardFlag == true){
-            System.out.println("\nCredit Card Number: " + creditCard.getCardNumber());
+            System.out.println("Credit Card Number: " + creditCard.getCardNumber());
+            System.out.println("| Current Balance : $" + moneyDecimalFormat.format(creditCard.getCreditBalance()));
         }
         if (insureFlag == true){
-            System.out.println("\nInsurance: " + insurance.getPolicyName());
+            System.out.println("Insurance: " + insurance.getPolicyName());
+            System.out.println("| Start Date: " + insurance.getStartDate());
+            System.out.println("| End Date: " + insurance.getEndDate());
         }
         if (loanFlag == true){
-            System.out.println("\nLoan: " + loan.getLoanID());
+            System.out.println("Loan: " + loan.getLoanID());
         }
     }
 
@@ -298,9 +303,9 @@ public class Account {
     public void setTransferLimit(double transferLimit){
         if (transferLimit > 0 && transferLimit <= 20000){
             this.transferLimit = transferLimit;
-            System.out.println("Transfer limit has been changed to $" + Double.toString(transferLimit));
+            System.out.println("Transfer limit has been changed to $" + moneyDecimalFormat.format(transferLimit));
         }else {
-            System.out.println("The transfer limit of $" + Double.toString(transferLimit) + " you have entered is invalid.");
+            System.out.println("The transfer limit of $" + moneyDecimalFormat.format(transferLimit) + " you have entered is invalid.");
         }
     }
 
@@ -308,7 +313,7 @@ public class Account {
         // Transfer to another account
         //check that transfer amount is not more than the user's balance
         if(transferAmt > balance){
-            System.out.println("Account balance $" + balance + " is insufficient for this transfer!");
+            System.out.println("Account balance $" + moneyDecimalFormat.format(balance) + " is insufficient for this transfer!");
         }
         //check that the transfer amount is not higher than the transfer limit
         else if(transferAmt > transferLimit){
@@ -318,22 +323,22 @@ public class Account {
             balance -= transferAmt;
             //transfer to receiver by adding transferAmt to transfer acc balance and setting as new balance value
             transferAcc.setBalance(transferAcc.checkBalance()+transferAmt);
-            System.out.println("Amount Transferred: $" + transferAmt);
-            System.out.println("Current Balance: $" + balance);
+            System.out.println("Amount Transferred: $" + moneyDecimalFormat.format(transferAmt));
+            System.out.println("Current Balance: $" + moneyDecimalFormat.format(balance));
 
         }
     }
 
-    public void withdraw(int withdrawAmt){
+    public void withdraw(double withdrawAmt){
         // Withdraw to cash from specified branchCode
         if(balance >= withdrawAmt)
         {
             balance -= withdrawAmt;
-            System.out.println("Amount Withdrawn: $" + withdrawAmt);
-            System.out.println("Current Balance: $" + balance);
+            System.out.println("Amount Withdrawn: $" + moneyDecimalFormat.format(withdrawAmt));
+            System.out.println("Current Balance: $" + moneyDecimalFormat.format(balance));
         }
         else{
-            System.out.println("Bank balance of $" + balance + " is insufficient for this withdrawal!");
+            System.out.println("Bank balance of $" + moneyDecimalFormat.format(balance) + " is insufficient for this withdrawal!");
         }
 
     }
