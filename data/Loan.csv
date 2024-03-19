@@ -1,3 +1,4 @@
-LoanID,PrincipalAmount,InterestRate,TermInMonths,MonthlyPayment,OutstandingAmount,TotalPayment,StartDate,EndDate,AccountID,Status,PaymentDates
-dd8eef5a-ac8c-4fe5-b8c5-57e66b601341,20000,6,36,608.438749,20000,21903.79497,2024-02-22,2027-02-22,000001,Approved,2024-01-22
-dd8eef5a-ac8c-4fe5-b8c4-57e66b601342,30000,6,36,912.658124,30000,32855.69245,2024-02-22,2027-02-22,000002,Approved,2024-01-22
+LoanID,PrincipalAmount,InterestRate,TermInMonths,MonthlyPayment,OutstandingAmount,TotalPayment,StartDate,EndDate,AccountID,Status,PaymentDates,LoanTypes,CreditScore
+dd8eef5a-ac8c-4fe5-b8c5-57e66b601341,20000,6,36,608.438749,20000,21903.79497,22/2/2024,22/2/2027,1,Approved,22/1/2024,Car,620
+dd8eef5a-ac8c-4fe5-b8c4-57e66b601342,30000,6,36,912.658124,30000,32855.69245,22/2/2024,22/2/2027,2,Approved,22/1/2024,Student,650
+dd8eef5a-ac8c-4fe5-b8c4-57e66b601343,40000,6,36,1177.497222,40000,42389.9,21/3/2024,21/3/2027,3,Approved,21/2/2024,Mortage,700
