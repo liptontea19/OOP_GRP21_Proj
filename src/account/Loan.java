@@ -480,10 +480,10 @@ public class Loan {
      * @param accountID The accountID of the specified customer to retrieve Loans associated with the specified acount.
      * @return A list of Loans with "Approved" status.
      */
-    public static List<Loan> readLoansFromCSV(String filename, int accountID) {
+    public static List<Loan> Loan(int accountID) {
         List<Loan> loanList = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("OOP_GRP21_Proj/data/Loan.csv"))) {
             // Skip the header row
             String header = br.readLine();
 

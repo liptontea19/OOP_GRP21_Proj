@@ -87,6 +87,7 @@ public class Account {
                         insureFlag = true;
                     }
                     this.foreignX = new ForeignX(accountNumber,Float.parseFloat(accDetail[2]));
+                    this.loan = new Loan(accountNumber);
                     break;
                 }
             }
