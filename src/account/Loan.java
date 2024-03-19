@@ -29,6 +29,8 @@ public class Loan {
     private int accountID;
     private String status;
     private ArrayList<LocalDate> paymentDates;
+    private String loantypes;
+    private int creditScore;
 
     /**
      * Constructs a new Loan object with the specified details. 
@@ -37,7 +39,7 @@ public class Loan {
      * @param termInMonths the Loan term in months
      * @param accountID the customerID associated with the Loan
      */
-    public Loan(double principalAmount, float interestRate, int termInMonths, int accountID) {
+    public Loan(double principalAmount, float interestRate, int termInMonths, int accountID, int creditScore) {
         this.loanID = UUID.randomUUID();
         this.principalAmount = principalAmount;
         this.interestRate = interestRate;
@@ -50,6 +52,8 @@ public class Loan {
         this.accountID = accountID;
         this.status = "Pending";
         this.paymentDates = new ArrayList<LocalDate>();
+        this.loantypes = "Car, Student, Mortage";
+        this.creditScore = creditScore;
     }
     
     /**
@@ -257,7 +261,38 @@ public class Loan {
         this.paymentDates = paymentDates;
     }
 
-
+    /**
+     * Gets the loan types of the Loan.
+     *
+     * @return The loan types of the Loan.
+     */
+    public String getLoanTypes(){
+        return loantypes;
+    }
+    /**
+     * Sets the loan types of the Loan.
+     *
+     * @param loantypes The loan types to set for the Loan.
+     */
+    public void setLoanTypes(String loantypes){
+        this.loantypes = loantypes;
+    }
+    /**
+     * Gets the credit score of the Loan.
+     *
+     * @return The credit score of the Loan.
+     */
+    public int getCreditScore(){
+        return creditScore;
+    }
+    /**
+     * Sets the credit score of the Loan.
+     *
+     * @param creditScore The credit score to set for the Loan.
+     */
+    public void setCreditScore(int creditScore){
+        this.creditScore = creditScore;
+    }
     /**
      * Check Eligiblity of customer to apply for Loan.
      * If customer's credit score is higher than or equal to 600, customer is eligible for a Loan.
@@ -346,6 +381,8 @@ public class Loan {
         System.out.println("Account ID: " + accountID);
         System.out.println("Payment Dates: " + paymentDates);
         System.out.println("Status: " + status);
+        System.out.println("Loan Types: " + loantypes);
+        System.out.println("Credit Score: " + creditScore);
         for (int i = 0; i < paymentDates.size(); i++) {
             System.out.println("Payment Date " + (i+1) + ": " + paymentDates.get(i));
         }
@@ -465,6 +502,8 @@ public class Loan {
                     LocalDate startDate = LocalDate.parse(data[7]);
                     LocalDate endDate = LocalDate.parse(data[8]);
                     String status = data[10];
+                    String loantypes = data[11];
+                    int creditScore = Integer.parseInt(data[12]);
                     ArrayList<LocalDate> paymentDates = new ArrayList<>();
                     for (int i = 11; i < data.length; i++) {
                         paymentDates.add(LocalDate.parse(data[i]));
@@ -479,6 +518,8 @@ public class Loan {
                     loan.setEndDate(endDate);
                     loan.setStatus("Approved");
                     loan.setPaymentDates(paymentDates);
+                    loan.setLoanTypes("Car, Student, Mortage");
+                    loan.setCreditScore(creditScore);
                     loanList.add(loan);
                 }   
             }
