@@ -29,7 +29,7 @@ public class Customer {
     } */
 
     public Customer(String customerID){
-        String path = "data\\Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
+        String path = "OOP_GRP21_Proj-main/data/Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line = "";
@@ -53,7 +53,7 @@ public class Customer {
                     this.Occupation = data[8];
                     this.Employer = data[9];
                     this.DateOfBirth = data[10];
-                    this.CreditScore = data[11];
+                    this.CreditScore = Integer.parseInt(data[11]);
                     break;
                 }
 
@@ -64,7 +64,7 @@ public class Customer {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Unable to locate Customer ID: " + customerID);
-        } 
+        }
     }
 
     public int getCreditScore(){
