@@ -9,7 +9,7 @@ import javax.imageio.IIOException;
 
 public class Customer {
 
-    private int Age, ContactNo;
+    private int Age, ContactNo, CreditScore;
     private String Address, ID, CustomerName, MaritalStatus, Country, EmailAddress, Occupation, Employer, DateOfBirth;
 
 
@@ -53,6 +53,7 @@ public class Customer {
                     this.Occupation = data[8];
                     this.Employer = data[9];
                     this.DateOfBirth = data[10];
+                    this.CreditScore = data[11];
                     break;
                 }
 
@@ -66,7 +67,9 @@ public class Customer {
         } 
     }
 
-
+    public int getCreditScore(){
+        return CreditScore;
+    }
 
     public int getContactNo(){
         return ContactNo;
@@ -106,6 +109,10 @@ public class Customer {
     public String getCustomerNRIC(){
         return ID;
     }
+    public void setCreditScore(int CreditScore){
+        this.CreditScore = CreditScore;
+    }
+
     public void setContactNo(int ContactNo){
         this.ContactNo = ContactNo;
     }

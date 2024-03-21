@@ -26,6 +26,7 @@ public class Account {
     private int branchCode;
     public CreditCard creditCard;
     public Customer customer;
+    private int creditScore;
 
     public ForeignX foreignX;
     public Insurance insurance;
@@ -91,6 +92,7 @@ public class Account {
             }
             if (foundFlag == true){
                 this.customer = new Customer(custId);// replace with Customer csv constructor
+                this.creditScore = getCreditScore();
                 if (cardNumber != ""){
                     cardFlag = true;
                     this.creditCard = new CreditCard(Long.parseLong(cardNumber));
