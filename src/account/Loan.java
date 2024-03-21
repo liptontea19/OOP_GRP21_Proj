@@ -1,3 +1,4 @@
+package account;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class Loan {
         this.accountID = accountID;
         this.status = "Pending";
         this.paymentDates = new ArrayList<LocalDate>();
-        this.loanTypes = "Car, Student, Mortage";
+        this.loantypes = "Car, Student, Mortage";
         //this.creditScore = creditScore;
     }
     
@@ -417,10 +418,9 @@ public class Loan {
     /**
      * Repays the monthly payment of the Loan, updating payment and Account information.
      *
-     * @param accountID The accountID of the account to deduct balance for repayment of the Loan.
      * @param balance The balance of the account to deduct balance for repayment of the Loan.
      */
-    public double repay(int accountID, double balance) {
+    public double repay(double balance) {
         if(this.getStatus().equalsIgnoreCase("Approved")) {
             LocalDate currentDate = LocalDate.now();
             int currentMonth = currentDate.getMonthValue();
@@ -481,7 +481,7 @@ public class Loan {
      */
     public static Loan readLoansFromCSV(int accountID) {
 
-        try (BufferedReader br = new BufferedReader(new FileReader("OOP_GRP21_Proj/data/Loan.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("OOP_GRP21_Proj-main/data/Loan.csv"))) {
             // Skip the header row
             String header = br.readLine();
 
@@ -519,7 +519,7 @@ public class Loan {
                     loan.setLoanTypes("Car, Student, Mortage");
                     loan.setCreditScore(creditScore);
                     return loan;
-                }   
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
