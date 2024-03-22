@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * CreditCard class is used to store information of a customer's credit card based on their card number.
  * The class has methods which work together with the Account it will be attached to, to perform transactions and other functions of a credit card.
- * */
+ */
 public class CreditCard {
     private double balance = 0, creditLimit;
     private String customerName;
@@ -23,7 +23,8 @@ public class CreditCard {
     private List<String> transactionHistory;
     private static List<CreditCard> allCreditCards = new ArrayList<>();
 
-    /**Generic class constructor for class private attributes
+    /**
+     * Generic class constructor for class private attributes
      * @param customerName Name of Customer
      * @param accountID The unique identifier for each account
      * @param cardNumber The card number assigned to the credit card
@@ -47,7 +48,7 @@ public class CreditCard {
      * Used to perform functionalities of a credit card class based on the credit card number.
      * For loop is used for assigning data from csv into the local variable, to retrieve the data in printCreditCardDetails method.
      * @param cardNumber specifies the specific creditCard to retrieve
-     * */
+     */
     public CreditCard(long cardNumber) {
         this.cardNumber = cardNumber;
         this.transactionHistory = new ArrayList<>();
@@ -87,9 +88,10 @@ public class CreditCard {
         }
     }
 
-    /** Main class is used for testing purposes
-    *   to show the functionalities of the CreditCard Class
-    * */
+    /** 
+     * Main class is used for testing purposes
+     *   to show the functionalities of the CreditCard Class
+     */
     public static void main(String[] args){
         CreditCard creditCard = new CreditCard(3108398698038530L);
         creditCard.chargeCredit(2000);
@@ -106,7 +108,7 @@ public class CreditCard {
      * if the credit card is expired; if the given amount is a valid number; if it has exceeded the credit limit.
      * If the amount for chargeCredit passes these checks, it can successfully charge the credit card.
      * @param amount The amount to charge to the credit card
-     * */
+     */
     public void chargeCredit(double amount){
         if (LocalDate.now().isAfter(expiryDate)){
             System.out.println("Transaction declined. The credit card is expired.");
@@ -127,7 +129,7 @@ public class CreditCard {
      * This method is used in contrast to chargeCredit:
      * when charging the credit card, one has to pay off his or her balance as well.
      * @param amount The amount of the credit card balance to pay off
-     * */
+     */
     public void payBill(double amount){
         if (amount <=0 || amount > balance){
             System.out.println("Invalid payment amount.");
@@ -142,7 +144,7 @@ public class CreditCard {
      * printAllCreditCards retrieves the information
      * of all the credit cards of a certain account ID.
      * @param accountID The accountID of Credit Cards to print
-     * */
+     */
     public static void printAllCreditCards(int accountID){
         System.out.println("\n List of all Credit Cards for accountID " + accountID + ": \n");
         for (CreditCard card : allCreditCards){
@@ -156,7 +158,7 @@ public class CreditCard {
     /**
      * Method to calculate and retrieve the current available credit of a credit card.
      * @return The available credit, computed as the difference between creditLimit and current balance.
-     * */
+     */
     public double availableCredit(){
         return creditLimit - balance;
     }
@@ -164,7 +166,7 @@ public class CreditCard {
     /**
      * printTransactionHistory shows the transaction history of the
      * credit card when it was charged or when the balance was paid off.
-     * */
+     */
     public void printTransactionHistory(){
         System.out.println("Transaction History:");
         for (String transaction : transactionHistory){
@@ -175,7 +177,7 @@ public class CreditCard {
     /**
      * Returns the balance attribute as a double value
      * @return balance The amount owed that needs to be paid off.
-     * */
+     */
     public double getCreditBalance(){
         return balance;
     }
@@ -183,7 +185,7 @@ public class CreditCard {
     /**
      * Returns the expiryDate attribute as a LocalDate value
      * @return LocalDate value of credit card's expiry date.
-     * */
+     */
     public LocalDate getCardExpiry(){
         return expiryDate;
     }
@@ -191,7 +193,7 @@ public class CreditCard {
     /**
      * Returns the customer name attribute as a String value
      * @return String value of credit card's Customer name.
-     * */
+     */
     public String getCustomerName(){
         return customerName;
     }
@@ -199,7 +201,7 @@ public class CreditCard {
     /**
      * Returns the creditLimit attribute as a double value
      * @return double value of credit card's limit.
-     * */
+     */
     public double getCreditLimit(){
         return creditLimit;
     }
@@ -207,7 +209,7 @@ public class CreditCard {
     /**
      * Returns the cardNumber attribute as a long value
      * @return long value of the credit card number.
-     * */
+     */
     public long getCardNumber(){
         return cardNumber;
     }
@@ -215,7 +217,7 @@ public class CreditCard {
     /**
      * Returns the accountID attribute as an integer
      * @return integer value of the account ID linked to the credit card.
-     * */
+     */
     public Integer getAccountID(){
         return accountID;
     }
@@ -226,7 +228,7 @@ public class CreditCard {
      * The limit can only be set between 1 and 100000.
      * If the limit is set below 1 or above 100000, it will be invalid.
      * Message will be printed to prompt user
-     * */
+     */
     public void setCreditLimit(double creditLimit) {
         if (creditLimit > 0 && creditLimit <= 100000) {
             this.creditLimit = creditLimit;
