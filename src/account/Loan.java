@@ -14,7 +14,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 /**
- * The Loan class represents a Loan.
+ * The Loan class is used to store and access a customer's loan information 
+ * The class has methods which works together with the Account it will be attached to, to perform
  */
 
 public class Loan {
@@ -39,7 +40,7 @@ public class Loan {
      * @param principalAmount the principal amount of the Loan
      * @param interestRate the annual interest rate of the Loan
      * @param termInMonths the Loan term in months
-     * @param accountID the customerID associated with the Loan
+     * @param accountID the accountID associated with the Loan
      */
     public Loan(double principalAmount, float interestRate, int termInMonths, int accountID) {
         this.loanID = UUID.randomUUID();
@@ -55,7 +56,6 @@ public class Loan {
         this.status = "Pending";
         this.paymentDates = new ArrayList<LocalDate>();
         this.loantypes = "Car, Student, Mortage";
-        //this.creditScore = creditScore;
     }
     
     /**
@@ -279,6 +279,7 @@ public class Loan {
     public void setLoanTypes(String loantypes){
         this.loantypes = loantypes;
     }
+
     /**
      * Gets the credit score of the Loan.
      *
@@ -295,13 +296,15 @@ public class Loan {
     public void setCreditScore(int creditScore){
         this.creditScore = creditScore;
     }
+    
+    
     /**
      * Check Eligiblity of customer to apply for Loan.
      * If customer's credit score is higher than or equal to 600, customer is eligible for a Loan.
      * Otherwise, customer is not eligble for a Loan
      *
      * @param creditScore The credit score of the customer applying for the Loan.
-     * @return True if  customer is eligible for a Loan, otherwise return false.
+     * @return True if customer is eligible for a Loan, otherwise return false.
      */
     public static boolean checkEligiblity(int creditScore) {
         if (creditScore >= 600) {
@@ -414,9 +417,10 @@ public class Loan {
     }
 
     /**
-     * Repays the monthly payment of the Loan, updating payment and Account information.
+     * Repays the monthly payment of the Loan, updating the Account Balance after deduction.
      *
      * @param balance The balance of the account to deduct balance for repayment of the Loan.
+     * @return Returns the deducted balance of the loan
      */
     public double repay(double balance) {
         if(this.getStatus().equalsIgnoreCase("Approved")) {
@@ -459,7 +463,7 @@ public class Loan {
     /**
      * Calculates the monthly amortization payment of the Loan.
      *
-     * @return The calculated monthly amortization payment.
+     * @return The calculated monthly amortization payment
      */
     public double calculateAmortizationPayment() {
         double monthlyInterestRate = interestRate / 12.0 / 100.0;
@@ -468,12 +472,12 @@ public class Loan {
     }
     
     /**
-     * Reads list of Loans from CSV file and returns a list of Loan objects.
-     * that match the specified customer and have the "Approved" status.
+     * Reads list of Loans from CSV file and returns a Loan object
+     * that matches the specified accountID and have the "Approved" status.
      *
      * 
-     * @param accountID The accountID of the specified customer to retrieve Loans associated with the specified acount.
-     * @return A list of Loans with "Approved" status.
+     * @param accountID The accountID of the specified customer to retrieve Loans associated with the specified account.
+     * @return A loan object if it matches the accountID entered and has the "Approved" status.
      */
     public static Loan readLoansFromCSV(int accountID) {
 
