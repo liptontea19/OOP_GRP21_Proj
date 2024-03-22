@@ -3,7 +3,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -11,16 +10,25 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 /** 
- * Security class will be in charge of the logging in process and authentication 
- * services for account transactions. A Security object will be generated when the
- * Bank is initialised. Object is bound to account and functions are utilised 
- * when required to validate the authenticity of a transaction. Uses the 
- * PBKDF2WithHmacSHA1 Algorithm for encryption.
+ * Security class is in charge of the login process and authentication services for bank transactions. 
+ * A Security object will be generated when the
+ * {@link Bank} class is initialised. Functions are utilised to validate the authenticity of a user. Uses the 
+ * <a href="https://cryptobook.nakov.com/mac-and-key-derivation/pbkdf2">PBKDF2 Algorithm</a> from the 
+ * <a href="https://docs.oracle.com/javase/8/docs/api/index.html?javax/crypto/SecretKeyFactory.html">SecretKeyFactory</a> 
+ * library for encryption.
+ * <p><pre>
+ * General usage flow:
+ * - Use {@link #Security(int) Security()} constructor to start the security session in the bank
+ * - Use {@link #validatePassword(int, String)} for an existing account's login process 
+ * - OR use {@link #createNewPass(int, String)} for adding a new account and then use <code>validatePassword()</code> to log user in
+ * - Use <code>createNewPass()</code> to also change account credentials 
+ * - Use {@link #generateTransactionOTP(int, int)} followed by {@link #validateOTP(int, String)} for the OTP process
+ * </pre></p>
+ * Dependency: UserPass.csv data file for storing account ID and encrypted password pairs
  */
 public class Security {
     /** Account Credentials of all bank customers 
@@ -36,8 +44,8 @@ public class Security {
     /**
      * Constructor for security class called on Bank initialisation. Creates a Security class object.
      * Sets the OTP validity duration 
-     * and populates userPwdMap with values from the password CSV file.
-     * @param otpExpiry OTP validity duration in seconds
+     * and populates @see #userPwdMap with values from the password CSV file, UserPass.csv.
+     * @param otpExpirySeconds OTP validity duration in seconds
      */
      public Security(int otpExpirySeconds){
         this.otpExpirySeconds = otpExpirySeconds;
@@ -63,12 +71,11 @@ public class Security {
 
     /**
      * Used to generate a one-time user password specific to the user's account for transaction validations. 
-     * Account that OTP is generated for have an existing record in userPwdMap
-     * Adds the OTP to the Hashmap otpMap <userId, [otpString,otpValidTime]>.
+     * Pre-requisite: Account specified in userID must be part of the system's security database (in UserPass.csv)
+     * Adds the OTP to the Hashmap otpMap Key: userId, Value: [otpString,otpValidTime].
      * Password will be valid within the duration specified in otpExpirySeconds.
-     * @param userId User ID value
+     * @param userId Account ID value
      * @param passLength Specifies the OTP string length
-     * @return A One-Time Password String value
      */
     public void generateTransactionOTP(int userId, int passLength){
         if (this.userPwdMap.containsKey(userId)){
@@ -95,12 +102,13 @@ public class Security {
     }
 
     /**
-     * Checks if the input argument matches the one found in OTP store
-     * Method has 3 conditions: Valid User ID, Non-expired OTP and Correct OTP argument
-     * If any of the three conditions fails, return False value. 
+     * Checks if the input argument matches the one found in OTP hashmap, otpMap
+     * Method has 3 conditions: Valid User ID, Non-expired OTP and Correct One-time password value
+     * If any of the three conditions fail, return a False value. 
      * Otherwise, clear the OTP record from otpMap and return True.
      * @param userId Integer key variable to use for getting OTP information from otpMap
      * @param otpString One-time password user input value to compare against existing OTP records
+     * @return boolean true on successful validation, false for failed
      */
     public boolean validateOTP(int userId, String otpString){
         if (!otpMap.containsKey(userId)){
@@ -132,8 +140,8 @@ public class Security {
     }
 
     /**
-     * Generates a randomised salt value to add to pre-hashed passwords.
-     * @return 16 byte long salt value 
+     * Generates a randomised salt value to add to plain-text password before hashing.
+     * @return 16 byte salt value 
      */
     private byte[] generateSalt(){
         SecureRandom random = new SecureRandom();
@@ -145,9 +153,8 @@ public class Security {
     /**
      * Converts plain-text passString arg into an encrypted string by adding a 
      * cryptographic salt to the plain-text and then hashing it 
-     * @param userId Key used to store password into userPwdMap
-     * @param passString Plain-text password value 
-     * @param saltString Account-specific salt value
+     * @param passString Plain-text password string
+     * @param salt Account-specific salt byte array
      * @return Encrypted password in a byte array
      */
     public byte[] hashPassword(String passString, byte[] salt){
@@ -167,7 +174,7 @@ public class Security {
 
     /**
      * Converts byte array into a hexadecimal string twice the length of the input array.
-     * @param arr Byte array 
+     * @param arr Byte array of hashed password 
      * @return Converted character string encoded with byte array values
      */
     private String byteToString(byte[] arr){
@@ -214,7 +221,7 @@ public class Security {
     }
 
     /**
-     * Checks if input password matches password stored on file.
+     * Checks if input password matches password stored in password Hashmap, userPwdMap.
      * @param userId User's account identification number
      * @param password Plain-text password user is attempting to login with
      * @return Succesful Login: True, Unsuccesful: False
@@ -239,7 +246,8 @@ public class Security {
 
     /**
      * Sets a new encrypted password and salt for user account in the userPwdMap.
-     * Changes existing password and hash.
+     * If no account is associated with userId argument, create a new record in userPwd with password and hashvalue
+     * For existing account, changes existing password and hash values associated with account.
      * @param userId User account ID to add/change password for
      * @param password Plain-text password value
      */

@@ -8,8 +8,9 @@ import java.time.format.DateTimeFormatter;
 
 
 /**
- * Insurance class will be used to store and access insurance policy information both specific to the user and generically as a catalogue.
- * The class has methods which work hand-in-hand with the Account it will be attached to, to carry out finance related insurance processes.
+ * Insurance class stores and accesses insurance policy information found in the user's account.
+ * The class has methods which work hand-in-hand with the {@link Account} object it will be attached to, allowing the account to carry out finance related insurance processes.
+ * File Dependency: Insurance.csv (Bank insurance policy information)
  */
 public class Insurance {
     /** The monthly premium due for the insurance policy. */
@@ -54,8 +55,6 @@ public class Insurance {
      * Object constructor to be used for initialising a single insurance policy.
      * This constructor's object is normally bound to the user account class to carry out insurance policy related actions.
      * Initialises this object's data attributes with those found in the CSV that match the policyNumber record. 
-     * Able to use all normal getter and setter methods, payOffPremium(double) and printInsuranceDetail().
-     * DO NOT USE WITH viewInsuranceMenu()!!!
      * @param policyNumber The unique policy number that matches the PolicyNumber field in Insurance.csv.
      */
     public Insurance(String policyNumber){   //constructor for one insurance object
