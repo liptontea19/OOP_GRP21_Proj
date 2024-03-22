@@ -46,6 +46,7 @@ public class CreditCard {
      * It reads the data from the CreditCard.csv containing CardNumber, CustomerName, CreditLimit, ExpiryDate, AccountID and Balance.
      * Use to perform functionalities of a credit card class based on the credit card number.
      * For loop is used for assigning data from csv into the local variable, to retrieve the data in printCreditCardDetails method.
+     * @param cardNumber specifies the specific creditCard to retrieve
      * */
     public CreditCard(long cardNumber) {
         this.cardNumber = cardNumber;
@@ -104,6 +105,7 @@ public class CreditCard {
      * It checks for 3 things prior to successful charging of Credit Card:
      * if the credit card is expired; if the given amount is a valid number; if it has exceeded the credit limit.
      * If the amount for chargeCredit passes these checks, it can successfully charge the credit card.
+     * @param amount The amount to charge to the credit card
      * */
     public void chargeCredit(double amount){
         if (LocalDate.now().isAfter(expiryDate)){
@@ -124,6 +126,7 @@ public class CreditCard {
      * before proceeding to pay off the credit card's balance.
      * This method is used in contrast to chargeCredit:
      * when charging the credit card, one has to pay off his or her balance as well.
+     * @param amount The amount of the credit card balance to pay off
      * */
     public void payBill(double amount){
         if (amount <=0 || amount > balance){
@@ -138,6 +141,7 @@ public class CreditCard {
     /**
      * printAllCreditCards retrieves the information
      * of all the credit cards of a certain account ID.
+     * @param accountID The accountID of Credit Cards to print
      * */
     public static void printAllCreditCards(int accountID){
         System.out.println("\n List of all Credit Cards for accountID " + accountID + ": \n");
@@ -216,18 +220,30 @@ public class CreditCard {
     }
 
     /**
-     * This method is to set the creditLimit of a credit card.
+     * This method sets the creditLimit of a credit card.
+     * @param creditLimit the new credit limit to set to
      * The limit can only be set between 1 and 100000.
      * If the limit is set below 1 or above 100000, it will be invalid.
+     * Message will be printed to prompt user
      * */
-    public void setCreditLimit(double creditLimit){
-        if (creditLimit > 0 && creditLimit <= 100000){
+    public void setCreditLimit(double creditLimit) {
+        if (creditLimit > 0 && creditLimit <= 100000) {
             this.creditLimit = creditLimit;
-            System.out.println("Credit limit has been changed to $" + Double.toString(creditLimit));
-        }else {
-            System.out.println("The credit limit of $" + Double.toString(creditLimit) + " you have entered is invalid.");
+            System.out.println("Credit limit has been changed to $" + creditLimit);
+        } else {
+            System.out.println("The credit limit of $" + creditLimit + " you have entered is invalid.");
         }
     }
+    /**
+     * Overloaded method sets the credit limit attribute without printing message if value added is invalid
+     * It is called if it has an additional parameter quietFlag
+     * @param creditLimit the new credit limit to set to
+     * @param quietFlag if entered, credit limit will be set quietly
+     */
+    public void setCreditLimit(double creditLimit, boolean quietFlag) {
+        this.creditLimit = creditLimit;  // Set the credit limit without validation or feedback
+    }
+
     /**
      * Sets credit card's new expiry date based on the input argument
      * @param date retrieves the current date and adds 5 years which will be the new exipiry date to set to.
@@ -250,13 +266,7 @@ public class CreditCard {
     public void setBalance(double balance){
         this.balance = balance;
     }
-    /**
-     * Silently sets a new credit card limit to the value specified in the input arugment
-     * @param creditLimit the new credit limit to set to
-     */
-    public void setCreditLimitQuiet(double creditLimit){
-        this.creditLimit = creditLimit;
-    }
+        
     /**
      * Sets the credit card's number to the value specified in the input arguemnt
      * @param number the new card number to set to
