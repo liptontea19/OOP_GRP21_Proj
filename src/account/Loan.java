@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.DecimalFormat;
 
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -31,6 +32,7 @@ public class Loan {
     private ArrayList<LocalDate> paymentDates;
     private String loantypes;
     private int creditScore;
+    private DecimalFormat moneyDecimalFormat = new DecimalFormat("#,###.00");
 
     /**
      * Constructs a new Loan object with the specified details. 
@@ -366,16 +368,12 @@ public class Loan {
     public void displayInfo() {
         System.out.println("\nLoan Information: ");
         System.out.println("Loan ID: " + loanID);
-        String formattedPrincipalAmount = String.format("Principal Amount: $%.2f", principalAmount);
-        System.out.println(formattedPrincipalAmount);
-        String formattedOutstandingAmount = String.format("Outstanding Amount: $%.2f", outstandingAmount);
-        System.out.println(formattedOutstandingAmount);
-        String formattedmonthlyPayment = String.format("Monthly Payment: $%.2f", monthlyPayment);
-        System.out.println(formattedmonthlyPayment);
+        System.out.println("Principal Amount: " + moneyDecimalFormat.format(principalAmount));
+        System.out.println("Outstanding Amount: " + moneyDecimalFormat.format(outstandingAmount));
+        System.out.println("Monthly Payment: " + moneyDecimalFormat.format(monthlyPayment));
         System.out.println("Interest Rate in Month: " + interestRate + "%");
         System.out.println("Loan Period(Months): " + termInMonths);
-        String formattedTotalPayment = String.format("Total Payment: $%.2f", totalPayment);
-        System.out.println(formattedTotalPayment);
+        System.out.println("Total Payment: " + moneyDecimalFormat.format(totalPayment));
         System.out.println("Start Date: " + startDate);
         System.out.println("End Date: " + endDate);
         System.out.println("Account ID: " + accountID);
@@ -442,13 +440,11 @@ public class Loan {
                     double interestPayment = outstandingAmount * (interestRate / 12/ 100);
                     double principalPayment = monthlyPayment - interestPayment;
                     outstandingAmount -= principalPayment;
-                    String formattedAccountString = String.format("Account ID: %d. Original Account Balance: $%.2f. ", accountID, balance);
-                    System.out.println(formattedAccountString);
-                    String formattedString = String.format("Repaid $%.2f. Outstanding Amount to pay: $%.2f.", monthlyPayment, outstandingAmount);
-                    System.out.println(formattedString);
+                    System.out.println("Account ID: " + String.valueOf(accountID) + ". Original Account Balance: " + moneyDecimalFormat.format(balance));
+                    System.out.println("Repaid: " + moneyDecimalFormat.format(monthlyPayment) + ". Outstanding Amount to pay: " + moneyDecimalFormat.format(outstandingAmount));
                     balance -= monthlyPayment;
-                    String formattedRemainingBalance = String.format("Account Balance: $%.2f", balance);
-                    System.out.println(formattedRemainingBalance);
+                    System.out.println("Account balance: " + moneyDecimalFormat.format(balance));
+
                     if(outstandingAmount == 0.0) {
                         System.out.println("Loan Cleared.");
                     }
