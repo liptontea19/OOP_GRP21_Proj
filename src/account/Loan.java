@@ -39,7 +39,7 @@ public class Loan {
      * @param termInMonths the Loan term in months
      * @param accountID the customerID associated with the Loan
      */
-    public Loan(double principalAmount, float interestRate, int termInMonths, int accountID, int creditScore) {
+    public Loan(double principalAmount, float interestRate, int termInMonths, int accountID) {
         this.loanID = UUID.randomUUID();
         this.principalAmount = principalAmount;
         this.interestRate = interestRate;
@@ -53,7 +53,7 @@ public class Loan {
         this.status = "Pending";
         this.paymentDates = new ArrayList<LocalDate>();
         this.loantypes = "Car, Student, Mortage";
-        this.creditScore = creditScore;
+        //this.creditScore = creditScore;
     }
     
     /**
@@ -418,10 +418,9 @@ public class Loan {
     /**
      * Repays the monthly payment of the Loan, updating payment and Account information.
      *
-     * @param accountID The accountID of the account to deduct balance for repayment of the Loan.
      * @param balance The balance of the account to deduct balance for repayment of the Loan.
      */
-    public double repay(int accountID, double balance) {
+    public double repay(double balance) {
         if(this.getStatus().equalsIgnoreCase("Approved")) {
             LocalDate currentDate = LocalDate.now();
             int currentMonth = currentDate.getMonthValue();
@@ -476,14 +475,13 @@ public class Loan {
      * Reads list of Loans from CSV file and returns a list of Loan objects.
      * that match the specified customer and have the "Approved" status.
      *
-     * @param filename The CSV filename.
+     * 
      * @param accountID The accountID of the specified customer to retrieve Loans associated with the specified acount.
      * @return A list of Loans with "Approved" status.
      */
-    public static List<Loan> Loan(int accountID) {
-        List<Loan> loanList = new ArrayList<>();
+    public static Loan readLoansFromCSV(int accountID) {
 
-        try (BufferedReader br = new BufferedReader(new FileReader("OOP_GRP21_Proj/data/Loan.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("OOP_GRP21_Proj-main/data/Loan.csv"))) {
             // Skip the header row
             String header = br.readLine();
 
@@ -505,7 +503,7 @@ public class Loan {
                     String loantypes = data[11];
                     int creditScore = Integer.parseInt(data[12]);
                     ArrayList<LocalDate> paymentDates = new ArrayList<>();
-                    for (int i = 11; i < data.length; i++) {
+                    for (int i = 13; i < data.length; i++) {
                         paymentDates.add(LocalDate.parse(data[i]));
                     }
 
@@ -520,12 +518,12 @@ public class Loan {
                     loan.setPaymentDates(paymentDates);
                     loan.setLoanTypes("Car, Student, Mortage");
                     loan.setCreditScore(creditScore);
-                    loanList.add(loan);
-                }   
+                    return loan;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return loanList;
+        return null;
     }
 }

@@ -29,10 +29,12 @@ public class Account {
 
     public CreditCard creditCard;
     public Customer customer;
+    private int creditScore;
+
     public ForeignX foreignX;
     public Insurance insurance;
     public Loan loan;
-    private boolean insureFlag = false, cardFlag = false, loanFlag = false;
+    private boolean insureFlag = false, cardFlag = false, loanFlag = true;
 
     /*public Account(int accountNumber, String accountType, int branchCode,
                     double balance, Customer customer, double transferLimit){
@@ -46,7 +48,7 @@ public class Account {
         //Branch this.branch = new Branch(branchCode);
     }*/
 
-    /** 
+    /**
      * Constructor for user account object. Will attempt to fetch information from the data/Account.csv file.
      * <p>
      * Uses the accountNumber method argument to check Account.csv for the entry with the matching ID number value.
@@ -54,9 +56,9 @@ public class Account {
      * </p>
      * <p>
      * If the account has a credit card number in the 8th CSV column(CardNumber), will construct a creditcard object to use for credit card-related transactions.
-     * If the account has an insurance policy number ini the 9th CSV column(InsurPolNum), will construct an insurance object to use for insurance-related transactions. 
-     * </p> 
-     * @param accountNumber unique account ID used as search value for 
+     * If the account has an insurance policy number ini the 9th CSV column(InsurPolNum), will construct an insurance object to use for insurance-related transactions.
+     * </p>
+     * @param accountNumber unique account ID used as search value for
      */
     public Account(int accountNumber){
         String filePath = "data\\Account.csv";
@@ -87,12 +89,14 @@ public class Account {
                         insureFlag = true;
                     }
                     this.foreignX = new ForeignX(accountNumber,Float.parseFloat(accDetail[2]));
-                    this.loan = new Loan(accountNumber);
+                    this.loan = loan.readLoansFromCSV(accountNumber);
+                    this.loanFlag = true;
                     break;
                 }
             }
             if (foundFlag == true){
                 this.customer = new Customer(custId);// replace with Customer csv constructor
+                this.creditScore = customer.getCreditScore();
                 if (cardNumber != ""){
                     cardFlag = true;
                     this.creditCard = new CreditCard(Long.parseLong(cardNumber));
@@ -224,8 +228,8 @@ public class Account {
             System.out.println("Current Account Balance: $" + moneyDecimalFormat.format(balance));
         }
         else {
-            this.balance = loan.repay(accountNumber, balance); //used to update the new balance after payment
-        }    
+            this.balance = loan.repay(balance); //used to update the new balance after payment
+        }
     }
 
     public void payInsurancePremium(){
