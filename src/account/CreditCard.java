@@ -44,7 +44,7 @@ public class CreditCard {
     /**
      * Special constructor which fetches the information from CreditCard.csv and places them into the creditCard arraylist.
      * It reads the data from the CreditCard.csv containing CardNumber, CustomerName, CreditLimit, ExpiryDate, AccountID and Balance.
-     * Use to perform functionalities of a credit card class based on the credit card number.
+     * Used to perform functionalities of a credit card class based on the credit card number.
      * For loop is used for assigning data from csv into the local variable, to retrieve the data in printCreditCardDetails method.
      * @param cardNumber specifies the specific creditCard to retrieve
      * */
@@ -154,15 +154,16 @@ public class CreditCard {
     }
 
     /**
-     * Method to retrieve current available credit
+     * Method to calculate and retrieve the current available credit of a credit card.
+     * @return The available credit, computed as the difference between creditLimit and current balance.
      * */
     public double availableCredit(){
         return creditLimit - balance;
     }
 
     /**
-     * printTransactionHistory shows the transaction history when the
-     * credit card is charged or when the balance is paid.
+     * printTransactionHistory shows the transaction history of the
+     * credit card when it was charged or when the balance was paid off.
      * */
     public void printTransactionHistory(){
         System.out.println("Transaction History:");
@@ -173,7 +174,7 @@ public class CreditCard {
 
     /**
      * Returns the balance attribute as a double value
-     * @return double value of credit card balance to be paid.
+     * @return balance The amount owed that needs to be paid off.
      * */
     public double getCreditBalance(){
         return balance;
@@ -189,7 +190,7 @@ public class CreditCard {
 
     /**
      * Returns the customer name attribute as a String value
-     * @return String value of credit card's expiry date.
+     * @return String value of credit card's Customer name.
      * */
     public String getCustomerName(){
         return customerName;
@@ -213,7 +214,7 @@ public class CreditCard {
 
     /**
      * Returns the accountID attribute as an integer
-     * @return integer value of the account ID for credit card.
+     * @return integer value of the account ID linked to the credit card.
      * */
     public Integer getAccountID(){
         return accountID;
@@ -235,7 +236,7 @@ public class CreditCard {
         }
     }
     /**
-     * Overloaded method sets the credit limit attribute without printing message if value added is invalid
+     * Overloaded method sets the credit limit attribute without printing message 
      * It is called if it has an additional parameter quietFlag
      * @param creditLimit the new credit limit to set to
      * @param quietFlag if entered, credit limit will be set quietly
@@ -255,7 +256,6 @@ public class CreditCard {
      * Sets the customer name to the value specified in the input argument
      * @param name the new customer name to set to
      */
-
     public void setCustomerName(String name){
         this.customerName = name;
     }
