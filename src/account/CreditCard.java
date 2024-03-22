@@ -224,10 +224,10 @@ public class CreditCard {
 
     /**
      * This method sets the creditLimit of a credit card.
-     * @param creditLimit the new credit limit to set to
      * The limit can only be set between 1 and 100000.
      * If the limit is set below 1 or above 100000, it will be invalid.
      * Message will be printed to prompt user
+     * @param creditLimit the new credit limit to set to
      */
     public void setCreditLimit(double creditLimit) {
         if (creditLimit > 0 && creditLimit <= 100000) {
