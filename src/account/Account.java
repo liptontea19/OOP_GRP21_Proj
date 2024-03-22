@@ -61,7 +61,7 @@ public class Account {
      * @param accountNumber unique account ID used as search value for
      */
     public Account(int accountNumber){
-        String filePath = "data\\Account.csv";
+        String filePath = "OOP_GRP21_Proj-main/data/Account.csv";
         //Fetches account details from Account.csv using accountNumber and initialises into class attribute
         try(BufferedReader reader = new BufferedReader(new FileReader(filePath))){
             //BufferedReader reader = new BufferedReader(new FileReader(filePath));   // Instantiates bufferedReader obj to read Account CSV file
@@ -88,7 +88,7 @@ public class Account {
                         this.insurance = new Insurance(accDetail[8]);
                         insureFlag = true;
                     }
-                    this.foreignX = new ForeignX(accountNumber,Float.parseFloat(accDetail[2]));
+                    this.foreignX = new ForeignX(accountNumber);
                     this.loan = loan.readLoansFromCSV(accountNumber);
                     this.loanFlag = true;
                     break;
@@ -216,7 +216,7 @@ public class Account {
     public float getInterestRate(){
         return interestRate;
     }
-    
+
     public void makeLoanPayment(){
         if (loanFlag == false){     // checks if there is a Loan class instantiated in account
             System.out.println("Account does not have a Loan associated with it");
@@ -268,6 +268,24 @@ public class Account {
         else {
             creditCard.payBill(amount);
         }
+    }
+
+    public void makeForeignExchange(float exchangeAmount, int exchangeChoice){
+        if(exchangeAmount <= balance){
+            balance -= exchangeAmount;
+            System.out.println("Your current balance: " + moneyDecimalFormat.format(balance));
+            foreignX.exchangeToForeign(exchangeAmount, exchangeChoice);
+        }
+        else{
+            System.out.println("Insufficient balance! Please try again!");
+        }
+    }
+
+    public void makeSGDExchange(float foreignAmount){
+        float SGDAmount = foreignX.exchangeToSGD(foreignAmount);
+        balance += SGDAmount;
+        System.out.println("Your current balance: " + moneyDecimalFormat.format(balance));
+
     }
 
     public void printAccountDetails(){
