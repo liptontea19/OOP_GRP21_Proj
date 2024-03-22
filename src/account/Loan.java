@@ -14,7 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 /**
- * The Loan class is used to store and access a customer's loan information. 
+ * The Loan class represents a customer's loan information and operations related to loans 
  * It is linked to the account class and has methods to apply for new loans, perform and track Loan payments.
  */
 
@@ -391,6 +391,7 @@ public class Loan {
 
     /**
      * Prints amortization schedule of the Loan.
+     * Uses standard amortization formular to compute the amount that needs to be paid based on a schedule.
      */
     public void printAmortizationSchedule() {
         System.out.println("Month\tMonthly Payment\tPrincipal Amount\tInterest\tRemaining Balance of Principal");
@@ -409,6 +410,7 @@ public class Loan {
 
     /**
      * Adds payment date to the list of payment dates for the Loan.
+     * This is used to track the dates when payment is made.
      *
      * @param paymentDate The payment date to be added to the list of payment dates.
      */
@@ -418,6 +420,8 @@ public class Loan {
 
     /**
      * Repays the monthly payment of the Loan, updating the Account Balance after deduction.
+     * Date of payment is added to the list of paymentDates to keep track.
+     * Before payment is made, the current date will be compared to the list of payment dates to ensure customer does not pay more than once a month.
      *
      * @param balance The balance of the account to deduct balance for repayment of the Loan.
      * @return Returns the deducted balance of the loan
