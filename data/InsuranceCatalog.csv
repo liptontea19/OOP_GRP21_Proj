@@ -1,0 +1,10 @@
+﻿PolicyID,PolicyName,InsuranceType,Monthly Premium,ClaimBalance,Duration(ISO8601)
+MP01,Medical Policy 01,Medical,300,10000,P3Y
+MP02,Medical Policy 02,Medical,1500,15000,P4Y6M
+MP03,Medical Policy 03,Medical,2000,20000,P5Y3M
+PP01,Property Policy 01,Property,3000,150000,P2Y6M
+PP02,Property Policy 02,Property,4000,300000,P4Y9M
+PP03,Property Policy 03,Property,5600,450000,P5Y
+TP01,Travel Policy 01,Travel,300,2000,P3Y
+TP02,Travel Policy 02,Travel,35,3000,P4Y
+TP03,Travel Policy 03,Travel,40,4000,P5Y

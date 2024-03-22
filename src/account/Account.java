@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 /**
  * Used for user's bank account information and the associated CreditCard, Customer and Insurance class objects
- * Main package interface with bank.Bank class.
+ * Main package interface with {@link Bank} class.
  * <p>
  * Has credit card transaction methods that interface with CreditCard object methods.
  * Available transaction methods will differ if the user does or doesn't have a credit card associated with their account.
@@ -20,14 +20,16 @@ import java.util.Scanner;
 public class Account {
     /**A unique account id number*/
     private int accountNumber;
-    /** */
+    /**  */
     private float interestRate;
     private String accountType;
     private double balance, transferLimit;
     private int branchCode;
     private DecimalFormat moneyDecimalFormat = new DecimalFormat("#,###.00");
 
+    /** Initialised with Account's Credit Card details */
     public CreditCard creditCard;
+    /** Account Customer Information */
     public Customer customer;
     private int creditScore;
 
@@ -49,7 +51,7 @@ public class Account {
     }*/
 
     /**
-     * Constructor for user account object. Will attempt to fetch information from the data/Account.csv file.
+     * Constructor for user account object. Fetches information from the data/Account.csv file.
      * <p>
      * Uses the accountNumber method argument to check Account.csv for the entry with the matching ID number value.
      * When found, initializes the private attributes in class object.
@@ -67,12 +69,9 @@ public class Account {
             //BufferedReader reader = new BufferedReader(new FileReader(filePath));   // Instantiates bufferedReader obj to read Account CSV file
             String line, custId = "", cardNumber = "";
             String[] accDetail;
-            Boolean foundFlag = false, firstLine = true;
+            Boolean foundFlag = false;
+            reader.readLine();
             while ((line = reader.readLine()) != null){
-                if (firstLine == true){
-                    firstLine = false;
-                    continue;
-                }
                 accDetail = line.split(",");
                 if (Integer.parseInt(accDetail[0]) == accountNumber) {
                     foundFlag = true;
@@ -84,7 +83,7 @@ public class Account {
                     this.transferLimit = Double.parseDouble(accDetail[5]);
                     this.interestRate = Float.parseFloat(accDetail[6]);
                     cardNumber = accDetail[7];
-                    if (!accDetail[8].equals("-")){
+                    if (!accDetail[8].equals("-")){ // action when an insurance account is identified
                         this.insurance = new Insurance(accDetail[8]);
                         insureFlag = true;
                     }
