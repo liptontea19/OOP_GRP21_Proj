@@ -35,7 +35,7 @@ public class ForeignX {
     /** A dictionary is used for storing of the currency code being tied to a specific currency rate
      * e.g. USD is tied to the rate: 0.74955
      * This is used for easy access of the currency rate allowing for precise calculations */
-    HashMap<String, Float> dictionary = new HashMap<>();
+    HashMap<String, Float> FXdictionary = new HashMap<>();
 
     /**Special class constructor for class private attributes
      * @param accountID unique identifier for different FX accounts
@@ -91,7 +91,7 @@ public class ForeignX {
                 if (parts.length == 2) { // Ensure there are two parts (key, value)
                     String key = parts[0].trim();
                     float value = Float.parseFloat(parts[1].trim());
-                    dictionary.put(key, value); // Populate HashMap with key-value pair
+                    FXdictionary.put(key, value); // Populate HashMap with key-value pair
                 } else {
                     System.out.println("Invalid data format: " + line);
                 }
@@ -120,9 +120,9 @@ public class ForeignX {
      * It prints out the dictionary in a form of a 'key : value'
      * e.g. United States(USD) : 0.74955
      */
-    public void viewCurrencyRates(){    
+    public void viewCurrencyRates(){
         //Print all data
-        List<Map.Entry<String, Float>> currencyList = new ArrayList<>(dictionary.entrySet());
+        List<Map.Entry<String, Float>> currencyList = new ArrayList<>(FXdictionary.entrySet());
         System.out.println("Current Currency Rates\n");
         for (Map.Entry<String, Float> entry : currencyList) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
@@ -168,7 +168,7 @@ public class ForeignX {
      */
     public void exchangeToForeign(float amount,int exchangeChoice) {
         CurrencyCode = retrieveCountryName(exchangeChoice);
-        ExchangeRate = dictionary.get(CurrencyCode);
+        ExchangeRate = FXdictionary.get(CurrencyCode);
         ExchangedAmount = amount * ExchangeRate;
         switch(exchangeChoice){
             case 1:
@@ -212,7 +212,7 @@ public class ForeignX {
         int exchangeChoice = scanner.nextInt();
         scanner.nextLine();
         CurrencyCode = retrieveCountryName(exchangeChoice);
-        ExchangeRate = dictionary.get(CurrencyCode);
+        ExchangeRate = FXdictionary.get(CurrencyCode);
         float latestCurrBalance = 0;
 
         switch(exchangeChoice){
