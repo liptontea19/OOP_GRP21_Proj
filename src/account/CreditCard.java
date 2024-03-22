@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CreditCard class is used to store information of a customer's credit card based on their card number.
- * The class has methods which work together with the Account it will be attached to, to perform transactions and other functions of a credit card.
+ * The CreditCard class represents a customer's creditcard and stores information based on their card number.
+ * It is linked to the Account class, and provides methods to make purchases, and to pay off credit bills.
  */
 public class CreditCard {
     private double balance = 0, creditLimit;
@@ -90,7 +90,7 @@ public class CreditCard {
 
     /** 
      * Main class is used for testing purposes
-     *   to show the functionalities of the CreditCard Class
+     * to show the functionalities of the CreditCard Class as a standalone
      */
     public static void main(String[] args){
         CreditCard creditCard = new CreditCard(3108398698038530L);
@@ -103,8 +103,8 @@ public class CreditCard {
     }
 
     /**
-     * chargeCredit checks for the amount that will be charged into the credit card.
-     * It checks for 3 things prior to successful charging of Credit Card:
+     * When making a purchase with a Credit Card, the card will be charged, increasing the credit balance which is the amount the customer owes.
+     * It checks for 3 things prior to successful charging of the Credit Card:
      * if the credit card is expired; if the given amount is a valid number; if it has exceeded the credit limit.
      * If the amount for chargeCredit passes these checks, it can successfully charge the credit card.
      * @param amount The amount to charge to the credit card
@@ -124,11 +124,11 @@ public class CreditCard {
     }
 
     /**
-     * payBill checks if it is a valid amount
-     * before proceeding to pay off the credit card's balance.
+     * Before proceeding to pay off the credit card's bill/balance which is the amount the customer owes,
+     * payBill checks if the amount entered to pay bills is valid.
      * This method is used in contrast to chargeCredit:
-     * when charging the credit card, one has to pay off his or her balance as well.
-     * @param amount The amount of the credit card balance to pay off
+     * when charging the credit card, one has to pay off their bills as well.
+     * @param amount The amount of the credit card balance to pay off, deduct from.
      */
     public void payBill(double amount){
         if (amount <=0 || amount > balance){
