@@ -79,7 +79,7 @@ public class CreditCard {
             if (Long.parseLong(creditCard.get(0)) == cardNumber){
                 setCardNumber(Long.parseLong(creditCard.get(0)));
                 setCustomerName(creditCard.get(1));
-                setCreditLimitQuiet(Double.parseDouble(creditCard.get(2)));
+                setCreditLimit(Double.parseDouble(creditCard.get(2)), true);
                 setCardExpiry(LocalDate.parse(creditCard.get(3)));
                 setAccountID(Integer.parseInt(creditCard.get(4)));
                 setBalance(Double.parseDouble(creditCard.get(5)));
