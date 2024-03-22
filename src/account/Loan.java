@@ -14,8 +14,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 /**
- * The Loan class is used to store and access a customer's loan information 
- * The class has methods which works together with the Account it will be attached to, to perform
+ * The Loan class is used to store and access a customer's loan information. 
+ * It is linked to the account class and has methods to apply for new loans, perform and track Loan payments.
  */
 
 public class Loan {

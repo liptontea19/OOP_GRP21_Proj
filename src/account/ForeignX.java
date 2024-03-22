@@ -25,23 +25,44 @@ public class ForeignX {
     /** ExchangeAmount is a float to store the calculation of the amount and the exchange rate */
     private float ExchangedAmount;
 
-    /** The floats below are used for storing of the various balances of different currencies from the FX.csv */
+    /**
+     * USDamt is a float that represents the balance of US dollars from the FX.csv
+     * */
     private float USDamt;
+
+    /**
+     * JPYamt is a float that represents the balance of Japan Yen from the FX.csv
+     * */
     private float JPYamt;
+
+    /**
+     * MYRamt is a float that represents the balance of Malaysian Ringgit from the FX.csv
+     * */
     private float MYRamt;
+
+    /**
+     * AUDamt is a float that represents the balance of Australian dollars from the FX.csv
+     * */
     private float AUDamt;
+
+    /**
+     * GBPamt is a float that represents the balance of UK Pounds from the FX.csv
+     * */
     private float GBPamt;
 
-    /** A dictionary is used for storing of the currency code being tied to a specific currency rate
-     * e.g. USD is tied to the rate: 0.74955
-     * This is used for easy access of the currency rate allowing for precise calculations */
-    HashMap<String, Float> dictionary = new HashMap<>();
+    /**
+     * <p>A dictionary is used for storing of the currency code being tied to a specific currency rate</p>
+     * <p>e.g. USD is tied to the rate: 0.74955</p>
+     * <p>This is used for easy access of the currency rate allowing for precise calculations</p>
+     * */
+    HashMap<String, Float> FXdictionary = new HashMap<>();
 
-    /**Special class constructor for class private attributes
+    /**
+     * <p>Special class constructor for ForeignX class with a unique identifier accountID, to extract specific data tagged to the ID and use for currency exchanges</p>
+     * <p>It fetches the data from FXacc CSV containing the accountID and balance of currencies from different countries</p>
+     * <p>By iterating through the csv, we use the accountID to retrieve the balances and assign them to the private attributes in this class</p>
+     * <p>It calls the Foreign currencies class to retrieve the latest currency rates</p>
      * @param accountID unique identifier for different FX accounts
-     * It fetches the data from FXacc CSV containing the accountID and balance of currencies from different countries
-     * By iterating through the csv, we use the accountID to retrieve the balances and assign them to the private attributes in this class
-     * It calls the Foreign currencies class to retrieve the latest currency rates
      */
     public ForeignX(int accountID) {
         this.accountID = accountID;
@@ -73,9 +94,9 @@ public class ForeignX {
     }
 
     /**
-     * ForeignCurrencies() reads the data from FX csv to retrieve the latest currency rates
-     * A dictionary is created to store the values to the specific currency for efficiency
-     * By initializing the currencies as "Keys", we can access the values of the currency assigned
+     * <p>ForeignCurrencies() reads the data from FX csv to retrieve the latest currency rates</p>
+     * <p>A dictionary is created to store the values to the specific currency for efficiency</p>
+     * <p>By initializing the currencies as "Keys", we can access the values of the currency assigned</p>
      */
     public void ForeignCurrencies() {
         try {
@@ -91,7 +112,7 @@ public class ForeignX {
                 if (parts.length == 2) { // Ensure there are two parts (key, value)
                     String key = parts[0].trim();
                     float value = Float.parseFloat(parts[1].trim());
-                    dictionary.put(key, value); // Populate HashMap with key-value pair
+                    FXdictionary.put(key, value); // Populate HashMap with key-value pair
                 } else {
                     System.out.println("Invalid data format: " + line);
                 }
@@ -103,8 +124,8 @@ public class ForeignX {
     }
 
     /**
-     * viewCurrencyBalances() prints the details of the specific account and its balances
-     * The balances consist of the USD, MYR, JPY, AUD and GBP currencies
+     * <p>viewCurrencyBalances() prints the details of the specific account and its balances</p>
+     * <p>The balances consist of the USD, MYR, JPY, AUD and GBP currencies</p>
      */
     public void viewCurrencyBalances(){
         System.out.println("Account ID is: " + accountID +
@@ -116,24 +137,25 @@ public class ForeignX {
     }
 
     /**
-     * viewCurrencyRates() is for the purpose of printing the latest currency rates for user to keep up to date
-     * It prints out the dictionary in a form of a 'key : value'
-     * e.g. United States(USD) : 0.74955
+     * <p>viewCurrencyRates() is for the purpose of printing the latest currency rates for user to keep up to date</p>
+     * <p>It prints out the dictionary in a form of a 'key : value'</p>
+     * <p>e.g. United States(USD) : 0.74955</p>
      */
-    public void viewCurrencyRates(){    
+    public void viewCurrencyRates(){
         //Print all data
-        List<Map.Entry<String, Float>> currencyList = new ArrayList<>(dictionary.entrySet());
+        List<Map.Entry<String, Float>> currencyList = new ArrayList<>(FXdictionary.entrySet());
         System.out.println("Current Currency Rates\n");
         for (Map.Entry<String, Float> entry : currencyList) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
 
-    /** The retrieveCountryName method is to convert the user's input from the menu page to specify the currency they want to exchange to
+    /**
+     * <p>retrieveCountryName method is to convert the user's input from the menu page to the currency they want to exchange to</p>
+     * <p>Switch and case is used here for returning different values based on the user's input</p>
+     * <p>Currency is being assigned to specific currency names based on user input</p>
      * @param input the specific input of a user from a menu
-     * @return the currency name being used for the methods in this class
-     * Switch and case is used here for returning different values based on the user's input
-     * Currency is being assigned to specific currency names based on user input
+     * @return the currency name being used for the transaction methods in this class
      */
     public static String retrieveCountryName(int input) {
         switch (input) {
@@ -159,16 +181,16 @@ public class ForeignX {
 
 
     /**
-     * exchangeToForeign is a method for exchanging an amount from the user's balance to the foreign currency
-     * @param amount the value input by the user to exchange to the foreign currency
+     * <p>exchangeToForeign method is for exchanging an amount from the user's balance to the foreign currency</p>
+     * <p>By using dictionary, we retrieve the currency rate of the user's choice</p>
+     * <p>The amount from the user's input will be used for the exchange and calculated into ExchangedAmount</p>
+     * <p>By having switch and case, we update the balance of the foreign currency that the user has exchanged for</p>
+     * @param amount the value input by the user to exchange to the foreign currency of their choice
      * @param exchangeChoice the input that is made by the user to specify the type of foreign currency
-     * By using dictionary, we retrieve the currency rate of the user's choice
-     * The amount from the user's input will be used for the exchange and calculated into ExchangedAmount
-     * By having switch and case, we update the balance of the foreign currency that the user has exchanged for
      */
     public void exchangeToForeign(float amount,int exchangeChoice) {
         CurrencyCode = retrieveCountryName(exchangeChoice);
-        ExchangeRate = dictionary.get(CurrencyCode);
+        ExchangeRate = FXdictionary.get(CurrencyCode);
         ExchangedAmount = amount * ExchangeRate;
         switch(exchangeChoice){
             case 1:
@@ -194,12 +216,12 @@ public class ForeignX {
     }
 
     /**
-     * exchangeToSGD is a method for exchanging an amount from the specific foreign currency of the user's choice to SGD
+     * <p>exchangeToSGD is a method for exchanging an amount from the specific foreign currency of the user's choice to SGD</p>
+     * <p>It prints out the current balances of the foreign currencies for the user's input</p>
+     * <p>Switch and case is used for doing the update of the user's foreign balances based on the input</p>
+     * <p>After exchange is successful, it will print the latest exchanged amount and returns it to the account class where the account's balance will be updated</p>
+     * <p>The foreign balance will be updated after the exchange as well</p>
      * @param amount the value inputted by the user to exchange to SGD
-     * It prints out the current balances of the foreign currencies for the user's input
-     * Switch and case is used for doing the update of the user's foreign balances based on the input
-     * After exchange is successful, it will print the latest exchanged amount and returns it to the account class where the account's balance will be updated
-     * The foreign balance will be updated after the exchange as well
      */
     public float exchangeToSGD(float amount){
         Scanner scanner = new Scanner(System.in);
@@ -212,7 +234,7 @@ public class ForeignX {
         int exchangeChoice = scanner.nextInt();
         scanner.nextLine();
         CurrencyCode = retrieveCountryName(exchangeChoice);
-        ExchangeRate = dictionary.get(CurrencyCode);
+        ExchangeRate = FXdictionary.get(CurrencyCode);
         float latestCurrBalance = 0;
 
         switch(exchangeChoice){
