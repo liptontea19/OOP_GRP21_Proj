@@ -12,38 +12,51 @@ import java.util.ArrayList;
 
 public class Branch {
 
-    /** int branchCode is used as a unique identifier to represent the branches */
+    /**
+     * private int branchCode is used as a unique identifier to represent the branches
+     * */
     private int branchCode;
 
-    /** String branchName stores the branch name from the Branch.csv */
+    /**
+     * private String branchName stores the branch name from the Branch.csv
+     * */
     private String branchName;
 
-    /** float branchReserve stores the amount of money a bank has
+    /**
+     * private float branchReserve stores the amount of money a bank has
      * this attribute will be called for financial transactions when a user:
-     * deposits or withdraws from a bank*/
+     * deposits or withdraws from a bank
+     * */
     private float branchReserve;
 
-    /** LocalTime openingHours represents the opening hours in 24-hour time format for each branch */
+    /**
+     * private LocalTime openingHours represents the opening hours in 24-hour time format for each branch
+     * */
     private LocalTime openingHours;
 
-    /** LocalTime closingHours represents the closing hours in 24-hour time format for each branch */
+    /**
+     * private LocalTime closingHours represents the closing hours in 24-hour time format for each branch
+     * */
     private LocalTime closingHours;
 
-    /** Array branchDetails stores the attributes that belongs to a branch for viewing
-     * it stores branch name, branch code, branch reserve, opening hours and closing hours */
+    /**
+     * private Array branchDetails stores the attributes that belongs to a branch for viewing
+     * it stores branch name, branch code, branch reserve, opening hours and closing hours
+     * */
     private ArrayList<ArrayList<String>> branchDetails;
 
 
     /**
-     * Branch constructor takes in a specific id of the branch code and obtains necessary data from Branch.csv
+     * Branch constructor takes in a specific id of the branch code and obtains necessary data from Branch.csv.
      * It displays the values of each attribute that a branch has and segregates them by individual branch code
-     * Buffered Reader is scans through the Branch.csv for the following variables:
-     * - branch code
-     * - branch name
-     * - branch reserve
-     * - opening hours
-     * - closing hours
      * for loop is used for assigning the attributes of the branch class from the array
+     * Buffered Reader is scans through the Branch.csv for the following variables:
+     * <p>{@link Branch#branchCode} holds the ID of the Branch</p>
+     * <p>{@link Branch#branchName} holds the name of the Branch</p>
+     * <p>{@link Branch#branchReserve} holds the Branch's reserve</p>
+     * <p>{@link Branch#openingHours} holds the opening hours of a Branch</p>
+     * <p>{@link Branch#closingHours} holds the closing hours of a Branch</p>
+     * @param branchCode represents the unique identifier of the branch
      */
     public Branch(int branchCode) {
         this.branchCode = branchCode;
@@ -106,7 +119,7 @@ public class Branch {
     }
 
     /**
-     * checkAvailability retrieves the opening and closing hours of the branch and assign it to the variables, open and close
+     * checkAvailability retrieves the opening and closing hours of the branch and assign it to the variables, openTiming and closeTiming
      * LocalTime currentTiming calls for the current time by LocalTime function
      * If statement is used checking for whether the branch is open or closed based on current timing
      * If the branch is closed, it will display a message to come again tomorrow
@@ -128,69 +141,76 @@ public class Branch {
     }
 
     /**
-     * Getter and Setter methods for the attributes of the branch class
-     * getBranchCode returns the branch code of a specific branch
+     * getBranchCode returns the unique identifier of the branch and it is an important variable for tying down specific datas to an ID
+     * @return int branchCode
      */
     public int getBranchCode(){
         return branchCode;
     }
 
     /**
-     * getBranchReserve returns the branch's reserve of a specific bank
+     * getBranchReserve returns a balance that represents the amount of money a branch has in its reserves
+     * @return double branchReserve
      */
     public double getBranchReserve(){
         return branchReserve;
     }
 
     /**
-     * getBranchName returns the branch's name
+     * getBranchName returns a string variable called name that represents the branch's name
+     * @return String branchName
      */
     public String getBranchName(){
         return branchName;
     }
 
     /**
-     * getOpeningHours returns the branch's opening hours in LocalTime format
+     * getOpeningHours retrieves the branch's opening hours in 24-hour format
+     * @return LocalTime openingHours
      */
     public LocalTime getOpeninghours(){
         return openingHours;
     }
 
     /**
-     * getClosingHours returns the branch's closing hours in LocalTime format
+     * getClosingHours retrieves the branch's closing hours in 24-hour format
+     * @return LocalTime closingHours
      */
     public LocalTime getClosingHours(){
         return closingHours;
     }
 
     /**
-     * setBranchName can change the name of the branch based on user
-     * @param branchName value to change the branch name
+     * setBranchName is a method for setting the name of a branch when a branch object is created or called
+     * @param branchName stores the value of a branch name from
+     * {@link Branch#getBranchName}
      */
     public void setBranchName(String branchName){
         this.branchName = branchName;
     }
 
     /**
-     * setBranchReserve allows a user to manually set how much reserve a bank has
-     * @param branchReserve value to change the reserve amount of a specific branch
+     * setBranchReserve is a method that modifies the reserve of a branch
+     * @param branchReserve stores the value of the reserve amount of a branch from
+     * {@link Branch#getBranchReserve}
      */
     public void setBranchReserve(float branchReserve){
         this.branchReserve = branchReserve;
     }
 
-
     /**
-     * setOpeningHours can change the opening hours of a branch
-     * @param openingHours value to change the opening hours of a branch
+     * setOpeningHours is a method that sets the opening hours of a branch
+     * @param openingHours value to change the opening hours of a branch from
+     * {@link Branch#getOpeninghours()}
      */
     public void setOpeningHours(LocalTime openingHours){
         this.openingHours = openingHours;
     }
 
     /**
-     *  setClosingHours can change the closing hours of a branch
-     * @param closingHours value to change the closing hours of a branch
+     * setClosingHours is a method that sets the closing hours of a branch
+     * @param closingHours value to change the closing hours of a branch from
+     * {@link Branch#getClosingHours()}
      */
     public void setClosingHours(LocalTime closingHours){
         this.closingHours = closingHours;
@@ -198,8 +218,9 @@ public class Branch {
 
     /**
      * Method withdrawReserve is called when the user withdraws money from a specific branch
-     * The amount withdrawn from branch will deduct its reserve
-     * @param amount is used when an amount is entered for the user to withdraw from their account
+     * This method works together with Account.withdraw()
+     * The amount withdrawn from the branch will deduct its reserve
+     * @param amount represents the amount the user wants to withdraw from their account
      * It checks if the withdrawn amount is more than the branch's reserve
      */
     public void withdrawReserve(double amount){
@@ -216,9 +237,10 @@ public class Branch {
 
     /**
      * Method depositReserve is called when the user deposits money through their bank account
-     * the money deposited would go into a branch's reserves depending on the user's choice of branch
-     * @param amount is used when an amount is entered for the user to deposit into their account
-     * In this method, it checks for the amount sent by the user
+     * This method works together with Account.deposit()
+     * The money deposited would increase the branch's reserves depending on the user's choice of branch
+     * @param amount represents an amount that is entered for the user to deposit into their account
+     * In this method, it checks if the amount sent is valid
      */
     public void depositReserve(double amount){
         if(amount > 0){
