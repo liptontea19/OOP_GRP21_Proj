@@ -1,9 +1,15 @@
 package account;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.HashMap;
 import java.util.Scanner;
+
+import bank.Bank;
 
 /**
  * Used for user's bank account information and the associated CreditCard, Customer and Insurance class objects
@@ -63,7 +69,7 @@ public class Account {
      * @param accountNumber unique account ID used as search value for
      */
     public Account(int accountNumber){
-        String filePath = "OOP_GRP21_Proj-main/data/Account.csv";
+        String filePath = "data\\Account.csv";
         //Fetches account details from Account.csv using accountNumber and initialises into class attribute
         try(BufferedReader reader = new BufferedReader(new FileReader(filePath))){
             //BufferedReader reader = new BufferedReader(new FileReader(filePath));   // Instantiates bufferedReader obj to read Account CSV file
@@ -84,7 +90,7 @@ public class Account {
                     this.interestRate = Float.parseFloat(accDetail[6]);
                     cardNumber = accDetail[7];
                     if (!accDetail[8].equals("-")){ // action when an insurance account is identified
-                        this.insurance = new Insurance(accDetail[8]);
+                        this.insurance = new Insurance(accountNumber);
                         insureFlag = true;
                     }
                     this.foreignX = new ForeignX(accountNumber);
@@ -101,7 +107,7 @@ public class Account {
                     this.creditCard = new CreditCard(Long.parseLong(cardNumber));
                 }
                 else {
-                    System.err.println("Account has no credit card.");
+                    System.out.println("Account has no credit card.");
                 }
 
             }
@@ -109,9 +115,12 @@ public class Account {
                 System.err.println("Unable to locate account ID: " + Integer.toString(accountNumber));
                 System.out.println("Unable to locate ID");
             }
-        } catch (IOException e){
+        } catch (FileNotFoundException e){
             e.printStackTrace();
             System.err.println("Unable to locate file in path " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Account data file unexpectedly closed.");
         }
     }
 
@@ -147,9 +156,33 @@ public class Account {
         }
     }
 
-    public void addInsurance(String policyNumber){
+    /**
+     * Adds an {@link #insurance} object to the account if there isn't an existing one.
+     * Input argument takes information from the {@link bank.InsuranceCatalog} class in the hashmap format 
+     * <pre>
+     * "code": Policy Code
+     * "name": Name
+     * "type": Type
+     * "annualCost": Annual Premium Cost
+     * "coverage": Annual Total Policy Coverage 
+     * "duration": Policy Duration in ISO8061 String Format  
+     * </pre>
+     * Divides the annual cost into 12 to get the monthly value and converts the ISO8061 String value into a {@link Period} object
+     * @param policyInfo Hashmap of policy information from {@link bank.InsuranceCatalog}
+     * @see bank.InsuranceCatalog#retrievePolicyMap(int)
+     * @see Period#parse(CharSequence) Method to parse charsequences or Strings into an ISO8061 format
+     * @see <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO8601 Format</a>
+     */
+    public void addInsurance(HashMap<String,String> policyInfo){
         if (insureFlag == false){
-            this.insurance = new Insurance(policyNumber); // carry out function to add insurance object to system
+            try {
+                this.insurance = new Insurance(accountNumber, policyInfo.get("code"), LocalDate.now(), 
+                (Double.parseDouble(policyInfo.get("annualCost"))/12), Double.parseDouble(policyInfo.get("coverage")), 
+                Period.parse(policyInfo.get("duration")));  // converts value into Period type
+                this.insureFlag = true;
+            } catch (NullPointerException error){
+                System.err.println("Insurance policy record is incomplete.");
+            }
         }
         else {
             System.err.println("User already has existing insurance policy.");
@@ -182,7 +215,7 @@ public class Account {
     }
 
     /** Increases the account's monetary balance attribute by the specified value in the amount parameter.
-     * @param amount A double value that specifies the amount to deposit into the user's account
+     * @param amount amount to deposit into the user's account
      */
     public void deposit(double amount){
         // deposit function
@@ -231,16 +264,19 @@ public class Account {
         }
     }
 
+    /**
+     * Pays for outstanding {@link Insurance} premium for the current month.
+     */
     public void payInsurancePremium(){
         if (insureFlag == false){   // checks if there is an insurance class instantiated in account
             System.out.println("Account does not have insurance plan... yet!");
             return;
         }
         // Function to pay for insurance premium
-        double insuranceBalance = insurance.getPremiumBalance();
+        double insuranceBalance = insurance.getmonthlyPremium();
         if (balance > insuranceBalance){
             balance -= insuranceBalance;
-            insurance.payOffPremium(insuranceBalance);
+            insurance.payMonthPremium();
         }
         else {
             System.out.println("There is insufficient balance in account.");
@@ -366,16 +402,13 @@ public class Account {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         Account myAccount = new Account(1);
         System.out.println("Welcome!");
         myAccount.printAccountDetails();
-        System.out.println("""
-                        Enter your input:
-                        (1): Deposit
-                        (2): Withdraw
-                        (3): Transfer""");
-        int userChoice = scanner.nextInt();
-        scanner.close();
+
+        // Test Account without Insurance
+        Account acc6 = new Account(6);
+        acc6.printAccountDetails();
+        acc6.payInsurancePremium();
     }
 }

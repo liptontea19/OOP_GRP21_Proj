@@ -1,4 +1,4 @@
-﻿PolicyID,PolicyName,InsuranceType,Monthly Premium,ClaimBalance,Duration(ISO8601)
+﻿PolicyID,PolicyName,InsuranceType,Annual Premium,ClaimBalance,Duration(ISO8601)
 MP01,Medical Policy 01,Medical,300,10000,P3Y
 MP02,Medical Policy 02,Medical,1500,15000,P4Y6M
 MP03,Medical Policy 03,Medical,2000,20000,P5Y3M

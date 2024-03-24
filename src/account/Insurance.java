@@ -19,10 +19,10 @@ import java.util.NoSuchElementException;
  * - Use {@link #Insurance(int)} for initialising insurance objects with existing records in InsuranceAccounts.csv
  * - OR {@link #Insurance(int, String, LocalDate, double, double, Period)} for adding a new insurance object 
  * - Use {@link #payMonthPremium()} for paying of monthly premiums 
- * - Use{@link #displayPremiumBilling()} to view next due premium dates
+ * - Use {@link #displayPremiumBilling()} to view next due premium dates
  * </pre>
- * File Dependency: InsuranceAccounts.csv (Account-specific insurance policy information)
- * @see Bank.insuranceCatalog Bank insurance catalog class for displaying all policies
+ * File Dependency: <code>InsuranceAccounts.csv</code> (Account-specific insurance policy information)
+ * @see bank.InsuranceCatalog Bank insurance catalog class for displaying all policies
  */
 public class Insurance {
     /** The monthly premium due for the insurance policy. */
@@ -199,17 +199,14 @@ public class Insurance {
      * Pays the policy premium due for the current month.
      * Checks if premium has already been paid for the month before paying.
      * Informs user on next billable month.
-     * @return premium amount due for month
      */
-    public double payMonthPremium(){
+    public void payMonthPremium(){
         if (monthlyPremiumPaid == false) {
             monthlyPremiumPaid = true;
             System.out.println("Premium has been paid for " + LocalDate.now().getMonth() + ", next premium due in " + 
             LocalDate.now().plusMonths(1).getMonth());
-            return monthlyPremium;
         } else {
             System.out.println("Premium has been paid for current month.");
-            return 0;
         }
     }
 
