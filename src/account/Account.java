@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import bank.Bank;
+import bank.InsuranceCatalogEntry;
 
 /**
  * Used for user's bank account information and the associated CreditCard, Customer and Insurance class objects
@@ -158,28 +159,16 @@ public class Account {
 
     /**
      * Adds an {@link #insurance} object to the account if there isn't an existing one.
-     * Input argument takes information from the {@link bank.InsuranceCatalog} class in the hashmap format 
-     * <pre>
-     * "code": Policy Code
-     * "name": Name
-     * "type": Type
-     * "annualCost": Annual Premium Cost
-     * "coverage": Annual Total Policy Coverage 
-     * "duration": Policy Duration in ISO8061 String Format  
-     * </pre>
-     * Divides the annual cost into 12 to get the monthly value and converts the ISO8061 String value into a {@link Period} object
-     * @param policyInfo Hashmap of policy information from {@link bank.InsuranceCatalog}
-     * @see bank.InsuranceCatalog#retrievePolicyMap(int)
-     * @see Period#parse(CharSequence) Method to parse charsequences or Strings into an ISO8061 format
-     * @see <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO8601 Format</a>
+     * Starting date of the insurance policy will be the current date and time.
+     * Uses information from the InsuranceCatalogEntry class
+     * @param policy Object of policy information from {@link bank.InsuranceCatalog}
+     * @see bank.InsuranceCatalog#retrievePolicy(int)
+     * @see bank.InsuranceCatalogEntry
      */
-    public void addInsurance(HashMap<String,String> policyInfo){
+    public void addInsurance(InsuranceCatalogEntry policy){
         if (insureFlag == false){
             try {
-                this.insurance = new Insurance(accountNumber, policyInfo.get("code"), LocalDate.now(), 
-                (Double.parseDouble(policyInfo.get("annualCost"))/12), Double.parseDouble(policyInfo.get("coverage")), 
-                Period.parse(policyInfo.get("duration")));  // converts value into Period type
-                this.insureFlag = true;
+                this.insurance = new Insurance(accountNumber, policy, LocalDate.now());
             } catch (NullPointerException error){
                 System.err.println("Insurance policy record is incomplete.");
             }

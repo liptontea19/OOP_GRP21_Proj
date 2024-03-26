@@ -9,6 +9,8 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
 
+import bank.InsuranceCatalogEntry;
+
 
 /**
  * Insurance class stores and accesses insurance policy information found in the user's account.
@@ -68,31 +70,20 @@ public class Insurance {
     }
 
     /**
-     * Constructor called when adding a new insurance object from {@link Account} 
-     * @param accountId Id of account
-     * @param policyId Policy ID, must correspond with existing insurance policy found in InsuranceCatalog
-     * @param startDate LocalDate value of policy starting
-     * @param monthlyPremium premium due each month 
-     * @param claimBalance annual claimable amount
-     * @param polPeriod duration of insurance policy, uses Period object
+     * Constructor to initialise insurance using the {@link bank.InsuranceCatalogEntry Insurance Catalog} object.
+     * @param accountId ID of user
+     * @param policy Selected Insurance catalog object to add
+     * @param startDate Starting date of policy
      */
-    public Insurance(int accountId,String policyId, LocalDate startDate, double monthlyPremium, double claimBalance, Period polPeriod){
-
-        if (policyId.charAt(0) == 'M'){
-            this.insuranceType = "Medical";
-        } else if (policyId.charAt(0) == 'P'){
-            this.insuranceType = "Property";
-        } else if (policyId.charAt(0) == 'T'){
-            this.insuranceType = "Travel";
-        }
-
-        this.policyId = policyId;
-        this.policyName = insuranceType + " Policy " + policyId.substring(2,4);
+    public Insurance(int accountId, InsuranceCatalogEntry policy, LocalDate startDate){
+        this.policyId = policy.getIdString();
+        this.policyName = policy.getName();
         this.startDate = startDate;
-        this.endDate = startDate.plus(polPeriod);
-        this.monthlyPremium = monthlyPremium;
-        this.claimBalance = claimBalance;
+        this.endDate = startDate.plus(policy.getDurationISO());
+        this.monthlyPremium = policy.getMonthlyPremiumDouble();
+        this.claimBalance = policy.getClaimDouble();
         this.monthlyPremiumPaid = false;
+        this.insuranceType = policy.getType();
     }
     
     /**

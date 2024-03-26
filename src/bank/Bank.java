@@ -191,7 +191,7 @@ public class Bank {
      * 1) Account login event
      * 2) Begin account action loop
      */
-    public void accountProcess(){
+    public void accountMenu(){
         int accountId = 0, userChoice;    //account ID of logged in account
         boolean contAccount = true;
         
@@ -214,68 +214,12 @@ public class Bank {
             System.out.println("---------------------------------------------");
             userChoice = input.nextInt();
             double amt;
+            int branchChoice;
             switch (userChoice) {
-                case 1:
-                    // dep,with,trans method
-                    System.out.println("""
-                        Select your choice:
-                        (1): Deposit
-                        (2): Withdraw
-                        (3): Transfer""");
-                    switch (input.nextInt()) {
-                        case 1:
-                            System.out.print("Enter the amount you want to deposit: ");
-                            amt = input.nextDouble();
-                            accountMap.get(accountId).deposit(amt);
-                            break;
-
-                        case 2: // User wants to withdraw money from a branch
-                            double[] amountTransfer = {30,50,100,200,250};
-                            System.out.println("""
-                                Choose the amount of your withdrawal:
-                                (1): $30
-                                (2): $50
-                                (3): $100
-                                (4): $200
-                                (5): $250
-                                (6): Amount of choice
-                                """);
-                            int withdrawChoice = input.nextInt();
-                            if (withdrawChoice > 0 && withdrawChoice < 6){
-                                amt = amountTransfer[withdrawChoice - 1];
-                            } else if (withdrawChoice == 6){
-                                System.out.println("Enter amount to withdraw");
-                                amt = input.nextDouble();
-                            } else { 
-                                System.out.println("The choice you have entered is invalid.");
-                                break;
-                            }
-
-                            System.out.println("Select branch you would like to withdraw from.");
-                            displayBranches();
-                            int branchChoice = input.nextInt();
-                            accountMap.get(accountId).withdraw(amt);
-                            branchMap.get(branchChoice).withdrawReserve(amt);
-                            break;
-                        case 3: // User wants to transfer money to another account
-                            System.out.println("Select recipient's account ID.");
-                            displayAccounts(accountId); // displays recipient accounts
-                            int recepientId = input.nextInt();
-                            System.out.print("Enter the amount you want to transfer: ");
-                            amt = input.nextDouble();
-                            if (accountMap.containsKey(recepientId)){
-                                accountMap.get(accountId).withdraw(amt);
-                                accountMap.get(recepientId).deposit(amt);
-                            } else {
-                                System.out.println("There is no such account in our bank.");
-                            }
-                            break;
-                        default:
-                            System.out.println("Not an option");
-                    } 
-                    
+                case 1: // dep,with,trans method     
+                    accProcess(accountId);                   
                     break;
-                case 2:
+                case 2: // Credit Card Options
                     ccProcess(accountId);
                     break;
                 case 3:
@@ -294,6 +238,72 @@ public class Bank {
         }
     }
 
+    public void accProcess(int accountId){
+        double amt;
+        int branchChoice;
+        System.out.println("""
+            Select your choice:
+            (1): Deposit
+            (2): Withdraw
+            (3): Transfer""");
+
+        switch (input.nextInt()) {
+            case 1:
+                System.out.print("Enter the amount you want to deposit: ");
+                amt = input.nextDouble();
+                System.out.println("Select branch you would like to withdraw from.");
+                displayBranches();
+                branchChoice = input.nextInt();
+                accountMap.get(accountId).deposit(amt);
+                branchMap.get(branchChoice).depositReserve(amt);
+                break;
+
+            case 2: // User wants to withdraw money from a branch
+                double[] amountWithdraw = {30,50,100,200,250};
+                System.out.println("""
+                    Choose the amount of your withdrawal:
+                    (1): $30
+                    (2): $50
+                    (3): $100
+                    (4): $200
+                    (5): $250
+                    (6): Amount of choice
+                    """);
+                int withdrawChoice = input.nextInt();
+                if (withdrawChoice > 0 && withdrawChoice < 6){
+                    amt = amountWithdraw[withdrawChoice - 1];
+                } else if (withdrawChoice == 6){
+                    System.out.println("Enter amount to withdraw");
+                    amt = input.nextDouble();
+                } else { 
+                    System.out.println("The choice you have entered is invalid.");
+                    break;
+                }
+
+                System.out.println("Select branch you would like to withdraw from.");
+                displayBranches();
+                branchChoice = input.nextInt();
+                accountMap.get(accountId).withdraw(amt);
+                branchMap.get(branchChoice).withdrawReserve(amt);
+                break;
+            case 3: // User wants to transfer money to another account
+                System.out.println("Select recipient's account ID.");
+                displayAccounts(accountId); // displays recipient accounts
+                int recepientId = input.nextInt();
+                System.out.print("Enter the amount you want to transfer: ");
+                amt = input.nextDouble();
+                if (accountMap.containsKey(recepientId)){
+                    accountMap.get(accountId).withdraw(amt);
+                    accountMap.get(recepientId).deposit(amt);
+                } else {
+                    System.out.println("There is no such account in our bank.");
+                }
+                break;
+            default:
+                System.out.println("Not an option");
+        }
+    }
+    
     public void ccProcess(int accountId){
         if (!accountMap.get(accountId).getCardFlag()){
             System.out.println("Your account does not have a credit card at the moment, would you like to add one?");
@@ -329,6 +339,21 @@ public class Bank {
         }
     }
 
+    public void insProcess(int accountId){
+        if(accountMap.get(accountId).getInsurFlag()) {
+            
+        } else {
+            System.out.println("Get insurance?");
+            System.out.println("Which policy would you like to add to your account?");
+            insuranceCatalog.printInsuranceCatalog(true);
+            System.out.println("Policy: ");
+            accountMap.get(accountId).addInsurance(insuranceCatalog.retrievePolicy(input.nextInt()));
+            if(accountMap.get(accountId).getInsurFlag()){
+                System.out.println("Succesfully added insurance policy to your account!");
+            }
+        }
+    }
+    
     public void displayBranches() {
         System.out.println("Branch Name    Branch Code    Current Reserves    Opening Hours");
         Branch selectedBranch;
@@ -340,6 +365,11 @@ public class Bank {
         }
     }
 
+    /**
+     * 
+     * @param listofAccs
+     * @deprecated
+     */
     public void DisplayBankUI(int[] listofAccs) {
         System.out.println("_____________________");
         System.out.println("|Welcome to " + bankName + " bank|");
@@ -352,8 +382,7 @@ public class Bank {
 
         System.out.println(" Acc No.  Name    Bank Balance   Branch Code    Credit Bal");
 
-        for(int i = 1; i<=listofAccs.length; i++)
-        {
+        for(int i = 1; i<=listofAccs.length; i++)   {
             Account account = new Account(i);
             displayaccNum = account.getAccountNumber();
             displayname = account.customer.getCustomerName();
@@ -711,7 +740,7 @@ public class Bank {
             menuChoice = bankSession.bankMainMenuSelect();
             switch(menuChoice) {
                 case 1: 
-                    bankSession.accountProcess();
+                    bankSession.accountMenu();
                     break;
                 case 2:
                     bankSession.displayBranches();
