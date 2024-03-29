@@ -29,6 +29,14 @@ public class Account {
     private float interestRate;
     private String accountType;
     private double balance, transferLimit;
+
+    private double JPYbalance = 0;
+    private double USDbalance = 0;
+
+    private String SGDcurrency = "SGD";
+    private String JPYcurrency = "JPY";
+    private String USDcurrency = "USD";
+
     private int branchCode;
     private DecimalFormat moneyDecimalFormat = new DecimalFormat("#,###.00");
 
@@ -38,7 +46,7 @@ public class Account {
     public Customer customer;
     private int creditScore;
 
-    public ForeignX foreignX;
+    public g11_FXE FXE;
     public Insurance insurance;
     public Loan loan;
     private boolean insureFlag = false, cardFlag = false, loanFlag = true;
@@ -68,7 +76,7 @@ public class Account {
      * @param accountNumber unique account ID used as search value for
      */
     public Account(int accountNumber){
-        String filePath = "data\\Account.csv";
+        String filePath = "data/Account.csv";
         //Fetches account details from Account.csv using accountNumber and initialises into class attribute
         try(BufferedReader reader = new BufferedReader(new FileReader(filePath))){
             //BufferedReader reader = new BufferedReader(new FileReader(filePath));   // Instantiates bufferedReader obj to read Account CSV file
@@ -92,7 +100,7 @@ public class Account {
                         this.insurance = new Insurance(accountNumber);
                         insureFlag = true;
                     }
-                    this.foreignX = new ForeignX(accountNumber);
+                    this.FXE = new g11_FXE();
                     this.loan = loan.readLoansFromCSV(accountNumber);
                     this.loanFlag = true;
                     break;
@@ -304,22 +312,51 @@ public class Account {
         }
     }
 
-    public void makeForeignExchange(float exchangeAmount, int exchangeChoice){
-        if(exchangeAmount <= balance){
-            balance -= exchangeAmount;
-            System.out.println("Your current balance: " + moneyDecimalFormat.format(balance));
-            foreignX.exchangeToForeign(exchangeAmount, exchangeChoice);
+    public void makeExchange(int firstChoice, int secondChoice, double exchangeAmt){
+        if(exchangeAmt > balance){
+            System.out.println("Insufficient balance!");
         }
-        else{
-            System.out.println("Insufficient balance! Please try again!");
+        else {
+            if(firstChoice == 1 && secondChoice == 1){
+                balance -= exchangeAmt;
+                double targetAmt = FXE.convert(SGDcurrency,JPYcurrency,exchangeAmt);
+                JPYbalance += targetAmt;
+                System.out.println("Exchange Successful!\nCurrent Balance: "
+                        + balance + "\nJPY Balance: " + JPYbalance);
+
+            }
+            else if(firstChoice == 1 && secondChoice == 2){
+                balance -= exchangeAmt;
+                double targetAmt = FXE.convert(SGDcurrency,USDcurrency,exchangeAmt);
+                USDbalance += targetAmt;
+                System.out.println("Exchange Successful!\nCurrent Balance: "
+                        + balance + "\nUSD Balance: " + USDbalance);
+
+            }
+            else if(firstChoice == 2 && secondChoice == 1){
+                JPYbalance -= exchangeAmt;
+                double targetAmt = FXE.convert(JPYcurrency,SGDcurrency,exchangeAmt);
+                balance += targetAmt;
+                System.out.println("Exchange Successful!\nCurrent Balance: "
+                        + balance + "\nJPY Balance: " + JPYbalance);
+
+            }
+            else if(firstChoice == 2 && secondChoice == 2){
+                USDbalance -= exchangeAmt;
+                double targetAmt = FXE.convert(USDcurrency,SGDcurrency,exchangeAmt);
+                balance += targetAmt;
+                System.out.println("Exchange Successful!\nCurrent Balance: "
+                        + balance + "\nUSD Balance: " + USDbalance);
+            }
+            else {
+                System.out.println("Invalid Entry! Please try again!");
+            }
         }
+
     }
 
-    public void makeSGDExchange(float foreignAmount){
-        float SGDAmount = foreignX.exchangeToSGD(foreignAmount);
-        balance += SGDAmount;
-        System.out.println("Your current balance: " + moneyDecimalFormat.format(balance));
-
+    public void printFXBalance(){
+        System.out.println("Foreign Balances:\n(1): " + JPYbalance + "\n(2): " + USDbalance);
     }
 
     public void printAccountDetails(){
