@@ -44,7 +44,7 @@ public class Bank {
         secSession = new Security(60);
         String[] accountCSVLine, branchCodeCSVLine;
 
-        String csvFile = "data\\Bank.csv";
+        String csvFile = "data/Bank.csv";
         try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
             String bankLine;
             bankLine = reader.readLine();   // reads first line and skips lmao
@@ -225,6 +225,7 @@ public class Bank {
                 case 3:
                     break;
                 case 4:
+                    fxProcess(accountId);
                     break;
                 case 5: 
                     accountMap.get(accountId).printAccountDetails();
@@ -339,6 +340,39 @@ public class Bank {
         }
     }
 
+    public void fxProcess(int accountID){
+        System.out.println("Select your choice.\n(1): Exchange SGD to JPY/USD \n(2): Exchange JPY/USD to SGD \n(3): View Foreign Balances");
+        int firstChoice = input.nextInt();
+        int secondChoice;
+        double exchangeAmt;
+        switch(firstChoice){
+            case 1:
+                accountMap.get(accountID).FXE.displayRates();
+                System.out.println("Which Foreign currency would you like to exchange to?\n(1): JPY\n(2): USD");
+                secondChoice = input.nextInt();
+                System.out.println("Enter the amount you want to exchange:");
+                exchangeAmt = input.nextDouble();
+                accountMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
+                break;
+            case 2:
+                accountMap.get(accountID).printFXBalance();
+                System.out.println("Which currency would you like to exchange to SGD?\n(1): JPY\n(2): USD");
+                secondChoice = input.nextInt();
+                System.out.println("Enter the amount you want to exchange:");
+                exchangeAmt = input.nextDouble();
+                accountMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
+                break;
+            case 3:
+                accountMap.get(accountID).printFXBalance();
+                break;
+            default:
+                System.out.println("Invalid Entry!");
+                break;
+
+        }
+
+    }
+
     public void insProcess(int accountId){
         if(accountMap.get(accountId).getInsurFlag()) {
             
@@ -400,7 +434,7 @@ public class Bank {
 
     }
 
-    public void ProcessTransactions(Account account, int choice, int[] acclist) {
+    /*public void ProcessTransactions(Account account, int choice, int[] acclist) {
         // Process Transactions here.
         Scanner scanner = new Scanner(System.in);
         if(choice == 1){
@@ -539,7 +573,7 @@ public class Bank {
             scanner.nextLine();
 
             if(foreignChoice == 1){
-                account.foreignX.viewCurrencyRates();
+               // account.foreignX.viewCurrencyRates();
                 System.out.println("Enter an amount you want to convert");
                 int SGDamount = scanner.nextInt();
                 scanner.nextLine();
@@ -554,7 +588,7 @@ public class Bank {
                 (4): Australia (AUD)
                 (5): United Kingdom (GBP)""");
                     int exchangeChoice = scanner.nextInt();
-                    account.foreignX.exchangeToForeign(SGDamount,exchangeChoice);
+                    //account.foreignX.exchangeToForeign(SGDamount,exchangeChoice);
                 }
                 else {
                     System.out.println("Insufficient balance!");
@@ -562,19 +596,20 @@ public class Bank {
 
             }
             else if(foreignChoice == 2){
-                account.foreignX.viewCurrencyRates();
+                //account.foreignX.viewCurrencyRates();
                 System.out.println("Enter an amount you want to convert");
                 int foreignamount = scanner.nextInt();
                 scanner.nextLine();
-                account.foreignX.exchangeToSGD(foreignamount);
+                //account.foreignX.exchangeToSGD(foreignamount);
 
             }
             else if(foreignChoice == 3){
-                account.foreignX.viewCurrencyRates();
+                //account.foreignX.viewCurrencyRates();
             }
         }
         scanner.close();
     }
+     */
 
     /*public static void main1(String[] args) {
         Scanner scanner = new Scanner(System.in);
