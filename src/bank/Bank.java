@@ -23,7 +23,7 @@ public class Bank {
     //private static List<Account> accounts;
     /** Name of Bank */
     private static String bankName;
-    private static Insurance insurancePolicies;
+    private static Insurance insurancePolicies; // will be deprecated soon after main1's removal
     private static Branch branches;
     private Security secSession;
     private DecimalFormat moneyFormat = new DecimalFormat("#,###.00");
@@ -347,7 +347,7 @@ public class Bank {
             System.out.println("Which policy would you like to add to your account?");
             insuranceCatalog.printInsuranceCatalog(true);
             System.out.println("Policy: ");
-            accountMap.get(accountId).addInsurance(insuranceCatalog.retrievePolicy(input.nextInt()));
+            accountMap.get(accountId).addInsurance(insuranceCatalog.retrievePolicyMap(input.nextInt()));
             if(accountMap.get(accountId).getInsurFlag()){
                 System.out.println("Succesfully added insurance policy to your account!");
             }
@@ -751,9 +751,9 @@ public class Bank {
                     break;
 
                 default:
-                System.out.println("Thank you for using the bank application.");
-                endSession = true;
-                break;
+                    System.out.println("Thank you for using the bank application.");
+                    endSession = true;
+                    break;
             }
         }
     }
