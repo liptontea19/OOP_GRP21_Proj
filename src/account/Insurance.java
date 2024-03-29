@@ -134,7 +134,7 @@ public class Insurance {
                 throw new NoSuchElementException();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.err.println("Unable to locate Insurance.csv");
         }
     }
@@ -213,7 +213,7 @@ public class Insurance {
     /** Returns the monthlyPremium attribute as a double value 
      * @return insurance premium outstanding balance for the month
     */
-    public double getmonthlyPremium(){
+    public double getMonthlyPremium(){
         return monthlyPremium;
     }
 

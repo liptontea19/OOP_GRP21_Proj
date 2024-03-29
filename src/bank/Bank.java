@@ -522,7 +522,7 @@ public class Bank {
                     account.insurance.printInsuranceDetail();
                 }
                 else if(nextChoice == 2){
-                    double premiumBal = account.insurance.getPremiumBalance();
+                    double premiumBal = account.insurance.getMonthlyPremium();
                     System.out.println("Current Outstanding Balance: " + premiumBal);
                     account.payInsurancePremium();
                 }
@@ -539,7 +539,7 @@ public class Bank {
             scanner.nextLine();
 
             if(foreignChoice == 1){
-                account.foreignX.viewCurrencies();
+                account.foreignX.viewCurrencyRates();
                 System.out.println("Enter an amount you want to convert");
                 int SGDamount = scanner.nextInt();
                 scanner.nextLine();
@@ -562,7 +562,7 @@ public class Bank {
 
             }
             else if(foreignChoice == 2){
-                account.foreignX.printCurrencies();
+                account.foreignX.viewCurrencyRates();
                 System.out.println("Enter an amount you want to convert");
                 int foreignamount = scanner.nextInt();
                 scanner.nextLine();
@@ -570,13 +570,13 @@ public class Bank {
 
             }
             else if(foreignChoice == 3){
-                account.foreignX.printCurrencies();
+                account.foreignX.viewCurrencyRates();
             }
         }
         scanner.close();
     }
 
-    public static void main1(String[] args) {
+    /*public static void main1(String[] args) {
         Scanner scanner = new Scanner(System.in);
         //accounts = new ArrayList<>();
         Bank myBank = new Bank();
@@ -727,7 +727,7 @@ public class Bank {
             continueRunning = continueChoice.equals("yes");
         }
         scanner.close();
-    }
+    } */
     
 
     public static void main(String[] args) {

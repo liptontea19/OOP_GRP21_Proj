@@ -272,7 +272,7 @@ public class Account {
             return;
         }
         // Function to pay for insurance premium
-        double insuranceBalance = insurance.getmonthlyPremium();
+        double insuranceBalance = insurance.getMonthlyPremium();
         if (balance > insuranceBalance){
             balance -= insuranceBalance;
             insurance.payMonthPremium();
