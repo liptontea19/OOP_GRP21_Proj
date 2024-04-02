@@ -3,6 +3,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.imageio.IIOException;
 
@@ -15,7 +17,7 @@ public class Customer {
 
     private int Age, ContactNo, CreditScore;
     private String Address, ID, CustomerName, MaritalStatus, Country, EmailAddress, Occupation, Employer, DateOfBirth;
-
+    private List<Loan> loans; // a single Customer can have a List of loans
 
 
     /**
@@ -59,7 +61,44 @@ public class Customer {
             e.printStackTrace();
             System.err.println("Unable to locate Customer ID: " + customerID);
         }
+
+        this.loans = new ArrayList<>();
     }
+    
+    /**
+     * Applies for a new loan and adds it to the customer's list of loans if successful.
+     */
+    public Loan applyForLoan(double principalAmount, double interestRate, int termInMonths) {
+        if (Loan.checkEligiblity(this.CreditScore)) {
+            //below loan.applyForLoan method alrdy adds loan in the list and returns the loan object
+            Loan newLoan = Loan.applyForLoan(loans, principalAmount, interestRate, termInMonths, this.ID, this.CreditScore);
+            if (newLoan != null) {
+                System.out.println("Loan applied successfully.");
+            } else {
+                System.out.println("Loan application failed.");
+            }
+            return newLoan;
+        } else {
+            System.out.println("Customer is not eligible for a loan.");
+            return null;
+        }
+    }
+
+    /**
+     * Prints the details of all loans associated with the customer.
+     */
+    public void printAllLoans() {
+        if (loans.isEmpty()) {
+            System.out.println("No loans found for this customer.");
+            return;
+        }
+
+        System.out.println("Loans for Customer ID: " + this.ID);
+        for (Loan loan : loans) {
+            loan.displayInfo();
+        }
+    }
+  
   /**
      * Returns customer's credit score
      * @return integer of customer's credit score
@@ -247,6 +286,8 @@ public class Customer {
     public static void main(String[] args){
         Customer cust1 = new Customer("S1234A");
         cust1.printCustomerDetails();
+        cust1.applyForLoan(7000, 5.0, 12);
+        cust1.printAllLoans();
 
     }
 }
