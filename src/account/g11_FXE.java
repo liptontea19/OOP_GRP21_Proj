@@ -1,5 +1,4 @@
 package account;
-
 //
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by FernFlower decompiler)
@@ -16,7 +15,7 @@ public class g11_FXE {
     private double jpyToUsdRate;
 
     public g11_FXE() {
-        this.getMarketRate();
+        this.setMarketRate();
     }
 
     public g11_FXE(double var1, double var3, double var5, double var7, double var9, double var11) {
@@ -78,13 +77,26 @@ public class g11_FXE {
         var10000.println("1 JPY = " + var10001 + " SGD = " + this.getJpyToUsdRate() + " USD");
     }
 
-    public void getMarketRate() {
+    public void setMarketRate() {
         this.setSgdToUsdRate(0.75);
         this.setSgdToJpyRate(110.0);
         this.setUsdToSgdRate(1.24);
         this.setJpyToSgdRate(0.009);
         this.setUsdToJpyRate(150.0);
         this.setJpyToUsdRate(0.0067);
+    }
+
+    public double getRate(String var1) {
+        double var2 = 0.0;
+        if (var1 == "JPY") {
+            var2 = this.getSgdToJpyRate();
+        } else if (var1 == "USD") {
+            var2 = this.getSgdToUsdRate();
+        } else {
+            System.out.println("Currency not available");
+        }
+
+        return var2;
     }
 
     public double getSgdToUsdRate() {
