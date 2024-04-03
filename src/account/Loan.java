@@ -1,489 +1,351 @@
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.UUID;
-import java.lang.Math;
-import java.util.ArrayList;
-import java.util.List;
-
-import java.io.IOException;
+// Source code is decompiled from a .class file using FernFlower decompiler.
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
-
-/**
- * The Loan class represents a Loan.
- */
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 
 public class Loan {
-    private UUID loanID;
-    private double principalAmount;
-    private double interestRate;
-    private int termInMonths;
-    private double monthlyPayment;
-    private double outstandingAmount;
-    private double totalPayment;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private String customerID;
-    private String status;
-    private ArrayList<LocalDate> paymentDates;
+   private UUID loanID = UUID.randomUUID();
+   private BigDecimal principalAmount;
+   private BigDecimal interestRate;
+   private int termInMonths;
+   private BigDecimal monthlyPayment;
+   private BigDecimal outstandingAmount;
+   private BigDecimal totalPayment;
+   private LocalDate startDate;
+   private LocalDate endDate;
+   private String customerID;
+   private String status;
+   private ArrayList<LocalDate> paymentDates;
+   private ArrayList<Loan$AmortizationSchedule> amortizationSchedules;
 
-    /**
-     * Constructs a new Loan object with the specified details.
-     * @param principalAmount the principal amount of the Loan
-     * @param interestRate the annual interest rate of the Loan
-     * @param termInMonths the Loan term in months
-     * @param customerID the customerID associated with the Loan
-     */
-    public Loan(double principalAmount, double interestRate, int termInMonths, String customerID) {
-        this.loanID = UUID.randomUUID();
-        this.principalAmount = principalAmount;
-        this.interestRate = interestRate;
-        this.termInMonths = termInMonths;
-        this.monthlyPayment = calculateAmortizationPayment();
-        this.outstandingAmount = monthlyPayment * termInMonths;
-        this.totalPayment = monthlyPayment * termInMonths;
-        this.startDate = LocalDate.now();
-        this.endDate = startDate.plusMonths(termInMonths);
-        this.customerID = customerID;
-        this.status = "Pending";
-        this.paymentDates = new ArrayList<LocalDate>();
-    }
+   private Loan(BigDecimal var1, BigDecimal var2, int var3, String var4) {
+      this.principalAmount = var1;
+      this.interestRate = var2;
+      this.termInMonths = var3;
+      this.monthlyPayment = this.calculateAmortizationPayment();
+      this.outstandingAmount = this.monthlyPayment.multiply(BigDecimal.valueOf((long)var3));
+      this.totalPayment = this.monthlyPayment.multiply(BigDecimal.valueOf((long)var3));
+      this.startDate = LocalDate.now();
+      this.endDate = this.startDate.plusMonths((long)var3);
+      this.customerID = var4;
+      this.status = "Pending";
+      this.paymentDates = new ArrayList();
+      this.amortizationSchedules = new ArrayList();
+   }
 
-    /**
-     * Gets the unique identifier (UUID) associated with the Loan.
-     *
-     * @return The UUID representing the Loan.
-     */
-    public UUID getLoanID() {
-        return loanID;
-    }
-    /**
-     * Sets the Unique Identifier (UUID) for the Loan.
-     *
-     * @param loanID The UUID to set for the Loan.
-     */
-    public void setLoanID(UUID loanID) {
-        this.loanID = loanID;
-    }
+   public UUID getLoanID() {
+      return this.loanID;
+   }
 
-    /**
-     * Gets the Principal Amount of the Loan.
-     *
-     * @return The Principal Amount of the Loan.
-     */
-    public double getPrincipalAmount() {
-        return principalAmount;
-    }
-    /**
-     * Sets the Principal Amount of the Loan.
-     *
-     * @param principalAmount The Principal Amount to set for the Loan.
-     */
-    public void setPrincipalAmount(double principalAmount) {
-        this.principalAmount = principalAmount;
-    }
+   private void setLoanID(UUID var1) {
+      this.loanID = var1;
+   }
 
-    /**
-     * Gets the Interest Rate of the Loan.
-     *
-     * @return The Interest Rate of the Loan.
-     */
-    public double getInterestRate() {
-        return interestRate;
-    }
-    /**
-     * Sets the Interest Rate of the Loan.
-     *
-     * @param interestRate The Interest Rate to set for the Loan.
-     */
-    public void setInterestRate(double interestRate) {
-        this.interestRate = interestRate;
-    }
+   public BigDecimal getPrincipalAmount() {
+      return this.principalAmount;
+   }
 
-    /**
-     * Gets the Loan term in months of the Loan.
-     *
-     * @return The Loan term in months.
-     */
-    public int getTermInMonths() {
-        return termInMonths;
-    }
-    /**
-     * Sets the Loan term in months.
-     *
-     * @param termInMonths The term in months to set for the Loan.
-     */
-    public void setTermInMonths(int termInMonths) {
-        this.termInMonths = termInMonths;
-    }
+   public void setPrincipalAmount(BigDecimal var1) {
+      this.principalAmount = var1;
+   }
 
-    /**
-     * Gets the outstanding amount of the Loan.
-     *
-     * @return The outstanding amount.
-     */
-    public double getOutstandingAmount() {
-        return outstandingAmount;
-    }
-    /**
-     * Sets the outstanding amount.
-     *
-     * @param outstandingAmount The outstanding amount to set for the Loan.
-     */
-    public void setOutstandingAmount(double outstandingAmount) {
-        this.outstandingAmount = outstandingAmount;
-    }
+   public BigDecimal getInterestRate() {
+      return this.interestRate;
+   }
 
-    /**
-     * Gets the monthly payment amount of the Loan.
-     *
-     * @return The monthly payment amount.
-     */
-    public double getMonthlyPayment() {
-        return monthlyPayment;
-    }
-    /**
-     * Sets the monthly payment amount of the Loan.
-     *
-     * @param monthlyPayment The monthly payment to set for the Loan.
-     */
-    public void setMonthlyPayment(double monthlyPayment) {
-        this.monthlyPayment = monthlyPayment;
-    }
+   public void setInterestRate(BigDecimal var1) {
+      this.interestRate = var1;
+   }
 
-    /**
-     * Gets the total payment required of the entire Loan.
-     *
-     * @return The total payment.
-     */
-    public double getTotalPayment() {
-        return totalPayment;
-    }
-    /**
-     * Sets the total payment required of the Loan.
-     *
-     * @param totalPayment The total payment to set for the Loan.
-     */
-    public void setTotalPayment(double totalPayment) {
-        this.totalPayment = totalPayment;
-    }
+   public int getTermInMonths() {
+      return this.termInMonths;
+   }
 
-    /**
-     * Gets the start date of the Loan.
-     *
-     * @return The start date.
-     */
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-    /**
-     * Sets the start date of the Loan.
-     *
-     * @param startDate The start date to set for the Loan.
-     */
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
+   public void setTermInMonths(int var1) {
+      this.termInMonths = var1;
+   }
 
-    /**
-     * Gets the end date of the Loan.
-     *
-     * @return The end date.
-     */
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-    /**
-     * Sets the end date of the Loan.
-     *
-     * @param endDate The end date to set for the Loan.
-     */
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
+   public BigDecimal getOutstandingAmount() {
+      return this.outstandingAmount;
+   }
 
-    /**
-     * Gets the customerID associated with the Loan.
-     *
-     * @return The customerID.
-     */
-    public String getCustomerID() {
-        return customerID;
-    }
-    /**
-     * Sets the customerID associated with the Loan.
-     *
-     * @param customerID The customerID to set for the Loan.
-     */
-    public void setCustomerID(String customerID) {
-        this.customerID = customerID;
-    }
+   public void setOutstandingAmount(BigDecimal var1) {
+      this.outstandingAmount = var1;
+   }
 
-    /**
-     * Gets the status of the Loan.
-     *
-     * @return The status of the Loan.
-     */
-    public String getStatus() {
-        return status;
-    }
-    /**
-     * Sets the status of the Loan.
-     *
-     * @param status The status to set for the Loan.
-     */
-    public void setStatus(String status) {
-        this.status = status;
-    }
+   public BigDecimal getMonthlyPayment() {
+      return this.monthlyPayment;
+   }
 
-    /**
-     * Gets the list of payment dates for the Loan.
-     *
-     * @return The list of payment dates.
-     */
-    public ArrayList<LocalDate> getPaymentDates() {
-        return paymentDates;
-    }
+   public void setMonthlyPayment(BigDecimal var1) {
+      this.monthlyPayment = var1;
+   }
 
-    /**
-     * Sets the list of payment dates of the Loan.
-     *
-     * @param paymentDates The list of payment dates to set for the Loan.
-     */
-    public void setPaymentDates(ArrayList<LocalDate> paymentDates) {
-        this.paymentDates = paymentDates;
-    }
+   public BigDecimal getTotalPayment() {
+      return this.totalPayment;
+   }
 
+   public void setTotalPayment(BigDecimal var1) {
+      this.totalPayment = var1;
+   }
 
-    /**
-     * Check Eligiblity of customer to apply for Loan.
-     * If customer's credit score is higher than or equal to 600, customer is eligible for a Loan.
-     * Otherwise, customer is not eligble for a Loan
-     *
-     * @param creditScore The credit score of the customer applying for the Loan.
-     * @return True if  customer is eligible for a Loan, otherwise return false.
-     */
-    public static boolean checkEligiblity(int creditScore) {
-        if (creditScore >= 600) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+   public LocalDate getStartDate() {
+      return this.startDate;
+   }
 
-    /**
-     * Applies for new Loan.
-     *
-     * @param loanList The list of Loans.
-     * @param principalAmount The principal amount of the Loan.
-     * @param interestRate The annual interest rate for the Loan.
-     * @param termInMonths The Loan term in months.
-     * @param customerID The customerID of customer applying for the Loan.
-     * @param creditScore The credit score of customer applying for the Loan.
-     * @return Loan object for successful application, otherwise return null.
-     */
-    public static Loan applyForLoan(List<Loan> loanList, double principalAmount, double interestRate, int termInMonths, String customerID, int creditScore) {
-        if (principalAmount <= 0 || interestRate <= 0 || termInMonths <= 0) {
-            System.out.println("Error. Please provide non-negative values for principal amount, interest rate, and term in months.");
-            return null;
-        }
-        if (customerID == null) {
+   public void setStartDate(LocalDate var1) {
+      this.startDate = var1;
+   }
+
+   public LocalDate getEndDate() {
+      return this.endDate;
+   }
+
+   public void setEndDate(LocalDate var1) {
+      this.endDate = var1;
+   }
+
+   public String getCustomerID() {
+      return this.customerID;
+   }
+
+   public void setCustomerID(String var1) {
+      this.customerID = var1;
+   }
+
+   public String getStatus() {
+      return this.status;
+   }
+
+   public void setStatus(String var1) {
+      this.status = var1;
+   }
+
+   public ArrayList<LocalDate> getPaymentDates() {
+      return this.paymentDates;
+   }
+
+   public void setPaymentDates(ArrayList<LocalDate> var1) {
+      this.paymentDates = var1;
+   }
+
+   public ArrayList<Loan$AmortizationSchedule> getAmortizationSchedules() {
+      return this.amortizationSchedules;
+   }
+
+   public void setAmortizationSchedules(ArrayList<Loan$AmortizationSchedule> var1) {
+      this.amortizationSchedules = var1;
+   }
+
+   public static Loan applyForLoan(List<Loan> var0, BigDecimal var1, BigDecimal var2, int var3, Credit var4) {
+      if (var1.compareTo(BigDecimal.ZERO) > 0 && var2.compareTo(BigDecimal.ZERO) > 0 && var3 > 0) {
+         if (var4.getCustomerID() == null) {
             System.out.println("Error. Customer ID cannot be null.");
             return null;
-        }
-        if (creditScore < 0) {
+         } else if (var4.getScore() < 0) {
             System.out.println("Error. Please provide non-negative value for credit score.");
             return null;
-        }
-
-        if(Loan.checkEligiblity(creditScore) == true) {
-            Loan loan = new Loan(principalAmount, interestRate, termInMonths, customerID);
-            loanList.add(loan);
+         } else if (var4.checkEligiblity()) {
+            Loan var5 = new Loan(var1, var2, var3, var4.getCustomerID());
+            var0.add(var5);
             System.out.println("Applying for Loan.");
-            return loan;
-        }
-        else {
+            return var5;
+         } else {
             System.out.println("Failure to apply for loan as credit score is too low.");
             return null;
-        }
-    }
+         }
+      } else {
+         System.out.println("Error. Please provide non-negative values for principal amount, interest rate, and term in months.");
+         return null;
+      }
+   }
 
-    /**
-     * Approves the Loan and updates the status of the Loan from "Pending" to "Approved".
-     */
-    public void approveLoan() {
-        this.setStatus("Approved");
-        System.out.println("Loan is approved.");
-    }
+   public void approveLoan() {
+      this.setStatus("Approved");
+      System.out.println("Loan is approved.");
+      BigDecimal var1 = this.principalAmount;
 
-    /**
-     * Rejects the Loan and updates the status of the Loan from "Pending" to "Rejected".
-     */
-    public void rejectLoan() {
-        this.setStatus("Rejected");
-        System.out.print("Loan is rejected.");
-    }
+      for(int var2 = 1; var2 <= this.termInMonths; ++var2) {
+         BigDecimal var3 = var1.multiply(this.interestRate).divide(BigDecimal.valueOf(12L)).divide(BigDecimal.valueOf(100L));
+         BigDecimal var4 = this.monthlyPayment.subtract(var3);
+         var1 = var1.subtract(var4);
+         Loan$AmortizationSchedule var5 = new Loan$AmortizationSchedule(this.loanID, var2, this.monthlyPayment, var4, var3, var1.max(BigDecimal.ZERO));
+         this.amortizationSchedules.add(var5);
+      }
 
-    /**
-     * Displays information about the Loan.
-     */
-    public void displayInfo() {
-        System.out.println("\nLoan Information: ");
-        System.out.println("Loan ID: " + loanID);
-        String formattedPrincipalAmount = String.format("Principal Amount: $%.2f", principalAmount);
-        System.out.println(formattedPrincipalAmount);
-        String formattedOutstandingAmount = String.format("Outstanding Amount: $%.2f", outstandingAmount);
-        System.out.println(formattedOutstandingAmount);
-        String formattedmonthlyPayment = String.format("Monthly Payment: $%.2f", monthlyPayment);
-        System.out.println(formattedmonthlyPayment);
-        System.out.println("Interest Rate in Month: " + interestRate + "%");
-        System.out.println("Loan Period(Months): " + termInMonths);
-        String formattedTotalPayment = String.format("Total Payment: $%.2f", totalPayment);
-        System.out.println(formattedTotalPayment);
-        System.out.println("Start Date: " + startDate);
-        System.out.println("End Date: " + endDate);
-        System.out.println("Customer ID: " + customerID);
-        System.out.println("Payment Dates: " + paymentDates);
-        System.out.println("Status: " + status);
-        for (int i = 0; i < paymentDates.size(); i++) {
-            System.out.println("Payment Date " + (i+1) + ": " + paymentDates.get(i));
-        }
-    }
+   }
 
-    /**
-     * Prints amortization schedule of the Loan.
-     */
-    public void printAmortizationSchedule() {
-        System.out.println("Month\tMonthly Payment\tPrincipal Amount\tInterest\tRemaining Balance of Principal");
+   public void rejectLoan() {
+      this.setStatus("Rejected");
+      System.out.print("Loan is rejected.");
+   }
 
-        double remainingBalance = principalAmount;
+   public void displayInfo() {
+      System.out.println("\nLoan Information: ");
+      System.out.println("Loan ID: " + this.loanID);
+      String var1 = String.format("Principal Amount: $%.2f", this.principalAmount);
+      System.out.println(var1);
+      String var2 = String.format("Outstanding Amount: $%.2f", this.outstandingAmount);
+      System.out.println(var2);
+      String var3 = String.format("Monthly Payment: $%.2f", this.monthlyPayment);
+      System.out.println(var3);
+      System.out.println("Interest Rate in Month: " + this.interestRate + "%");
+      System.out.println("Loan Period(Months): " + this.termInMonths);
+      String var4 = String.format("Total Payment: $%.2f", this.totalPayment);
+      System.out.println(var4);
+      System.out.println("Start Date: " + this.startDate);
+      System.out.println("End Date: " + this.endDate);
+      System.out.println("Customer ID: " + this.customerID);
+      System.out.println("Payment Dates: " + this.paymentDates);
+      System.out.println("Status: " + this.status);
 
-        for (int month = 1; month <= termInMonths; month++) {
-            double interestPayment = remainingBalance * (interestRate / 12 / 100);
-            double principalPayment = monthlyPayment - interestPayment;
-            remainingBalance -= principalPayment;
+      for(int var5 = 0; var5 < this.paymentDates.size(); ++var5) {
+         System.out.println("Payment Date " + (var5 + 1) + ": " + this.paymentDates.get(var5));
+      }
 
-            String outputString = String.format("%d\t$%.2f\t\t$%.2f\t\t\t$%.2f\t\t$%.2f", month, monthlyPayment, principalPayment, interestPayment, Math.max(0,remainingBalance));
-            System.out.println(outputString);
-        }
-    }
+   }
 
-    /**
-     * Adds payment date to the list of payment dates for the Loan.
-     *
-     * @param paymentDate The payment date to be added to the list of payment dates.
-     */
-    public void addPaymentDate(LocalDate paymentDate) {
-        paymentDates.add(paymentDate);
-    }
+   public void printAmortizationSchedule() {
+      if (this.getStatus().equalsIgnoreCase("Approved")) {
+         System.out.println("Month\tMonthly Payment\tPrincipal Amount\tInterest\tRemaining Principal Balance\tPayment Status");
 
-    /**
-     * Repays the monthly payment of the Loan, updating payment and Account information.
-     *
-     * @param accountID The accountID of the account to deduct balance for repayment of the Loan.
-     * @param balance The balance of the account to deduct balance for repayment of the Loan.
-     */
-    public void repay(String accountID, double balance) {
-        if(this.getStatus().equalsIgnoreCase("Approved")) {
-            LocalDate currentDate = LocalDate.now();
-            int currentMonth = currentDate.getMonthValue();
-            int currentYear = currentDate.getYear();
-            boolean isPaid = false;
-            if(!paymentDates.isEmpty()) {
-                LocalDate date = paymentDates.get(paymentDates.size()-1);
-                int month = date.getMonthValue();
-                int year = date.getYear();
-                if(month == currentMonth && year == currentYear) {
-                    isPaid = true;
-                }
+         for(int var1 = 1; var1 <= this.termInMonths; ++var1) {
+            String var2 = String.format("%-10d$%-10.2f\t$%-10.2f\t\t$%-10.2f\t$%-10.2f\t\t\t%s", ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getMonth(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getMonthlyPayment(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getPrincipalAmount(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getInterestPayment(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getRemainingBalance(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getPaymentStatus());
+            System.out.println(var2);
+         }
+      } else {
+         System.out.println("Error. Loan is not approved. ");
+      }
+
+   }
+
+   public void addPaymentDate(LocalDate var1) {
+      this.paymentDates.add(var1);
+   }
+
+   public void repay(String var1, BigDecimal var2) {
+      if (this.getStatus().equalsIgnoreCase("Approved")) {
+         LocalDate var3 = LocalDate.now();
+         int var4 = var3.getMonthValue();
+         int var5 = var3.getYear();
+         boolean var6 = false;
+         if (!this.paymentDates.isEmpty()) {
+            LocalDate var7 = (LocalDate)this.paymentDates.get(this.paymentDates.size() - 1);
+            int var8 = var7.getMonthValue();
+            int var9 = var7.getYear();
+            if (var8 == var4 && var9 == var5) {
+               var6 = true;
             }
-            if(isPaid == true) {
-                System.out.println("Already paid this month.");
+         }
+
+         if (var6) {
+            System.out.println("Already paid this month.");
+         } else if (var2.compareTo(this.monthlyPayment) >= 0) {
+            this.addPaymentDate(var3);
+            Iterator var10 = this.amortizationSchedules.iterator();
+
+            while(var10.hasNext()) {
+               Loan$AmortizationSchedule var12 = (Loan$AmortizationSchedule)var10.next();
+               if (var12.getPaymentStatus().equalsIgnoreCase("None")) {
+                  var12.setPaymentStatus("Paid");
+                  break;
+               }
             }
-            else {
-                addPaymentDate(currentDate);
-                outstandingAmount -= monthlyPayment;
-                String formattedAccountString = String.format("Account ID: %s. Original Account Balance: $%.2f. ", accountID, balance);
-                System.out.println(formattedAccountString);
-                String formattedString = String.format("Repaid $%.2f. Outstanding Amount to pay: $%.2f.", monthlyPayment, outstandingAmount);
-                System.out.println(formattedString);
-                balance -= monthlyPayment;
-                String formattedRemainingBalance = String.format("Account Balance: $%.2f", balance);
-                System.out.println(formattedRemainingBalance);
-                if(outstandingAmount == 0.0) {
-                    System.out.println("Loan Cleared.");
-                }
+
+            this.outstandingAmount = this.outstandingAmount.subtract(this.monthlyPayment);
+            String var11 = String.format("Account ID: %s. Original Account Balance: $%.2f. ", var1, var2);
+            System.out.println(var11);
+            String var13 = String.format("Repaid $%.2f. Outstanding Amount to pay: $%.2f.", this.monthlyPayment, this.outstandingAmount);
+            System.out.println(var13);
+            var2 = var2.subtract(this.monthlyPayment);
+            String var14 = String.format("Account Balance: $%.2f", var2);
+            System.out.println(var14);
+            if (this.outstandingAmount.equals(BigDecimal.ZERO)) {
+               System.out.println("Loan Cleared.");
+               this.setStatus("Closed");
             }
-        }
-        else {
-            System.out.println("Error. Loan is not approved. ");
-        }
-    }
+         } else {
+            System.out.println("Your account do not have sufficient funds to perform repayment of Loan");
+         }
+      } else {
+         System.out.println("Error. Loan is not approved. ");
+      }
 
-    /**
-     * Calculates the monthly amortization payment of the Loan.
-     *
-     * @return The calculated monthly amortization payment.
-     */
-    public double calculateAmortizationPayment() {
-        double monthlyInterestRate = interestRate / 12.0 / 100.0;
-        double monthlyPayment = (principalAmount * monthlyInterestRate * Math.pow((1+monthlyInterestRate),termInMonths)) / (Math.pow((1+monthlyInterestRate),termInMonths)-1);
-        return monthlyPayment;
-    }
+   }
 
-    /**
-     * Reads list of Loans from CSV file and returns a list of Loan objects.
-     * that match the specified customer and have the "Approved" status.
-     *
-     * @param filename The CSV filename.
-     * @param customerID The customerID of the specified customer to retrieve Loans associated with the specified customer
-     * @return A list of Loans with "Approved" status associated with the specified customer.
-     */
-    public static List<Loan> readLoansFromCSV(String filename, String customerID) {
-        List<Loan> loanList = new ArrayList<>();
+   public BigDecimal calculateAmortizationPayment() {
+      BigDecimal var1 = this.interestRate.divide(BigDecimal.valueOf(1200.0), 5, RoundingMode.HALF_UP);
+      BigDecimal var2 = this.principalAmount.multiply(var1.multiply(BigDecimal.valueOf(Math.pow(1.0 + var1.doubleValue(), (double)this.termInMonths)))).divide(BigDecimal.valueOf(Math.pow(1.0 + var1.doubleValue(), (double)this.termInMonths) - 1.0), 5, RoundingMode.HALF_UP);
+      return var2;
+   }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            // Skip the header row
-            String header = br.readLine();
+   public static List<Loan> readLoansFromCSV(String var0, String var1) {
+      ArrayList var2 = new ArrayList();
 
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if(data[9].equalsIgnoreCase(customerID) && data[10].equalsIgnoreCase("Approved")) {
-                    UUID loanID = UUID.fromString(data[0]);
-                    double principalAmount = Double.parseDouble(data[1]);
-                    double interestRate = Double.parseDouble(data[2]);
-                    int termInMonths = Integer.parseInt(data[3]);
-                    double monthlyPayment = Double.parseDouble(data[4]);
-                    double outstandingAmount = Double.parseDouble(data[5]);
-                    double totalPayment = Double.parseDouble(data[6]);
-                    LocalDate startDate = LocalDate.parse(data[7]);
-                    LocalDate endDate = LocalDate.parse(data[8]);
-                    String userID = data[9];
-                    String status = data[10];
-                    ArrayList<LocalDate> paymentDates = new ArrayList<>();
-                    for (int i = 11; i < data.length; i++) {
-                        paymentDates.add(LocalDate.parse(data[i]));
-                    }
+      try {
+         BufferedReader var3 = new BufferedReader(new FileReader(var0));
 
-                    Loan loan = new Loan(principalAmount, interestRate, termInMonths, userID);
-                    loan.setLoanID(loanID);
-                    loan.setMonthlyPayment(monthlyPayment);
-                    loan.setOutstandingAmount(outstandingAmount);
-                    loan.setTotalPayment(totalPayment);
-                    loan.setStartDate(startDate);
-                    loan.setEndDate(endDate);
-                    loan.setStatus(status);
-                    loan.setPaymentDates(paymentDates);
-                    loanList.add(loan);
-                }
+         try {
+            String var4 = var3.readLine();
+
+            String var5;
+            while((var5 = var3.readLine()) != null) {
+               String[] var6 = var5.split(",");
+               if (var6[9].equalsIgnoreCase(var1) && var6[10].equalsIgnoreCase("Approved")) {
+                  UUID var7 = UUID.fromString(var6[0]);
+                  BigDecimal var8 = new BigDecimal(var6[1]);
+                  BigDecimal var9 = new BigDecimal(var6[2]);
+                  int var10 = Integer.parseInt(var6[3]);
+                  BigDecimal var11 = new BigDecimal(var6[4]);
+                  BigDecimal var12 = new BigDecimal(var6[5]);
+                  BigDecimal var13 = new BigDecimal(var6[6]);
+                  LocalDate var14 = LocalDate.parse(var6[7]);
+                  LocalDate var15 = LocalDate.parse(var6[8]);
+                  String var16 = var6[9];
+                  String var17 = var6[10];
+                  ArrayList var18 = new ArrayList();
+
+                  for(int var19 = 11; var19 < var6.length; ++var19) {
+                     var18.add(LocalDate.parse(var6[var19]));
+                  }
+
+                  Loan var24 = new Loan(var8, var9, var10, var16);
+                  var24.setLoanID(var7);
+                  var24.setMonthlyPayment(var11);
+                  var24.setOutstandingAmount(var12);
+                  var24.setTotalPayment(var13);
+                  var24.setStartDate(var14);
+                  var24.setEndDate(var15);
+                  var24.setStatus(var17);
+                  var24.setPaymentDates(var18);
+                  var2.add(var24);
+               }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return loanList;
-    }
+         } catch (Throwable var21) {
+            try {
+               var3.close();
+            } catch (Throwable var20) {
+               var21.addSuppressed(var20);
+            }
+
+            throw var21;
+         }
+
+         var3.close();
+      } catch (FileNotFoundException var22) {
+         System.out.println("File not found: " + var0);
+      } catch (IOException var23) {
+         System.out.println("Error reading file: " + var23.getMessage());
+      }
+
+      return var2;
+   }
 }
