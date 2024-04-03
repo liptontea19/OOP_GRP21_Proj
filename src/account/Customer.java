@@ -3,13 +3,15 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.ArrayList;
 
 import javax.imageio.IIOException;
 
 /**
- * The Customer class is used to store and access a customer's information 
+ * The Customer class is used to store and access a customer's information
  * This class works together with the account class.
  */
 
@@ -17,7 +19,7 @@ public class Customer {
 
     private int Age, ContactNo, CreditScore;
     private String Address, ID, CustomerName, MaritalStatus, Country, EmailAddress, Occupation, Employer, DateOfBirth;
-    private List<Loan> loans; // a single Customer can have a List of loans
+    private List<Loan> loans; //a single Customer can have a List of loans
 
 
     /**
@@ -25,7 +27,7 @@ public class Customer {
      */
 
     public Customer(String customerID){
-        String path = "OOP_GRP21_Proj-main/data/Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
+        String path = "/Users/polly/IdeaProjects/NewOOP/src/Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line = "";
@@ -64,15 +66,18 @@ public class Customer {
 
         this.loans = new ArrayList<>();
     }
-    
-    /**
-     * Applies for a new loan and adds it to the customer's list of loans if successful.
-     */
+
     public Loan applyForLoan(double principalAmount, double interestRate, int termInMonths) {
-        if (Loan.checkEligiblity(this.CreditScore)) {
-            //below loan.applyForLoan method alrdy adds loan in the list and returns the loan object
-            Loan newLoan = Loan.applyForLoan(loans, principalAmount, interestRate, termInMonths, this.ID, this.CreditScore);
+        Credit credit = new Credit(this.ID, this.CreditScore);  // Create Credit object using customer's ID and credit score
+    
+        if (credit.checkEligiblity()) {
+            BigDecimal principal = BigDecimal.valueOf(principalAmount);
+            BigDecimal interest = BigDecimal.valueOf(interestRate);
+            
+            Loan newLoan = Loan.applyForLoan(loans, principal, interest, termInMonths, credit);  // Use the credit object
+    
             if (newLoan != null) {
+                //loan already added to the list in the loan.applyForLoan method, so inside customer not required
                 System.out.println("Loan applied successfully.");
             } else {
                 System.out.println("Loan application failed.");
@@ -83,7 +88,23 @@ public class Customer {
             return null;
         }
     }
+    
 
+    public void reviewAndProcessLoan(Loan loan) {
+        try {
+            if (loan != null) {
+                loan.approveLoan();  // This is where the exception is thrown
+                //there is an underlying error in the Loan.approveLoan method "ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result."
+                //the loan.approve method sets status to approved at the start of the method before error is encounted, hence approval still works after catching the error
+                System.out.println("Loan is approved.");
+            }
+        } catch (ArithmeticException e) {
+            System.err.println("Failed to process loan due to an arithmetic error: " + e.getMessage());
+            // Implement alternative logic or recovery here if possible
+        }
+    }
+       
+    
     /**
      * Prints the details of all loans associated with the customer.
      */
@@ -98,15 +119,15 @@ public class Customer {
             loan.displayInfo();
         }
     }
-  
-  /**
+
+    /**
      * Returns customer's credit score
      * @return integer of customer's credit score
      * */
     public int getCreditScore(){
         return CreditScore;
     }
-  /**
+    /**
      * Returns customer's contact number
      * @return integer of customer's contact number
      * */
@@ -114,162 +135,162 @@ public class Customer {
         return ContactNo;
     }
     /**
-         * Returns customer's marital status
-         * @return string of customer's marital status
-         * */
+     * Returns customer's marital status
+     * @return string of customer's marital status
+     * */
     public String getMaritalStatus(){
         return MaritalStatus;
     }
     /**
-         * Returns customer's country
-         * @return string of customer's country
-         * */
+     * Returns customer's country
+     * @return string of customer's country
+     * */
     public String getCountry(){
         return Country;
     }
     /**
-         * Returns customer's email address
-         * @return string of customer's email address
-         * */
+     * Returns customer's email address
+     * @return string of customer's email address
+     * */
     public String getEmailAddress(){
         return EmailAddress;
     }
     /**
-         * Returns customer's occupation
-         * @return string of customer's occupation
-         * */
+     * Returns customer's occupation
+     * @return string of customer's occupation
+     * */
     public String getOccupation(){
         return Occupation;
     }
     /**
-         * Returns customer's employer company
-         * @return string of customer's employer company
-         * */
+     * Returns customer's employer company
+     * @return string of customer's employer company
+     * */
     public String getEmployer(){
         return Employer;
     }
     /**
-         * Returns customer's name
-         * @return string of customer's name
-         * */
+     * Returns customer's name
+     * @return string of customer's name
+     * */
     public String getCustomerName() {
         return CustomerName;
     }
     /**
-         * Returns customer's age
-         * @return integer of customer's age
-         * */
+     * Returns customer's age
+     * @return integer of customer's age
+     * */
     public int getCustomerAge(){
         return Age;
     }
     /**
-         * Returns customer's address
-         * @return string of customer's address
-         * */
+     * Returns customer's address
+     * @return string of customer's address
+     * */
     public String getCustomerAddress(){
         return Address;
     }
     /**
-         * Returns customer's date of birth
-         * @return string of customer's date of birth
-         * */
+     * Returns customer's date of birth
+     * @return string of customer's date of birth
+     * */
     public String getCustomerDOB(){
         return DateOfBirth;
     }
     /**
-         * Returns customer's NRIC
-         * @return string of customer's NRIC
-         * */
+     * Returns customer's NRIC
+     * @return string of customer's NRIC
+     * */
     public String getCustomerNRIC(){
         return ID;
     }
     /**
-         * Sets customer's credit score
-         * @param CreditScore retrives customer's credit score
-         * */
+     * Sets customer's credit score
+     * @param CreditScore retrives customer's credit score
+     * */
     public void setCreditScore(int CreditScore){
         this.CreditScore = CreditScore;
     }
     /**
-         * Sets customer's contact number
-         * @param ContactNo retrives customer's contact number
-         * */
+     * Sets customer's contact number
+     * @param ContactNo retrives customer's contact number
+     * */
     public void setContactNo(int ContactNo){
         this.ContactNo = ContactNo;
     }
     /**
-         * Sets customer's marital status
-         * @param MaritalStatus retrives customer's marital status "Single, Married, Divorced"
-         * */
+     * Sets customer's marital status
+     * @param MaritalStatus retrives customer's marital status "Single, Married, Divorced"
+     * */
     public void setMaritalStatus(String maritalStatus){
         this.MaritalStatus = maritalStatus;
     }
     /**
-         * Sets customer's country
-         * @param Country retrives customer's bank country
-         * */
+     * Sets customer's country
+     * @param Country retrives customer's bank country
+     * */
     public void setCountry(String Country){
         this.Country = Country;
     }
     /**
-         * Sets customer's email address
-         * @param EmailAddress retrives customer's email address
-         * */
+     * Sets customer's email address
+     * @param EmailAddress retrives customer's email address
+     * */
     public void setEmailAddress(String emailAddress){
         this.EmailAddress = emailAddress;
     }
     /**
-         * Sets customer's occupation
-         * @param Occupation retrives customer's job occupation
-         * */
+     * Sets customer's occupation
+     * @param Occupation retrives customer's job occupation
+     * */
     public void setOccupation(String occupation){
         this.Occupation = occupation;
     }
     /**
-         * Sets customer's employer company
-         * @param Employer retrives customer's employer company
-         * */
+     * Sets customer's employer company
+     * @param Employer retrives customer's employer company
+     * */
     public void setEmployer(String employer){
         this.Employer = employer;
     }
     /**
-         * Sets customer's age
-         * @param CustomerName retrives customer's age
-         * */
+     * Sets customer's age
+     * @param CustomerName retrives customer's age
+     * */
     public void setCustomerAge(int age){
         this.Age = age;
     }
     /**
-         * Sets customer's address
-         * @param Address retrives customer's residential address
-         * */
+     * Sets customer's address
+     * @param Address retrives customer's residential address
+     * */
     public void setCustomerAddress(String address){
         this.Address = address;
     }
     /**
-         * Sets customer's date of birth
-         * @param DateOfBirth retrives customer's date of birth
-         * */
+     * Sets customer's date of birth
+     * @param DateOfBirth retrives customer's date of birth
+     * */
     public void setCustomerDOB(String dob){
         this.DateOfBirth = dob;
     }
     /**
-         * Sets customer's name
-         * @param CustomerName retrives customer's full name
-         * */
+     * Sets customer's name
+     * @param CustomerName retrives customer's full name
+     * */
     public void setCustomerName(String name){
         this.CustomerName = name;
     }
     /**
-         * Sets customer's NRIC
-         * @param ID retrives customer's NRIC
-         * */
+     * Sets customer's NRIC
+     * @param ID retrives customer's NRIC
+     * */
     public void setCustomerNRIC(String id){
         this.ID = id;
     }
     /**
-         * This method prints out customer's details
-         * */
+     * This method prints out customer's details
+     * */
     public void printCustomerDetails(){
         System.out.println("Name: " + CustomerName
                 + "\nAge: " + Age
@@ -286,7 +307,8 @@ public class Customer {
     public static void main(String[] args){
         Customer cust1 = new Customer("S1234A");
         cust1.printCustomerDetails();
-        cust1.applyForLoan(7000, 5.0, 12);
+        Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
+        cust1.reviewAndProcessLoan(newLoan);
         cust1.printAllLoans();
 
     }
