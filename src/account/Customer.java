@@ -120,6 +120,11 @@ public class Customer {
         }
     }
 
+    public List<Loan> getLoans() {
+    return loans;
+}
+
+
     /**
      * Returns customer's credit score
      * @return integer of customer's credit score
@@ -310,6 +315,7 @@ public class Customer {
         Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
         cust1.reviewAndProcessLoan(newLoan);
         cust1.printAllLoans();
+        
 
     }
 }
