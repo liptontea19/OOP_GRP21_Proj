@@ -106,7 +106,7 @@ public class Account {
             if (foundFlag == true){
                 this.customer = new Customer(custId);// replace with Customer csv constructor
                 this.creditScore = customer.getCreditScore();
-                if (this.customer != null && !this.customer.getLoans().isEmpty()) {
+                if (!this.customer.getLoans().isEmpty()) {
                     loanFlag = true;
                 }
                 if (cardNumber != ""){
