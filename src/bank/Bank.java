@@ -130,7 +130,7 @@ public class Bank {
         Account displayAccount;
         for (int i=0;i<accountMap.size();i++){
             displayAccount = accountMap.get(i+1);
-            System.out.println(displayAccount.getAccountNumber() + ":        " + 
+            System.out.println(displayAccount.getAccountNumber() + ":        " +
             displayAccount.customer.getCustomerName());
         }
     }
@@ -149,7 +149,7 @@ public class Bank {
         for (int i=0;i<accountMap.size();i++){
             displayAccount = accountMap.get(i+1);
             if(displayAccount.getAccountNumber()==userId){continue;}    // skip displaying input userId account
-            System.out.println((i+1) + ":  " + displayAccount.getAccountNumber() + "    " + 
+            System.out.println((i+1) + ":  " + displayAccount.getAccountNumber() + "    " +
             displayAccount.customer.getCustomerName());
         }
     }
@@ -209,8 +209,9 @@ public class Bank {
                             (2): View Credit Card Options
                             (3): View Insurance Options
                             (4): View Foreign Currency Options
-                            (5): View Account Details
-                            (6): Log out""");
+                            (5): View Loan Options
+                            (6): View Account Details
+                            (7): Log out""");
             System.out.println("---------------------------------------------");
             userChoice = input.nextInt();
             double amt;
@@ -223,14 +224,17 @@ public class Bank {
                     ccProcess(accountId);
                     break;
                 case 3:
+                    insProcess(accountId);
                     break;
                 case 4:
                     fxProcess(accountId);
                     break;
                 case 5: 
+
+                case 6:
                     accountMap.get(accountId).printAccountDetails();
                     break;
-                case 6:
+                case 7:
                     return; // exits the account process
                 default:
                     System.out.println("Selected action is not in list.");
@@ -373,9 +377,34 @@ public class Bank {
 
     }
 
+    public void loanProcess(int accountId){
+        if(accountMap.get(accountId).getInsurFlag()){
+
+        }
+        else {
+            System.out.println("Do you want to apply for Loan?");
+        }
+
+    }
+
     public void insProcess(int accountId){
         if(accountMap.get(accountId).getInsurFlag()) {
-            
+            System.out.println("""
+            Select your choice:
+            (1): Pay Monthly Bill
+            (2): View Insurance Details""");
+
+            switch (input.nextInt()) {
+                case 1:
+                    accountMap.get(accountId).payInsurancePremium();
+                    break;
+                case 2:
+                    accountMap.get(accountId).insurance.displayPremiumBilling();
+                    break;
+                default:
+                    System.out.println("Invalid Entry! Try again!");
+                    break;
+            }
         } else {
             System.out.println("Get insurance?");
             System.out.println("Which policy would you like to add to your account?");
