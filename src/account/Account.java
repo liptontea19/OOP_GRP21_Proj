@@ -48,7 +48,7 @@ public class Account {
 
     public g11_FXE FXE;
     public Insurance insurance;
-    private boolean insureFlag = false, cardFlag = false;
+    private boolean insureFlag = false, cardFlag = false, loanFlag = false;
 
     /*public Account(int accountNumber, String accountType, int branchCode,
                     double balance, Customer customer, double transferLimit){
@@ -106,6 +106,9 @@ public class Account {
             if (foundFlag == true){
                 this.customer = new Customer(custId);// replace with Customer csv constructor
                 this.creditScore = customer.getCreditScore();
+                if (this.customer != null && !this.customer.getLoans().isEmpty()) {
+                    loanFlag = true;
+                }
                 if (cardNumber != ""){
                     cardFlag = true;
                     this.creditCard = new CreditCard(Long.parseLong(cardNumber));
