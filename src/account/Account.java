@@ -3,10 +3,13 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
 
 import bank.Bank;
 
@@ -29,6 +32,11 @@ public class Account {
     private float interestRate;
     private String accountType;
     private double balance, transferLimit;
+
+    protected String SGDcurrency = "SGD";
+    protected String JPYcurrency = "JPY";
+    protected String USDcurrency = "USD";
+
     private int branchCode;
     private DecimalFormat moneyDecimalFormat = new DecimalFormat("#,###.00");
 
@@ -38,10 +46,9 @@ public class Account {
     public Customer customer;
     private int creditScore;
 
-    public ForeignX foreignX;
+    public g11_FXE FXE;
     public Insurance insurance;
-    public Loan loan;
-    private boolean insureFlag = false, cardFlag = false, loanFlag = true;
+    private boolean insureFlag = false, cardFlag = false;
 
     /*public Account(int accountNumber, String accountType, int branchCode,
                     double balance, Customer customer, double transferLimit){
@@ -68,7 +75,7 @@ public class Account {
      * @param accountNumber unique account ID used as search value for
      */
     public Account(int accountNumber){
-        String filePath = "data\\Account.csv";
+        String filePath = "data/Account.csv";
         //Fetches account details from Account.csv using accountNumber and initialises into class attribute
         try(BufferedReader reader = new BufferedReader(new FileReader(filePath))){
             //BufferedReader reader = new BufferedReader(new FileReader(filePath));   // Instantiates bufferedReader obj to read Account CSV file
@@ -92,9 +99,7 @@ public class Account {
                         this.insurance = new Insurance(accountNumber);
                         insureFlag = true;
                     }
-                    this.foreignX = new ForeignX(accountNumber);
-                    this.loan = loan.readLoansFromCSV(accountNumber);
-                    this.loanFlag = true;
+                    this.FXE = new g11_FXE();
                     break;
                 }
             }
@@ -123,35 +128,40 @@ public class Account {
         }
     }
 
-    public void addLoan(double principalAmount, float interestRate, int termInMonths, int accountNumber, int creditScore){
-        if (loanFlag == false){
-            Loan newLoan = Loan.applyForLoan(principalAmount, interestRate, termInMonths, accountNumber, creditScore);
-            if (newLoan != null){
-                this.loan = newLoan;
-                loanFlag = true;
-            }
-            else{
-                System.err.println("Loan application failed.");
-            }
-        }
-        else{
-            System.err.println("User already has an existing Loan.");
-        }
-    }
+    public void repayLoan() {
+        List<Loan> loans = this.customer.getLoans();  // Assuming we can access the customer's loans
+        Scanner scanner = new Scanner(System.in);
 
-    public void approveLoan(){
-        if (this.loan !=null && "Pending".equals(this.loan.getStatus())){
-            this.loan.approveLoan();
-        }else {
-            System.err.println("No pending loan to approve.");
+        if (loans.isEmpty()) {
+            System.out.println("No loans found for this customer.");
+            return;
         }
-    }
 
-    public void rejectLoan(){
-        if (this.loan!=null && "Pending".equals(this.loan.getStatus())){
-            this.loan.rejectLoan();
-        }else {
-            System.err.println("No pending loan to reject.");
+        System.out.println("Please select a loan to repay:");
+        for (int i = 0; i < loans.size(); i++) {
+            Loan loan = loans.get(i);
+            System.out.println(i + 1 + ": Loan ID " + loan.getLoanID() + " with monthly payment of " + loan.getMonthlyPayment());
+        }
+
+        System.out.print("Enter the number of the loan to repay: ");
+        int choice = scanner.nextInt();
+
+        if (choice < 1 || choice > loans.size()) {
+            System.out.println("Invalid loan selection.");
+            return;
+        }
+
+        Loan selectedLoan = loans.get(choice - 1);
+        BigDecimal monthlyPayment = selectedLoan.getMonthlyPayment();
+        BigDecimal accountBalance = new BigDecimal(this.balance);
+
+        if (accountBalance.compareTo(monthlyPayment) >= 0) {
+            selectedLoan.repay(String.valueOf(this.accountNumber), accountBalance);
+
+            this.balance = accountBalance.subtract(monthlyPayment).doubleValue();
+            System.out.println("Loan repayment for loan ID " + selectedLoan.getLoanID() + " made successfully.");
+        } else {
+            System.out.println("Insufficient account balance for the monthly loan repayment.");
         }
     }
 
@@ -224,6 +234,10 @@ public class Account {
 
     }
 
+    public Customer getCustomer(){
+        return this.customer;
+    }
+
     public Boolean getCardFlag(){
         return cardFlag;
     }
@@ -236,9 +250,6 @@ public class Account {
         return insureFlag;
     }
 
-    public Boolean getLoanFlag(){
-        return loanFlag;
-    }
 
     public int getBranchCreated(){
         return branchCode;
@@ -248,20 +259,6 @@ public class Account {
         return interestRate;
     }
 
-    public void makeLoanPayment(){
-        if (loanFlag == false){     // checks if there is a Loan class instantiated in account
-            System.out.println("Account does not have a Loan associated with it");
-            return;
-        }
-        double monthlyLoanPaymentAmount = loan.getMonthlyPayment();
-        if (monthlyLoanPaymentAmount > balance){        //checks if balance is sufficient to pay of monthly Loan
-            System.out.println("There is insufficient balance in account to pay amount of " + monthlyLoanPaymentAmount);
-            System.out.println("Current Account Balance: $" + moneyDecimalFormat.format(balance));
-        }
-        else {
-            this.balance = loan.repay(balance); //used to update the new balance after payment
-        }
-    }
 
     /**
      * Pays for outstanding {@link Insurance} premium for the current month.
@@ -304,23 +301,40 @@ public class Account {
         }
     }
 
-    public void makeForeignExchange(float exchangeAmount, int exchangeChoice){
-        if(exchangeAmount <= balance){
-            balance -= exchangeAmount;
-            System.out.println("Your current balance: " + moneyDecimalFormat.format(balance));
-            foreignX.exchangeToForeign(exchangeAmount, exchangeChoice);
+    public void makeExchange(int firstChoice, int secondChoice, double exchangeAmt){
+        if(firstChoice == 1 && secondChoice == 1){
+            if(exchangeAmt > balance){
+                System.out.println("Insufficient balance!");
+            }
+            else {
+                balance -= exchangeAmt;
+                System.out.println("Current Account Balance: " + balance);
+            }
         }
-        else{
-            System.out.println("Insufficient balance! Please try again!");
+        else if(firstChoice == 1 && secondChoice == 2){
+            if(exchangeAmt > balance){
+                System.out.println("Insufficient balance!");
+            }
+            else {
+                balance -= exchangeAmt;
+                System.out.println("Current Account Balance: " + balance);
+            }
+        }
+        else if(firstChoice == 2 && secondChoice == 1){
+            double targetAmt = FXE.convert(JPYcurrency,SGDcurrency,exchangeAmt);
+            balance += targetAmt;
+            System.out.println("Current Account Balance: " + balance);
+        }
+        else if(firstChoice == 2 && secondChoice == 2){
+            double targetAmt = FXE.convert(USDcurrency,SGDcurrency,exchangeAmt);
+            balance += targetAmt;
+            System.out.println("Current Account Balance: " + balance);
+        }
+        else {
+            System.out.println("Invalid Entry! Please try again!");
         }
     }
 
-    public void makeSGDExchange(float foreignAmount){
-        float SGDAmount = foreignX.exchangeToSGD(foreignAmount);
-        balance += SGDAmount;
-        System.out.println("Your current balance: " + moneyDecimalFormat.format(balance));
-
-    }
 
     public void printAccountDetails(){
         System.out.println("Account Number: " + Integer.toString(accountNumber) +
@@ -336,11 +350,7 @@ public class Account {
             System.out.println("| Start Date: " + insurance.getStartDate());
             System.out.println("| End Date: " + insurance.getEndDate());
         }
-        if (loanFlag == true){
-            System.out.println("Loan: " + loan.getLoanID());
-        }
     }
-
     public void setAccountNumber(int number){
         this.accountNumber = number;
     }
@@ -405,9 +415,23 @@ public class Account {
         System.out.println("Welcome!");
         myAccount.printAccountDetails();
 
-        // Test Account without Insurance
-        Account acc6 = new Account(6);
-        acc6.printAccountDetails();
-        acc6.payInsurancePremium();
+        Customer cust1 = myAccount.getCustomer();  // Ensure this is not null
+        if (cust1 != null) {
+            cust1.printCustomerDetails();
+
+            // Apply for a loan and review it
+            Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
+            if (newLoan != null) {
+                cust1.reviewAndProcessLoan(newLoan);  // This method should internally update the loan status and add it to the customer's loan list
+            }
+
+            // Now print all loans of the customer to confirm the loan has been added
+            cust1.printAllLoans();
+
+            // Repay a loan if any exists
+            myAccount.repayLoan();
+        } else {
+            System.out.println("Customer details not loaded correctly.");
+        }
     }
 }

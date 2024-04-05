@@ -62,7 +62,7 @@ public class Branch {
         this.branchCode = branchCode;
         branchDetails = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("OOP_GRP21_Proj-main/data/Branch.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("data/Branch.csv"));
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import account.Account;
+import account.FXAccount;
 import account.Insurance;
 
 import java.io.BufferedReader;
@@ -36,15 +37,18 @@ public class Bank {
     /** Maps all user accounts. Key: Account ID, Value: Account Object connected to Account ID */
     private HashMap<Integer, Account> accountMap;
 
+    private HashMap<Integer, FXAccount> fxMap;
+
     public Bank(){
         //accounts = new ArrayList<>();
         accountMap = new HashMap<>();
         branchMap = new HashMap<>();
+        fxMap = new HashMap<>();
         insuranceCatalog = new InsuranceCatalog();
         secSession = new Security(60);
         String[] accountCSVLine, branchCodeCSVLine;
 
-        String csvFile = "data\\Bank.csv";
+        String csvFile = "data/Bank.csv";
         try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
             String bankLine;
             bankLine = reader.readLine();   // reads first line and skips lmao
@@ -56,6 +60,7 @@ public class Bank {
 
             makeBranch(branchCodeCSVLine);  // creates branchMap 
             makeAccounts(accountCSVLine);   // creates accountMap
+            makeFXAccounts(accountCSVLine);
             insuranceCatalog = new InsuranceCatalog();  // initialises insuranceCatalog object            
         }
         catch (IOException e){
@@ -120,6 +125,13 @@ public class Bank {
         }
     }
 
+    public void makeFXAccounts(String[] accIdStrings){
+        for(int i=0;i<accIdStrings.length;i++){
+            fxMap.put(i+1, new FXAccount(Integer.parseInt(accIdStrings[i])));
+            //accounts.add(new Account(Integer.parseInt(accIdStrings[i])));
+        }
+    }
+
     /** Displays all bank customer account IDs and names */
     public void displayAccounts(){
         if (accountMap.size() < 1){
@@ -130,7 +142,7 @@ public class Bank {
         Account displayAccount;
         for (int i=0;i<accountMap.size();i++){
             displayAccount = accountMap.get(i+1);
-            System.out.println(displayAccount.getAccountNumber() + ":        " + 
+            System.out.println(displayAccount.getAccountNumber() + ":        " +
             displayAccount.customer.getCustomerName());
         }
     }
@@ -149,7 +161,7 @@ public class Bank {
         for (int i=0;i<accountMap.size();i++){
             displayAccount = accountMap.get(i+1);
             if(displayAccount.getAccountNumber()==userId){continue;}    // skip displaying input userId account
-            System.out.println((i+1) + ":  " + displayAccount.getAccountNumber() + "    " + 
+            System.out.println((i+1) + ":  " + displayAccount.getAccountNumber() + "    " +
             displayAccount.customer.getCustomerName());
         }
     }
@@ -209,8 +221,9 @@ public class Bank {
                             (2): View Credit Card Options
                             (3): View Insurance Options
                             (4): View Foreign Currency Options
-                            (5): View Account Details
-                            (6): Log out""");
+                            (5): View Loan Options
+                            (6): View Account Details
+                            (7): Log out""");
             System.out.println("---------------------------------------------");
             userChoice = input.nextInt();
             double amt;
@@ -223,13 +236,17 @@ public class Bank {
                     ccProcess(accountId);
                     break;
                 case 3:
+                    insProcess(accountId);
                     break;
                 case 4:
+                    fxProcess(accountId);
                     break;
                 case 5: 
+
+                case 6:
                     accountMap.get(accountId).printAccountDetails();
                     break;
-                case 6:
+                case 7:
                     return; // exits the account process
                 default:
                     System.out.println("Selected action is not in list.");
@@ -251,7 +268,7 @@ public class Bank {
             case 1:
                 System.out.print("Enter the amount you want to deposit: ");
                 amt = input.nextDouble();
-                System.out.println("Select branch you would like to withdraw from.");
+                System.out.println("Select branch you would like to deposit to.");
                 displayBranches();
                 branchChoice = input.nextInt();
                 accountMap.get(accountId).deposit(amt);
@@ -339,9 +356,73 @@ public class Bank {
         }
     }
 
+    public void fxProcess(int accountID){
+        System.out.println("Select your choice.\n(1): Exchange SGD to JPY/USD \n(2): Exchange JPY/USD to SGD \n(3): View Foreign Balances");
+        int firstChoice = input.nextInt();
+        int secondChoice;
+        double exchangeAmt;
+        switch(firstChoice){
+            case 1:
+                fxMap.get(accountID).FXE.displayRates();
+                System.out.println("Which Foreign currency would you like to exchange to?\n(1): JPY\n(2): USD");
+                secondChoice = input.nextInt();
+                System.out.println("Enter the amount you want to exchange:");
+                exchangeAmt = input.nextDouble();
+
+                fxMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
+                accountMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
+
+                break;
+            case 2:
+                fxMap.get(accountID).printFXBalance();
+                System.out.println("Which currency would you like to exchange to SGD?\n(1): JPY\n(2): USD");
+                secondChoice = input.nextInt();
+                System.out.println("Enter the amount you want to exchange:");
+                exchangeAmt = input.nextDouble();
+
+                fxMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
+                accountMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
+
+                break;
+            case 3:
+                fxMap.get(accountID).printFXBalance();
+                break;
+            default:
+                System.out.println("Invalid Entry!");
+                break;
+
+        }
+
+    }
+
+    public void loanProcess(int accountId){
+        if(accountMap.get(accountId).getInsurFlag()){
+
+        }
+        else {
+            System.out.println("Do you want to apply for Loan?");
+        }
+
+    }
+
     public void insProcess(int accountId){
         if(accountMap.get(accountId).getInsurFlag()) {
-            
+            System.out.println("""
+            Select your choice:
+            (1): Pay Monthly Bill
+            (2): View Insurance Details""");
+
+            switch (input.nextInt()) {
+                case 1:
+                    accountMap.get(accountId).payInsurancePremium();
+                    break;
+                case 2:
+                    accountMap.get(accountId).insurance.displayPremiumBilling();
+                    break;
+                default:
+                    System.out.println("Invalid Entry! Try again!");
+                    break;
+            }
         } else {
             System.out.println("Get insurance?");
             System.out.println("Which policy would you like to add to your account?");
@@ -359,8 +440,8 @@ public class Bank {
         Branch selectedBranch;
         for (int i=1;i<=branchMap.size();i++){
             selectedBranch = branchMap.get(i);
-            System.out.println(selectedBranch.getBranchName() + "    " + selectedBranch.getBranchCode() + 
-            "    $" + moneyFormat.format(selectedBranch.getBranchReserve()) + "    " + selectedBranch.getOpeninghours() + "~" + 
+            System.out.println(i + ": " + selectedBranch.getBranchName() + "    " + selectedBranch.getBranchCode() +
+            "           $" + moneyFormat.format(selectedBranch.getBranchReserve()) + "          " + selectedBranch.getOpeninghours() + "~" +
             selectedBranch.getClosingHours());
         }
     }
@@ -400,7 +481,7 @@ public class Bank {
 
     }
 
-    public void ProcessTransactions(Account account, int choice, int[] acclist) {
+    /*public void ProcessTransactions(Account account, int choice, int[] acclist) {
         // Process Transactions here.
         Scanner scanner = new Scanner(System.in);
         if(choice == 1){
@@ -539,7 +620,7 @@ public class Bank {
             scanner.nextLine();
 
             if(foreignChoice == 1){
-                account.foreignX.viewCurrencyRates();
+               // account.foreignX.viewCurrencyRates();
                 System.out.println("Enter an amount you want to convert");
                 int SGDamount = scanner.nextInt();
                 scanner.nextLine();
@@ -554,7 +635,7 @@ public class Bank {
                 (4): Australia (AUD)
                 (5): United Kingdom (GBP)""");
                     int exchangeChoice = scanner.nextInt();
-                    account.foreignX.exchangeToForeign(SGDamount,exchangeChoice);
+                    //account.foreignX.exchangeToForeign(SGDamount,exchangeChoice);
                 }
                 else {
                     System.out.println("Insufficient balance!");
@@ -562,19 +643,20 @@ public class Bank {
 
             }
             else if(foreignChoice == 2){
-                account.foreignX.viewCurrencyRates();
+                //account.foreignX.viewCurrencyRates();
                 System.out.println("Enter an amount you want to convert");
                 int foreignamount = scanner.nextInt();
                 scanner.nextLine();
-                account.foreignX.exchangeToSGD(foreignamount);
+                //account.foreignX.exchangeToSGD(foreignamount);
 
             }
             else if(foreignChoice == 3){
-                account.foreignX.viewCurrencyRates();
+                //account.foreignX.viewCurrencyRates();
             }
         }
         scanner.close();
     }
+     */
 
     /*public static void main1(String[] args) {
         Scanner scanner = new Scanner(System.in);

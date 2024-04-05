@@ -54,7 +54,7 @@ public class CreditCard {
         this.transactionHistory = new ArrayList<>();
         ArrayList<ArrayList<String>> creditDetails = new ArrayList<>();
         allCreditCards.add(this);
-        try (BufferedReader reader = new BufferedReader(new FileReader("data\\CreditCard.csv"))){
+        try (BufferedReader reader = new BufferedReader(new FileReader("data/CreditCard.csv"))){
             String line;
             boolean firstLine = true; // Flag to skip the first line
             while ((line = reader.readLine()) != null) {
