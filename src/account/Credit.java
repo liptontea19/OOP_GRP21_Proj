@@ -1,4 +1,5 @@
 // Source code is decompiled from a .class file using FernFlower decompiler.
+package account;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
