@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import account.Account;
+import account.FXAccount;
 import account.Insurance;
 
 import java.io.BufferedReader;
@@ -36,10 +37,13 @@ public class Bank {
     /** Maps all user accounts. Key: Account ID, Value: Account Object connected to Account ID */
     private HashMap<Integer, Account> accountMap;
 
+    private HashMap<Integer, FXAccount> fxMap;
+
     public Bank(){
         //accounts = new ArrayList<>();
         accountMap = new HashMap<>();
         branchMap = new HashMap<>();
+        fxMap = new HashMap<>();
         insuranceCatalog = new InsuranceCatalog();
         secSession = new Security(60);
         String[] accountCSVLine, branchCodeCSVLine;
@@ -56,6 +60,7 @@ public class Bank {
 
             makeBranch(branchCodeCSVLine);  // creates branchMap 
             makeAccounts(accountCSVLine);   // creates accountMap
+            makeFXAccounts(accountCSVLine);
             insuranceCatalog = new InsuranceCatalog();  // initialises insuranceCatalog object            
         }
         catch (IOException e){
@@ -116,6 +121,13 @@ public class Bank {
     public void makeAccounts(String[] accIdStrings){
         for(int i=0;i<accIdStrings.length;i++){
             accountMap.put(i+1, new Account(Integer.parseInt(accIdStrings[i])));
+            //accounts.add(new Account(Integer.parseInt(accIdStrings[i])));
+        }
+    }
+
+    public void makeFXAccounts(String[] accIdStrings){
+        for(int i=0;i<accIdStrings.length;i++){
+            fxMap.put(i+1, new FXAccount(Integer.parseInt(accIdStrings[i])));
             //accounts.add(new Account(Integer.parseInt(accIdStrings[i])));
         }
     }
@@ -256,7 +268,7 @@ public class Bank {
             case 1:
                 System.out.print("Enter the amount you want to deposit: ");
                 amt = input.nextDouble();
-                System.out.println("Select branch you would like to withdraw from.");
+                System.out.println("Select branch you would like to deposit to.");
                 displayBranches();
                 branchChoice = input.nextInt();
                 accountMap.get(accountId).deposit(amt);
@@ -351,23 +363,29 @@ public class Bank {
         double exchangeAmt;
         switch(firstChoice){
             case 1:
-                accountMap.get(accountID).FXE.displayRates();
+                fxMap.get(accountID).FXE.displayRates();
                 System.out.println("Which Foreign currency would you like to exchange to?\n(1): JPY\n(2): USD");
                 secondChoice = input.nextInt();
                 System.out.println("Enter the amount you want to exchange:");
                 exchangeAmt = input.nextDouble();
+
+                fxMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
                 accountMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
+
                 break;
             case 2:
-                accountMap.get(accountID).printFXBalance();
+                fxMap.get(accountID).printFXBalance();
                 System.out.println("Which currency would you like to exchange to SGD?\n(1): JPY\n(2): USD");
                 secondChoice = input.nextInt();
                 System.out.println("Enter the amount you want to exchange:");
                 exchangeAmt = input.nextDouble();
+
+                fxMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
                 accountMap.get(accountID).makeExchange(firstChoice,secondChoice,exchangeAmt);
+
                 break;
             case 3:
-                accountMap.get(accountID).printFXBalance();
+                fxMap.get(accountID).printFXBalance();
                 break;
             default:
                 System.out.println("Invalid Entry!");
@@ -422,8 +440,8 @@ public class Bank {
         Branch selectedBranch;
         for (int i=1;i<=branchMap.size();i++){
             selectedBranch = branchMap.get(i);
-            System.out.println(selectedBranch.getBranchName() + "    " + selectedBranch.getBranchCode() + 
-            "    $" + moneyFormat.format(selectedBranch.getBranchReserve()) + "    " + selectedBranch.getOpeninghours() + "~" + 
+            System.out.println(i + ": " + selectedBranch.getBranchName() + "    " + selectedBranch.getBranchCode() +
+            "           $" + moneyFormat.format(selectedBranch.getBranchReserve()) + "          " + selectedBranch.getOpeninghours() + "~" +
             selectedBranch.getClosingHours());
         }
     }

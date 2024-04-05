@@ -33,12 +33,9 @@ public class Account {
     private String accountType;
     private double balance, transferLimit;
 
-    private double JPYbalance = 0;
-    private double USDbalance = 0;
-
-    private String SGDcurrency = "SGD";
-    private String JPYcurrency = "JPY";
-    private String USDcurrency = "USD";
+    protected String SGDcurrency = "SGD";
+    protected String JPYcurrency = "JPY";
+    protected String USDcurrency = "USD";
 
     private int branchCode;
     private DecimalFormat moneyDecimalFormat = new DecimalFormat("#,###.00");
@@ -305,51 +302,39 @@ public class Account {
     }
 
     public void makeExchange(int firstChoice, int secondChoice, double exchangeAmt){
-        if(exchangeAmt > balance){
-            System.out.println("Insufficient balance!");
-        }
-        else {
-            if(firstChoice == 1 && secondChoice == 1){
-                balance -= exchangeAmt;
-                double targetAmt = FXE.convert(SGDcurrency,JPYcurrency,exchangeAmt);
-                JPYbalance += targetAmt;
-                System.out.println("Exchange Successful!\nCurrent Balance: "
-                        + balance + "\nJPY Balance: " + JPYbalance);
-
-            }
-            else if(firstChoice == 1 && secondChoice == 2){
-                balance -= exchangeAmt;
-                double targetAmt = FXE.convert(SGDcurrency,USDcurrency,exchangeAmt);
-                USDbalance += targetAmt;
-                System.out.println("Exchange Successful!\nCurrent Balance: "
-                        + balance + "\nUSD Balance: " + USDbalance);
-
-            }
-            else if(firstChoice == 2 && secondChoice == 1){
-                JPYbalance -= exchangeAmt;
-                double targetAmt = FXE.convert(JPYcurrency,SGDcurrency,exchangeAmt);
-                balance += targetAmt;
-                System.out.println("Exchange Successful!\nCurrent Balance: "
-                        + balance + "\nJPY Balance: " + JPYbalance);
-
-            }
-            else if(firstChoice == 2 && secondChoice == 2){
-                USDbalance -= exchangeAmt;
-                double targetAmt = FXE.convert(USDcurrency,SGDcurrency,exchangeAmt);
-                balance += targetAmt;
-                System.out.println("Exchange Successful!\nCurrent Balance: "
-                        + balance + "\nUSD Balance: " + USDbalance);
+        if(firstChoice == 1 && secondChoice == 1){
+            if(exchangeAmt > balance){
+                System.out.println("Insufficient balance!");
             }
             else {
-                System.out.println("Invalid Entry! Please try again!");
+                balance -= exchangeAmt;
+                System.out.println("Current Account Balance: " + balance);
             }
         }
-
+        else if(firstChoice == 1 && secondChoice == 2){
+            if(exchangeAmt > balance){
+                System.out.println("Insufficient balance!");
+            }
+            else {
+                balance -= exchangeAmt;
+                System.out.println("Current Account Balance: " + balance);
+            }
+        }
+        else if(firstChoice == 2 && secondChoice == 1){
+            double targetAmt = FXE.convert(JPYcurrency,SGDcurrency,exchangeAmt);
+            balance += targetAmt;
+            System.out.println("Current Account Balance: " + balance);
+        }
+        else if(firstChoice == 2 && secondChoice == 2){
+            double targetAmt = FXE.convert(USDcurrency,SGDcurrency,exchangeAmt);
+            balance += targetAmt;
+            System.out.println("Current Account Balance: " + balance);
+        }
+        else {
+            System.out.println("Invalid Entry! Please try again!");
+        }
     }
 
-    public void printFXBalance(){
-        System.out.println("Foreign Balances:\n(1): " + JPYbalance + "\n(2): " + USDbalance);
-    }
 
     public void printAccountDetails(){
         System.out.println("Account Number: " + Integer.toString(accountNumber) +
