@@ -37,6 +37,7 @@ public class Bank {
     /** Maps all user accounts. Key: Account ID, Value: Account Object connected to Account ID */
     private HashMap<Integer, Account> accountMap;
 
+    /** Maps all user Foreign Exchange accounts. Key: Account ID, Value: FXAccount Object connected to Account ID */
     private HashMap<Integer, FXAccount> fxMap;
 
     public Bank(){
@@ -60,7 +61,7 @@ public class Bank {
 
             makeBranch(branchCodeCSVLine);  // creates branchMap 
             makeAccounts(accountCSVLine);   // creates accountMap
-            makeFXAccounts(accountCSVLine);
+            makeFXAccounts(accountCSVLine); // creates fxMap
             insuranceCatalog = new InsuranceCatalog();  // initialises insuranceCatalog object            
         }
         catch (IOException e){
@@ -128,7 +129,6 @@ public class Bank {
     public void makeFXAccounts(String[] accIdStrings){
         for(int i=0;i<accIdStrings.length;i++){
             fxMap.put(i+1, new FXAccount(Integer.parseInt(accIdStrings[i])));
-            //accounts.add(new Account(Integer.parseInt(accIdStrings[i])));
         }
     }
 
