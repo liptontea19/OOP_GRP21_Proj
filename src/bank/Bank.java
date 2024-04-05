@@ -242,12 +242,12 @@ public class Bank {
                     fxProcess(accountId);
                     break;
                 case 5: 
-
+                    break;
                 case 6:
                     accountMap.get(accountId).printAccountDetails();
                     break;
                 case 7:
-                    return; // exits the account process
+                    return; // exits the account process and returns user to log in area
                 default:
                     System.out.println("Selected action is not in list.");
                     break;
