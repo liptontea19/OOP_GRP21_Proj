@@ -1,4 +1,5 @@
 // Source code is decompiled from a .class file using FernFlower decompiler.
+package account;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,7 +25,7 @@ public class Loan {
    private String customerID;
    private String status;
    private ArrayList<LocalDate> paymentDates;
-   private ArrayList<Loan$AmortizationSchedule> amortizationSchedules;
+   private ArrayList<AmortizationSchedule> amortizationSchedules;
 
    private Loan(BigDecimal var1, BigDecimal var2, int var3, String var4) {
       this.principalAmount = var1;
@@ -137,11 +138,11 @@ public class Loan {
       this.paymentDates = var1;
    }
 
-   public ArrayList<Loan$AmortizationSchedule> getAmortizationSchedules() {
+   public ArrayList<AmortizationSchedule> getAmortizationSchedules() {
       return this.amortizationSchedules;
    }
 
-   public void setAmortizationSchedules(ArrayList<Loan$AmortizationSchedule> var1) {
+   public void setAmortizationSchedules(ArrayList<AmortizationSchedule> var1) {
       this.amortizationSchedules = var1;
    }
 
@@ -177,7 +178,7 @@ public class Loan {
          BigDecimal var3 = var1.multiply(this.interestRate).divide(BigDecimal.valueOf(12L)).divide(BigDecimal.valueOf(100L));
          BigDecimal var4 = this.monthlyPayment.subtract(var3);
          var1 = var1.subtract(var4);
-         Loan$AmortizationSchedule var5 = new Loan$AmortizationSchedule(this.loanID, var2, this.monthlyPayment, var4, var3, var1.max(BigDecimal.ZERO));
+         AmortizationSchedule var5 = new AmortizationSchedule(this.loanID, var2, this.monthlyPayment, var4, var3, var1.max(BigDecimal.ZERO));
          this.amortizationSchedules.add(var5);
       }
 
@@ -218,7 +219,7 @@ public class Loan {
          System.out.println("Month\tMonthly Payment\tPrincipal Amount\tInterest\tRemaining Principal Balance\tPayment Status");
 
          for(int var1 = 1; var1 <= this.termInMonths; ++var1) {
-            String var2 = String.format("%-10d$%-10.2f\t$%-10.2f\t\t$%-10.2f\t$%-10.2f\t\t\t%s", ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getMonth(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getMonthlyPayment(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getPrincipalAmount(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getInterestPayment(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getRemainingBalance(), ((Loan$AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getPaymentStatus());
+            String var2 = String.format("%-10d$%-10.2f\t$%-10.2f\t\t$%-10.2f\t$%-10.2f\t\t\t%s", ((AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getMonth(), ((AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getMonthlyPayment(), ((AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getPrincipalAmount(), ((AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getInterestPayment(), ((AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getRemainingBalance(), ((AmortizationSchedule)this.amortizationSchedules.get(var1 - 1)).getPaymentStatus());
             System.out.println(var2);
          }
       } else {
@@ -253,7 +254,7 @@ public class Loan {
             Iterator var10 = this.amortizationSchedules.iterator();
 
             while(var10.hasNext()) {
-               Loan$AmortizationSchedule var12 = (Loan$AmortizationSchedule)var10.next();
+               AmortizationSchedule var12 = (AmortizationSchedule)var10.next();
                if (var12.getPaymentStatus().equalsIgnoreCase("None")) {
                   var12.setPaymentStatus("Paid");
                   break;
@@ -348,4 +349,126 @@ public class Loan {
 
       return var2;
    }
+
+   public class AmortizationSchedule {
+      private UUID loanID;
+      private int month;
+      private BigDecimal monthlyPayment;
+      private BigDecimal principalAmount;
+      private BigDecimal interestPayment;
+      private BigDecimal remainingBalance;
+      private String paymentStatus;
+   
+      public AmortizationSchedule(UUID var1, int var2, BigDecimal var3, BigDecimal var4, BigDecimal var5, BigDecimal var6) {
+         this.loanID = var1;
+         this.month = var2;
+         this.monthlyPayment = var3;
+         this.principalAmount = var4;
+         this.interestPayment = var5;
+         this.remainingBalance = var6;
+         this.paymentStatus = "None";
+      }
+   
+      public UUID getLoanID() {
+         return this.loanID;
+      }
+   
+      public int getMonth() {
+         return this.month;
+      }
+   
+      private void setMonth(int var1) {
+         this.month = var1;
+      }
+   
+      public BigDecimal getMonthlyPayment() {
+         return this.monthlyPayment;
+      }
+   
+      private void setMonthlyPayment(BigDecimal var1) {
+         this.monthlyPayment = var1;
+      }
+   
+      public BigDecimal getPrincipalAmount() {
+         return this.principalAmount;
+      }
+   
+      private void setPrincipalAmount(BigDecimal var1) {
+         this.principalAmount = var1;
+      }
+   
+      public BigDecimal getInterestPayment() {
+         return this.interestPayment;
+      }
+   
+      private void setInterestPayment(BigDecimal var1) {
+         this.interestPayment = var1;
+      }
+   
+      public BigDecimal getRemainingBalance() {
+         return this.remainingBalance;
+      }
+   
+      private void setRemainingBalance(BigDecimal var1) {
+         this.remainingBalance = var1;
+      }
+   
+      public String getPaymentStatus() {
+         return this.paymentStatus;
+      }
+   
+      private void setPaymentStatus(String var1) {
+         this.paymentStatus = var1;
+      }
+   
+      public static ArrayList<AmortizationSchedule> readAmortizationScheduleFromCSV(String var0, Loan var1) {
+         if (var1.getStatus().equalsIgnoreCase("Approved")) {
+            ArrayList var2 = new ArrayList();
+   
+            try {
+               BufferedReader var3 = new BufferedReader(new FileReader(var0));
+   
+               try {
+                  String var4 = var3.readLine();
+   
+                  String var5;
+                  while((var5 = var3.readLine()) != null) {
+                     String[] var6 = var5.split(",");
+                     if (var6[0].equalsIgnoreCase(var1.getLoanID().toString())) {
+                        UUID var7 = UUID.fromString(var6[0]);
+                        int var8 = Integer.parseInt(var6[1]);
+                        BigDecimal var9 = new BigDecimal(var6[2]);
+                        BigDecimal var10 = new BigDecimal(var6[3]);
+                        BigDecimal var11 = new BigDecimal(var6[4]);
+                        BigDecimal var12 = new BigDecimal(var6[5]);
+                        AmortizationSchedule var13 = new AmortizationSchedule(var7, var8, var9, var10, var11, var12);
+                        var2.add(var13);
+                     }
+                  }
+               } catch (Throwable var15) {
+                  try {
+                     var3.close();
+                  } catch (Throwable var14) {
+                     var15.addSuppressed(var14);
+                  }
+   
+                  throw var15;
+               }
+   
+               var3.close();
+            } catch (FileNotFoundException var16) {
+               System.out.println("File not found: " + var0);
+            } catch (IOException var17) {
+               System.out.println("Error reading file: " + var17.getMessage());
+            }
+   
+            var1.setAmortizationSchedules(var2);
+            return var2;
+         } else {
+            System.out.println("Invalid Loan. Loan is not in approved status.");
+            return null;
+         }
+      }
+   }
+
 }
