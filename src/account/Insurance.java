@@ -103,7 +103,7 @@ public class Insurance {
      * @param policyId The unique policy identifier code that matches the Policy ID field in Insurance.csv.
      */
     public Insurance(int accountID){ 
-        String path = "data\\InsuranceAccounts.csv";
+        String path = "data/InsuranceAccounts.csv";
   
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line = "";

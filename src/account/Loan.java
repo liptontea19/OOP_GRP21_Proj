@@ -421,7 +421,7 @@ public class Loan {
          this.paymentStatus = var1;
       }
    
-      public static ArrayList<AmortizationSchedule> readAmortizationScheduleFromCSV(String var0, Loan var1) {
+      public ArrayList<AmortizationSchedule> readAmortizationScheduleFromCSV(String var0, Loan var1) {
          if (var1.getStatus().equalsIgnoreCase("Approved")) {
             ArrayList var2 = new ArrayList();
    

@@ -27,7 +27,7 @@ public class Customer {
      */
 
     public Customer(String customerID){
-        String path = "/Users/polly/IdeaProjects/NewOOP/src/Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
+        String path = "data/Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line = "";

@@ -35,7 +35,7 @@ public class InsuranceCatalog {
     public InsuranceCatalog(){  // constructor for all insurance obj
         policyInfo = new ArrayList<>();
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("data\\InsuranceCatalog.csv"));
+            BufferedReader reader = new BufferedReader(new FileReader("data/InsuranceCatalog.csv"));
             String line;
             String[] parts;
             reader.readLine(); // skip column name line of CSV
