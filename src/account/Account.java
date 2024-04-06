@@ -422,12 +422,12 @@ public class Account {
         if (cust1 != null) {
             cust1.printCustomerDetails();
 
-            // Apply for a loan and review it
+            /* Apply for a loan and review it
             Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
             if (newLoan != null) {
                 cust1.reviewAndProcessLoan(newLoan);  // This method should internally update the loan status and add it to the customer's loan list
             }
-
+            */
             // Now print all loans of the customer to confirm the loan has been added
             cust1.printAllLoans();
 
