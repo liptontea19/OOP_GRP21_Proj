@@ -457,7 +457,6 @@ public class Bank {
             switch(input.nextInt()){
                 case 1:
                     accountMap.get(accountId).customer.applyForLoan(7000,5.0,12);
-
                     break;
                 case 2:
                     accountMap.get(accountId).repayLoan();

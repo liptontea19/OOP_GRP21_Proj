@@ -117,16 +117,18 @@ public class Customer {
 
     public Loan applyForLoan(double principalAmount, double interestRate, int termInMonths) {
         Credit credit = new Credit(this.ID, this.CreditScore);  // Create Credit object using customer's ID and credit score
-    
+
         if (credit.checkEligiblity()) {
             BigDecimal principal = BigDecimal.valueOf(principalAmount);
             BigDecimal interest = BigDecimal.valueOf(interestRate);
-            
+
             Loan newLoan = Loan.applyForLoan(loans, principal, interest, termInMonths, credit);  // Use the credit object
-    
+            this.reviewAndProcessLoan(newLoan);
+
             if (newLoan != null) {
                 //loan already added to the list in the loan.applyForLoan method, so inside customer not required
                 System.out.println("Loan applied successfully.");
+                LoanUtil.saveLoanToCSV(newLoan);
             } else {
                 System.out.println("Loan application failed.");
             }
@@ -136,7 +138,7 @@ public class Customer {
             return null;
         }
     }
-    
+
 
     public void reviewAndProcessLoan(Loan loan) {
         try {
@@ -151,8 +153,8 @@ public class Customer {
             // Implement alternative logic or recovery here if possible
         }
     }
-       
-    
+
+
     /**
      * Prints the details of all loans associated with the customer.
      */
@@ -169,8 +171,8 @@ public class Customer {
     }
 
     public List<Loan> getLoans() {
-    return loans;
-}
+        return loans;
+    }
 
 
     /**
@@ -363,7 +365,7 @@ public class Customer {
         Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
         cust1.reviewAndProcessLoan(newLoan);
         cust1.printAllLoans();
-        
+
 
     }
 }
