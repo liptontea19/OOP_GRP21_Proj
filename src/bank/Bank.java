@@ -1,4 +1,5 @@
 package bank;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,12 +10,6 @@ import account.Account;
 import account.FXAccount;
 import account.Insurance;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
@@ -46,7 +41,7 @@ public class Bank {
         branchMap = new HashMap<>();
         fxMap = new HashMap<>();
         insuranceCatalog = new InsuranceCatalog();
-        secSession = new Security(60);
+        secSession = new Security();
         String[] accountCSVLine, branchCodeCSVLine;
 
         String csvFile = "data/Bank.csv";
@@ -184,9 +179,9 @@ public class Bank {
                 if(accountMap.containsKey(loginAccChoice)){
                     System.out.println("Enter password:");
                     password = input.nextLine();
-                    if(secSession.validatePassword(loginAccChoice, password)){
-                        break;
-                    }
+                    //if(secSession.validatePassword(loginAccChoice, password)){
+                    //    break;
+                    //}
                 } else {
                     System.out.println("ID entered was not in database.");
                 }
@@ -241,7 +236,8 @@ public class Bank {
                 case 4:
                     fxProcess(accountId);
                     break;
-                case 5: 
+                case 5:
+                    loanProcess(accountId);
                     break;
                 case 6:
                     accountMap.get(accountId).printAccountDetails();
@@ -256,6 +252,9 @@ public class Bank {
     }
 
     public void accProcess(int accountId){
+        int branchID;
+        double totalBalance;
+        double totalReserves;
         double amt;
         int branchChoice;
         System.out.println("""
@@ -273,6 +272,14 @@ public class Bank {
                 branchChoice = input.nextInt();
                 accountMap.get(accountId).deposit(amt);
                 branchMap.get(branchChoice).depositReserve(amt);
+
+                branchID = branchMap.get(branchChoice).getBranchCode();
+
+                totalBalance = accountMap.get(accountId).checkBalance();
+                totalReserves = branchMap.get(branchChoice).getBranchReserve();
+
+                editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                editCSV("data/Branch.csv",branchID,"BranchReserve",totalReserves);
                 break;
 
             case 2: // User wants to withdraw money from a branch
@@ -302,6 +309,14 @@ public class Bank {
                 branchChoice = input.nextInt();
                 accountMap.get(accountId).withdraw(amt);
                 branchMap.get(branchChoice).withdrawReserve(amt);
+
+                branchID = branchMap.get(branchChoice).getBranchCode();
+
+                totalBalance = accountMap.get(accountId).checkBalance();
+                totalReserves = branchMap.get(branchChoice).getBranchReserve();
+
+                editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                editCSV("data/Branch.csv",branchID,"BranchReserve",totalReserves);
                 break;
             case 3: // User wants to transfer money to another account
                 System.out.println("Select recipient's account ID.");
@@ -312,6 +327,12 @@ public class Bank {
                 if (accountMap.containsKey(recepientId)){
                     accountMap.get(accountId).withdraw(amt);
                     accountMap.get(recepientId).deposit(amt);
+
+                    totalBalance = accountMap.get(accountId).checkBalance();
+                    double recepientBalance = accountMap.get(recepientId).checkBalance();
+
+                    editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                    editCSV("data/Account.csv",recepientId,"Balance",recepientBalance);
                 } else {
                     System.out.println("There is no such account in our bank.");
                 }
@@ -339,7 +360,7 @@ public class Bank {
             double credLimit = accountMap.get(accountId).creditCard.getCreditLimit();
             System.out.println("Select your choice:\n(1): Pay outstanding balance: $" + 
             moneyFormat.format(credBalance) + 
-            "\n(2): Increase transfer limit: $" + moneyFormat.format(credLimit));
+            "\n(2): Change transfer limit: $" + moneyFormat.format(credLimit));
             switch (input.nextInt()) {
                 case 1:
                     if (credBalance>0){
@@ -349,8 +370,12 @@ public class Bank {
                     }
                     break;
                 case 2:
+                    System.out.println("New Transfer Limit: ");
+                    double newLimit = input.nextDouble();
+                    accountMap.get(accountId).setTransferLimit(newLimit);
                     break;  
                 default:
+                    System.out.println("Invalid Entry!");
                     break;
             }
         }
@@ -392,17 +417,44 @@ public class Bank {
                 break;
 
         }
-
     }
 
     public void loanProcess(int accountId){
-        if(accountMap.get(accountId).getInsurFlag()){
+        if(accountMap.get(accountId).getLoanFlag()){
+            System.out.println("""
+                    (1): Apply Loan
+                    (2): Repay Loan
+                    (3): View Loan Details
+                    """);
+            switch(input.nextInt()){
+                case 1:
+                    accountMap.get(accountId).customer.applyForLoan(7000,5.0,12);
+
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    accountMap.get(accountId).customer.printAllLoans();
+                    break;
+                default:
+                    break;
+            }
 
         }
         else {
             System.out.println("Do you want to apply for Loan?");
-        }
+            switch(input.nextInt()){
+                case 1:
+                    accountMap.get(accountId).customer.applyForLoan(7000,5.0,12);
+                    accountMap.get(accountId).customer.printAllLoans();
+                    break;
+                case 2:
+                    break;
+                default:
+                    break;
+            }
 
+        }
     }
 
     public void insProcess(int accountId){
@@ -432,6 +484,62 @@ public class Bank {
             if(accountMap.get(accountId).getInsurFlag()){
                 System.out.println("Succesfully added insurance policy to your account!");
             }
+        }
+    }
+
+    public static void editCSV(String filename, int ID, String columnHeader, double newValue) {
+        try {
+            File inputFile = new File(filename);
+            File tempFile = new File("data/temp.csv");
+
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String line;
+            String headers = reader.readLine();
+            writer.write(headers);
+            writer.newLine();
+
+            String[] headerArray = headers.split(",");
+            int columnToEdit = -1;
+            for (int i = 0; i < headerArray.length; i++) {
+                if (headerArray[i].equals(columnHeader)) {
+                    columnToEdit = i;
+                    break;
+                }
+            }
+            if (columnToEdit == -1) {
+                System.err.println("Column header not found: " + columnHeader);
+                reader.close();
+                writer.close();
+                return;
+            }
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length > columnToEdit && Integer.parseInt(parts[0]) == ID) {
+                    // Edit the specific column if the account ID matches
+                    parts[columnToEdit] = Double.toString(newValue);
+                    line = String.join(",", parts);
+                }
+                writer.write(line + "\n");
+            }
+
+            // Rename temp file to original file name
+            tempFile.renameTo(inputFile);
+
+            writer.close();
+            reader.close();
+
+            if (!inputFile.delete()) {
+                System.err.println("Failed to delete original file");
+            }
+
+            // Rename the temp file to replace the original CSV file
+            if (!tempFile.renameTo(inputFile)) {
+                System.err.println("Failed to rename temp file to original file");
+            }
+        } catch (IOException e) {
+            System.err.println("Error editing CSV: " + e.getMessage());
         }
     }
     

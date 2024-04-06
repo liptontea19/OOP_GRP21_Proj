@@ -1,8 +1,5 @@
 package account;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -131,6 +128,7 @@ public class Account {
         }
     }
 
+
     public void repayLoan() {
         List<Loan> loans = this.customer.getLoans();  // Assuming we can access the customer's loans
         Scanner scanner = new Scanner(System.in);
@@ -251,6 +249,10 @@ public class Account {
 
     public Boolean getInsurFlag(){
         return insureFlag;
+    }
+
+    public Boolean getLoanFlag(){
+        return loanFlag;
     }
 
 
