@@ -19,7 +19,7 @@ public class BankSecurity {
     private Map<Integer, String> saltMap = new HashMap<Integer,String>();
     private Map<Integer, String> plainMap = new HashMap<Integer,String>();
     private Security secSession = new Security();   // Security Class from Group 7
-    private String filePath = "data\\Userpass.csv";
+    private String filePath = "data/Userpass.csv";
 
     public BankSecurity(String filePath) {
         this.filePath = filePath;   // sets the file path to input arg
@@ -103,7 +103,6 @@ public class BankSecurity {
      * @param userInput System.input scanner object
      * @return  Success or failure of OTP authentication
      */
-    public boolean otpProcess(int accId, Scanner userInput){
     public boolean otpProcess(int accId, Scanner userInput){
         String accountName = Integer.toString(accId);
         int attemptCount = 1, otpVal=0;

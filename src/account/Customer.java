@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.ArrayList;
+import java.time.format.DateTimeParseException;
 
 import javax.imageio.IIOException;
 
@@ -54,7 +55,7 @@ public class Customer {
      */
 
     public Customer(String customerID) throws FileNotFoundException{
-        String path = "data\\Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
+        String path = "data/Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line = "";
