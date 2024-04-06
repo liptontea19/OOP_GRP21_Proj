@@ -1,9 +1,5 @@
 package bank;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -192,24 +188,4 @@ public class Security {
     public Map<String,String> getPasswordMap(){
         return passwordMap;
     }
-
-    /*public void logActivity(int var1, int var2) { 
-        switch (var2) {
-            case 1:
-            csv_update_help.generateCSVofSecurity("Login", var1);
-            break;
-            case 2:
-            csv_update_help.generateCSVofSecurity("Transfer Initialized", var1);
-            break;
-            case 3:
-            csv_update_help.generateCSVofSecurity("Logout", var1);
-            break;
-            case 4:
-            csv_update_help.generateCSVofSecurity("Deposit", var1);
-            break;
-            case 5:
-            csv_update_help.generateCSVofSecurity("Withdraw", var1);
-        }
-
-    }*/
 }

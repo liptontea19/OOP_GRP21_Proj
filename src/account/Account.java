@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import bank.Bank;
@@ -58,6 +59,28 @@ public class Account {
 
         //Branch this.branch = new Branch(branchCode);
     }*/
+
+    public Account(int accId, int branchCode, Scanner input){
+        this.accountNumber = accId;
+        this.accountType = "Savings";
+        this.branchCode = branchCode;
+        this.customer = new Customer(input);
+        System.out.println("Initial Deposit ($):");
+        try{
+            this.balance = Double.parseDouble(input.nextLine());
+        } catch (NumberFormatException e){
+            this.balance = 20000;
+        }
+        this.transferLimit = 2000;
+        System.out.println("Set your transfer limit ($):");
+        try {
+            this.transferLimit = Double.parseDouble(input.nextLine());
+        } catch (NumberFormatException e){
+            this.transferLimit = 2000;
+        }
+        addCard();
+        this.FXE = new g11_FXE();
+    }
 
     /**
      * Constructor for user account object. Fetches information from the data/Account.csv file.
@@ -205,7 +228,9 @@ public class Account {
 
     public void addCard(){
         if (cardFlag == false){
-            this.creditCard = new CreditCard(customer.getCustomerName(), accountNumber, 3108398698038531L,3000);
+            Random rand = new Random();
+            long cardNumber = rand.nextLong(9999999999999999L);
+            this.creditCard = new CreditCard(customer.getCustomerName(), accountNumber, cardNumber,3000);
             cardFlag = true;
         }
         else {

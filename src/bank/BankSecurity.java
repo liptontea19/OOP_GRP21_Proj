@@ -102,9 +102,8 @@ public class BankSecurity {
      * @param accId Id of authenticating user
      * @param userInput System.input scanner object
      * @return  Success or failure of OTP authentication
-     * @throws FailedLoginException
      */
-    public boolean otpProcess(int accId, Scanner userInput) throws FailedLoginException{
+    public boolean otpProcess(int accId, Scanner userInput){
         String accountName = Integer.toString(accId);
         int attemptCount = 1, otpVal=0;
         System.out.println("Generating OTP for your transaction...");
@@ -121,9 +120,6 @@ public class BankSecurity {
                 System.out.println("OTP is incorrect.\nYou have " + Integer.toString(3 - attemptCount) + " remaining attempts.");
             }
             attemptCount++;
-        }
-        if (attemptCount >= 4){
-            throw new FailedLoginException();
         }
         return false;
     }
@@ -179,7 +175,7 @@ public class BankSecurity {
      * @param userInput System.in Scanner object to take user inputs
      * @throws ExitException Thrown when user exits registration dialogue early
      */
-    public void registerUserCreds(Scanner userInput) throws ExitException{
+    public int registerUserCreds(Scanner userInput) throws ExitException{
         boolean notDupe = false;    // flag to check if generated ID is not a duplicate of existing record
         int accountId=0;
         String accountIdString = "0", ptPassword = "";
@@ -205,6 +201,7 @@ public class BankSecurity {
             System.out.println("Exiting account creation.");
             throw new ExitException("User has ended the account creation early.");
         }
+        return accountId;
     }
 
     /**

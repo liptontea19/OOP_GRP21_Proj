@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Scanner;
 import java.util.UUID;
 import java.util.ArrayList;
 
@@ -27,13 +28,33 @@ public class Customer {
     private String Address, ID, CustomerName, MaritalStatus, Country, EmailAddress, Occupation, Employer, DateOfBirth;
     private List<Loan> loans; //a single Customer can have a List of loans
 
+    /**
+     * Constructor for setting up a new Customer object through the terminal ui
+     * @param input System.in user input scanner object
+     */
+    public Customer(Scanner input){
+        System.out.println("Name:");
+        this.CustomerName = input.nextLine();
+        System.out.println("Enter your NRIC Number:");
+        this.ID = input.nextLine();
+        System.out.println("Enter country of origin:");
+        this.Country = input.nextLine();
+        System.out.println("Enter email address:");
+        this.EmailAddress = input.nextLine();
+        System.out.println("Enter your occupation:");
+        this.Occupation = input.nextLine();
+        this.Employer = "-";    // they can change it later
+        this.DateOfBirth = "-";
+        this.CreditScore = 0;
+        this.Address = "-";
+    }
 
     /**
      * Constructor reads the customer's data from "OOP_GRP21_Proj-main/data/Customer.csv" file
      */
 
     public Customer(String customerID) throws FileNotFoundException{
-        String path = "data/Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
+        String path = "data\\Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line = "";
@@ -360,11 +381,17 @@ public class Customer {
                 + "\nEmployer: " + Employer);
     }
     public static void main(String[] args){
-        Customer cust1 = new Customer("S1234A");
-        cust1.printCustomerDetails();
-        Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
-        cust1.reviewAndProcessLoan(newLoan);
-        cust1.printAllLoans();
+        try{
+            Customer cust1 = new Customer("-----");
+            cust1.printCustomerDetails();
+            Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
+            cust1.reviewAndProcessLoan(newLoan);
+            cust1.printAllLoans();
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+
+        }
+        
         
 
     }

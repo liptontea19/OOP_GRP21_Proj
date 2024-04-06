@@ -84,9 +84,10 @@ public class Bank {
         System.out.print("""                
                 Enter your input:
                 (1): Login to an Account
-                (2): View all Branches
-                (3): View all Insurance Policies
-                (4): Exit
+                (2): Register an Account
+                (3): View all Branches
+                (4): View all Insurance Policies
+                (5): Exit
                 """);
 
         do{
@@ -195,20 +196,33 @@ public class Bank {
         return loginAccChoice;
     }
 
+    public int accountRegister(){
+        int accountId=0, branchChoice, branchCode;
+        try{
+            accountId = secSession.registerUserCreds(input);
+            System.out.println("Which branch are you opening your account at?");
+            displayBranches();
+            branchChoice = Integer.parseInt(input.nextLine());
+            if (branchMap.containsKey(branchChoice)){
+                branchCode = branchMap.get(branchChoice).getBranchCode();
+            } else {
+                branchCode = 297;   // default value in case user writes wrongly
+            }
+            accountMap.put(accountId, new Account(accountId, branchCode,input));
+            accountMap.get(accountId).printAccountDetails();
+        } catch (ExitException e){
+            e.getMessage();
+        }
+        return accountId;
+    }
+
     /** Handles the Account menu options
      * 1) Account login event
      * 2) Begin account action loop
      */
-    public void accountMenu(){
-        int accountId = 0, userChoice;    //account ID of logged in account
+    public void accountMenu(int accountId){
+        int userChoice;    //account ID of logged in account
         boolean contAccount = true;
-        
-        displayAccounts();
-        try {
-            secSession.accountLogin(input);
-        } catch (FailedLoginException e){
-            return;
-        }
 
         while (contAccount) {
             System.out.println("----------------------------------------------");
@@ -508,6 +522,8 @@ public class Bank {
                     editCSV("data/InsuranceAccounts.csv",accountId,"Premium Paid","Yes");
                     break;
                 case 2:
+                    System.out.println("        Insurance Policy");
+                    accountMap.get(accountId).insurance.printInsuranceDetail();
                     accountMap.get(accountId).insurance.displayPremiumBilling();
                     break;
                 case 3:
@@ -697,7 +713,7 @@ public class Bank {
     } 
 
     public static void main(String[] args) {
-        int menuChoice;
+        int menuChoice, accountId = 0;
         boolean endSession = false;
         Bank bankSession = new Bank();
 
@@ -706,13 +722,22 @@ public class Bank {
             menuChoice = bankSession.bankMainMenuSelect();
             switch(menuChoice) {
                 case 1: 
-                    bankSession.accountMenu();
+                    bankSession.displayAccounts();
+                    try {
+                        accountId = bankSession.secSession.accountLogin(bankSession.input);
+                    } catch (FailedLoginException e){
+                        break;
+                    }
+                    bankSession.accountMenu(accountId);
                     break;
                 case 2:
+                    accountId = bankSession.accountRegister();
+                    bankSession.accountMenu(accountId);
+                    break;
+                case 3: // Display Insurance Policies
                     bankSession.displayBranches();
                     break;
-
-                case 3: // Display Insurance Policies
+                case 4:
                     bankSession.insuranceCatalog.printInsuranceCatalog();
                     break;
 
