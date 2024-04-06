@@ -7,10 +7,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.ArrayList;
 
 import javax.imageio.IIOException;
+
+import account.Loan.AmortizationSchedule;
 
 /**
  * The Customer class is used to store and access a customer's information
@@ -77,6 +81,19 @@ public class Customer {
                     BigDecimal principal = new BigDecimal(data[2]);
                     BigDecimal interestRate = new BigDecimal(data[3]);
                     int termInMonths = Integer.parseInt(data[4]);
+                    BigDecimal outstandingAmount = new BigDecimal(data[5]);
+                    LocalDate startDate = LocalDate.parse(data[6]);
+                    LocalDate endDate = LocalDate.parse(data[7]);
+                    String status = data[8];
+                    UUID loanID = UUID.fromString(data[0]);
+                    /* 
+                    String[] dateStrings = data[9].split(","); // Split the string into an array of date strings
+                    ArrayList<LocalDate> paymentDates = new ArrayList<>();
+                    for (String dateString : dateStrings) {
+                        LocalDate date = LocalDate.parse(dateString.trim()); // Trim to remove any leading or trailing whitespace
+                        paymentDates.add(date);
+                    }
+                    */
 
                     // Create a dummy Credit object with customer's ID and CreditScore
                     // Assuming the existence of a Credit class constructor that takes these parameters
@@ -85,7 +102,11 @@ public class Customer {
                     // Use the applyForLoan method to create and add the loan
                     Loan newLoan = Loan.applyForLoan(this.loans, principal, interestRate, termInMonths, credit);
                     this.reviewAndProcessLoan(newLoan);
-
+                    newLoan.setOutstandingAmount(outstandingAmount);
+                    newLoan.setStartDate(startDate);
+                    newLoan.setEndDate(endDate);
+                    newLoan.setLoanID(loanID);
+                    //newLoan.setStatus(status);
                 }
             }
         } catch (Exception e) {

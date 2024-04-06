@@ -46,7 +46,7 @@ public class Loan {
       return this.loanID;
    }
 
-   private void setLoanID(UUID var1) {
+   public void setLoanID(UUID var1) {
       this.loanID = var1;
    }
 
