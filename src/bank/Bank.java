@@ -226,8 +226,7 @@ public class Bank {
                             (7): Log out""");
             System.out.println("---------------------------------------------");
             userChoice = input.nextInt();
-            double amt;
-            int branchChoice;
+
             switch (userChoice) {
                 case 1: // dep,with,trans method     
                     accProcess(accountId);                   

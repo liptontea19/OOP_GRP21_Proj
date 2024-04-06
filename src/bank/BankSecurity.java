@@ -133,13 +133,16 @@ public class BankSecurity {
      * Updates UserPass.csv with the new account details stored pwMap 
      */
     private void editUserPassFile(){
-        TreeMap<String,String> sortedPwMap = new TreeMap<>(secSession.getPasswordMap());    // creates a treemap of values sorted by the username key
+        TreeMap<Integer,String> sortedPwMap = new TreeMap<>();   // creates a treemap of values sorted by the username key
         int accountId;
+        for (Map.Entry<String,String> entry: secSession.getPasswordMap().entrySet()){   // sorts password map
+            sortedPwMap.put(Integer.parseInt(entry.getKey()), entry.getValue());
+        }
         try (BufferedWriter uPassLine = new BufferedWriter(new FileWriter(filePath))){
             uPassLine.write("UserId,HashedPassword,Salt,Plaintext");  
-            for(Map.Entry<String,String> entry: sortedPwMap.entrySet()){
+            for(Map.Entry<Integer,String> entry: sortedPwMap.entrySet()){
                 uPassLine.newLine();
-                accountId = Integer.parseInt(entry.getKey());
+                accountId = entry.getKey();
                 uPassLine.write(entry.getKey() + "," + entry.getValue() + "," + saltMap.get(accountId) +
                  "," + plainMap.get(accountId));
             }
