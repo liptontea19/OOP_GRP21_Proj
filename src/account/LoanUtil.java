@@ -9,9 +9,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+/**
+ * The LoanUtil class provides utility functions for managing loan data,
+ * including saving to and modifying loan information in a CSV file.
+ * This class ensures that loan data is persistent across program executions,
+ * allowing for both the creation of new loans and the updating of existing ones.
+ * 
+ * <p>Key features include:
+ * <ul>
+ *     <li>Applying for a new loan and appending its information to the CSV file.</li>
+ *     <li>Updating existing loan records, such as reducing the outstanding amount
+ *         after a monthly payment has been made.</li>
+ * 
+ * <p>The CSV file serves as a simple database to store loan information,
+ * making it possible to retrieve and modify loan data across different
+ * instances of the application. This class handles the reading and writing
+ * of this data, abstracting the file operations to provide a clean interface
+ * for loan management.
+ */
+
 public class LoanUtil {
 
     private static final String LOANS_FILE_PATH = "data/Loans.csv";
+
+    /**
+     * Before saving Loan to the CSV,
+     * method reads the csv file to check if the loan already exist in the CSV via LoanID
+     * if it does exist, it will modify the existing loan.
+     * 
+     * If the loan does not exist in the CSV, 
+     * append the loan at the end of the CSV.
+     */
 
     public static void saveLoanToCSV(Loan loan) {
         List<String> lines = new ArrayList<>();
@@ -78,48 +107,4 @@ public class LoanUtil {
             System.err.println("An error occurred while writing to the loan file: " + e.getMessage());
         }
     }
-}
-
-     //DISREGARD the code below, i will load in the Customer constructor instead
-
-/*  List<Loan> loans = LoanUtil.loadLoansFromCSV("path/to/loans.csv");
- *       for (Loan loan : loans) {
-            Customer customer = findCustomerById(loan.getCustomerID());
-            if (customer != null) {
-                customer.getLoans().add(loan);
-            }
-        }
- */    
-    /*  
-    public static void loadLoansAndLinkToCustomers(List<Customer> customers) {
-        try (BufferedReader br = new BufferedReader(new FileReader(LOANS_FILE_PATH))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                String loanID = data[0];
-                String customerID = data[1];
-                double principalAmount = Double.parseDouble(data[2]);
-                double interestRate = Double.parseDouble(data[3]);
-                int termInMonths = Integer.parseInt(data[4]);
-
-                Loan loan = new Loan(loanID, principalAmount, interestRate, termInMonths); // Adjust constructor as needed
-                Customer customer = findCustomerByID(customers, customerID);
-                if (customer != null) {
-                    customer.getLoans().add(loan);
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("An error occurred while loading loans from CSV: " + e.getMessage());
-        }
-    }
-
-    private static Customer findCustomerByID(List<Customer> customers, String customerID) {
-        for (Customer customer : customers) {
-            if (customer.getCustomerNRIC().equals(customerID)) {
-                return customer;
-            }
-        }
-        return null;
-    }
-}
-*/
+}    
