@@ -42,7 +42,7 @@ public class Bank {
         branchMap = new HashMap<>();
         fxMap = new HashMap<>();
         insuranceCatalog = new InsuranceCatalog();
-        secSession = new BankSecurity("data\\UserPass.csv");
+        secSession = new BankSecurity("data/UserPass.csv");
         String[] accountCSVLine, branchCodeCSVLine;
 
         String csvFile = "data/Bank.csv";
