@@ -123,10 +123,12 @@ public class Customer {
             BigDecimal interest = BigDecimal.valueOf(interestRate);
             
             Loan newLoan = Loan.applyForLoan(loans, principal, interest, termInMonths, credit);  // Use the credit object
-    
+            this.reviewAndProcessLoan(newLoan);
+
             if (newLoan != null) {
                 //loan already added to the list in the loan.applyForLoan method, so inside customer not required
                 System.out.println("Loan applied successfully.");
+                LoanUtil.saveLoanToCSV(newLoan);
             } else {
                 System.out.println("Loan application failed.");
             }
