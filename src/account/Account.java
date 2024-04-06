@@ -4,12 +4,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import bank.Bank;
 
@@ -189,24 +186,10 @@ public class Account {
     public void addInsurance(HashMap<String,String> policyInfo){
         if (insureFlag == false){
             try {
-
-                System.out.println(policyInfo.get("duration"));
-
-                Period endDate = parsePeriodString(policyInfo.get("duration"));
-                LocalDate currentDate = LocalDate.now();
-                LocalDate ParsedEndDate = currentDate.plusYears(endDate.getYears()).plusMonths(endDate.getMonths());
-
-                //this.insurance = new Insurance(accountNumber, policyInfo.get("code"), LocalDate.now(),
-                //(Double.parseDouble(policyInfo.get("annualCost"))/12), Double.parseDouble(policyInfo.get("coverage")),
-                //       Period.parse(policyInfo.get("duration")));  // converts value into Period type
-
+                this.insurance = new Insurance(accountNumber, policyInfo.get("code"), LocalDate.now(), 
+                (Double.parseDouble(policyInfo.get("annualCost"))/12), Double.parseDouble(policyInfo.get("coverage")), 
+                Period.parse(policyInfo.get("duration")));  // converts value into Period type
                 this.insurance.setInsuranceType(policyInfo.get("type"));
-                String insuranceType = policyInfo.get("type");
-                addInsuranceCSV(accountNumber, policyInfo.get("code"), insuranceType,LocalDate.now(),
-                        (Double.parseDouble(policyInfo.get("annualCost"))/12), Double.parseDouble(policyInfo.get("coverage")),
-                        ParsedEndDate);
-
-
                 this.insureFlag = true;
             } catch (NullPointerException error){
                 System.err.println("Insurance policy record is incomplete.");
@@ -217,47 +200,7 @@ public class Account {
         }
     }
 
-    public static Period parsePeriodString(String periodString) {
-        int years = 0;
-        int months = 0;
-
-        // Define regular expression pattern to extract years and months
-        Pattern pattern = Pattern.compile("(\\d+)\\s+Yrs?\\s+(\\d+)\\s+Mths?");
-        Matcher matcher = pattern.matcher(periodString);
-
-        // If pattern matches, extract years and months
-        if (matcher.find()) {
-            years = Integer.parseInt(matcher.group(1));
-            months = Integer.parseInt(matcher.group(2));
-        }
-
-        // Create and return Period object
-        return Period.of(years, months, 0);
-    }
-
-    public void addInsuranceCSV(int accountNumber, String Code, String Type, LocalDate startDate, Double cost, Double coverage, LocalDate period){
-
-        String id = Integer.toString(accountNumber);
-        String pattern = "yyyy-MM-dd";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        String StartDate = startDate.format(formatter);
-        String Cost = Double.toString(cost);
-        String Coverage = Double.toString(coverage);
-        String Period = period.format(formatter);
-
-        String[] newInsurance = {id,Code,Type,Cost,"No",Coverage,StartDate,Period};
-        String csvFile = "InsuranceAccounts.csv";
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile, true))) {
-            // Write each item to the CSV file
-            for (String data : newInsurance) {
-                writer.write(data);
-                writer.write(",");
-            }
-            writer.newLine();
-        } catch (IOException e) {
-            System.err.println("Error writing to CSV file: " + e.getMessage());
-        }
+    public void addInsuranceCSV(){
 
     }
 
@@ -486,12 +429,12 @@ public class Account {
         if (cust1 != null) {
             cust1.printCustomerDetails();
 
-
+            /* Apply for a loan and review it
             Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
             if (newLoan != null) {
                 cust1.reviewAndProcessLoan(newLoan);  // This method should internally update the loan status and add it to the customer's loan list
             }
-
+            */
             // Now print all loans of the customer to confirm the loan has been added
             cust1.printAllLoans();
 

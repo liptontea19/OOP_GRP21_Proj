@@ -32,7 +32,7 @@ public class Customer {
      * Constructor reads the customer's data from "OOP_GRP21_Proj-main/data/Customer.csv" file
      */
 
-    public Customer(String customerID){
+    public Customer(String customerID) throws FileNotFoundException{
         String path = "data/Customer.csv"; // Use this if you're not on windows it might work: "src/Project/data/Customer.csv"
 
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
