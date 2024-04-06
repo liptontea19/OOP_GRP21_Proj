@@ -166,6 +166,15 @@ public class Account {
         }
     }
 
+
+    /**
+     * Customer is required to pay off loans on monthly basis
+     * able to select which loans to pay of from a list
+     * Selected loan will be modified to update its info after payment
+     * Account balanced will also be deducted to pay off the loan
+     * 
+     * @param input Scanner to read users choice of loan to repay
+     * */
     public void repayLoan(Scanner input) {
         List<Loan> loans = this.customer.getLoans();  // Assuming we can access the customer's loans
 
@@ -197,7 +206,7 @@ public class Account {
             LoanUtil.saveLoanToCSV(selectedLoan);
 
             this.balance = accountBalance.subtract(monthlyPayment).doubleValue();
-            System.out.println("Loan repayment for loan ID " + selectedLoan.getLoanID() + " made successfully.");
+            //System.out.println("Loan repayment for loan ID " + selectedLoan.getLoanID() + " made successfully.");
         } else {
             System.out.println("Insufficient account balance for the monthly loan repayment.");
         }

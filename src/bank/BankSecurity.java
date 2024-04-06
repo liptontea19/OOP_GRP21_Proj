@@ -19,7 +19,7 @@ public class BankSecurity {
     private Map<Integer, String> saltMap = new HashMap<Integer,String>();
     private Map<Integer, String> plainMap = new HashMap<Integer,String>();
     private Security secSession = new Security();   // Security Class from Group 7
-    private String filePath = "data\\Userpass.csv";
+    private String filePath = "data/Userpass.csv";
 
     public BankSecurity(String filePath) {
         this.filePath = filePath;   // sets the file path to input arg
