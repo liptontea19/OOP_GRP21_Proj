@@ -1,7 +1,9 @@
 package account;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -44,10 +46,31 @@ public class Customer {
         this.EmailAddress = input.nextLine();
         System.out.println("Enter your occupation:");
         this.Occupation = input.nextLine();
+        System.out.println("Enter your age:");
+        this.Age = Integer.parseInt(input.nextLine());
         this.Employer = "-";    // they can change it later
         this.DateOfBirth = "-";
         this.CreditScore = 0;
         this.Address = "-";
+        this.ContactNo = 00000000;
+        this.MaritalStatus = "-";
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter("data/Account.csv",true))){
+            writer.newLine();
+            writer.append(ID + ",");
+            writer.append(CustomerName + ",");
+            writer.append(Age + ",");
+            writer.append(ContactNo + ",");
+            writer.append(Address + ",");
+            writer.append(MaritalStatus +  ",");
+            writer.append(Country + ",");
+            writer.append(EmailAddress + ",");
+            writer.append(Occupation + ","); 
+            writer.append("-,");
+            writer.append(DateOfBirth + ",");
+            writer.append(Integer.toString(CreditScore));
+        } catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     /**

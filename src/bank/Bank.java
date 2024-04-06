@@ -117,9 +117,23 @@ public class Bank {
     }
 
     public void makeAccounts(String[] accIdStrings){
-        for(int i=0;i<accIdStrings.length;i++){
+        /*for(int i=0;i<accIdStrings.length;i++){
             accountMap.put(i+1, new Account(Integer.parseInt(accIdStrings[i])));
             //accounts.add(new Account(Integer.parseInt(accIdStrings[i])));
+        }*/
+        int i=1;
+        String line, id;
+        try (BufferedReader read = new BufferedReader(new FileReader("data/Account.csv"))){
+            read.readLine();
+            while((line = read.readLine()) != null){
+                id = line.split(",")[0];
+                accountMap.put(i, new Account(Integer.parseInt(id)));
+                i++;
+            }
+        } catch(FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 
