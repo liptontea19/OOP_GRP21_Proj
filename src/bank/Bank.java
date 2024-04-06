@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.security.auth.login.FailedLoginException;
@@ -121,13 +122,13 @@ public class Bank {
             accountMap.put(i+1, new Account(Integer.parseInt(accIdStrings[i])));
             //accounts.add(new Account(Integer.parseInt(accIdStrings[i])));
         }*/
-        int i=1;
-        String line, id;
+        int i=1, id;
+        String line;
         try (BufferedReader read = new BufferedReader(new FileReader("data/Account.csv"))){
             read.readLine();
             while((line = read.readLine()) != null){
-                id = line.split(",")[0];
-                accountMap.put(i, new Account(Integer.parseInt(id)));
+                id = Integer.parseInt(line.split(",")[0]);
+                accountMap.put(id, new Account(id));
                 i++;
             }
         } catch(FileNotFoundException e){
@@ -151,8 +152,8 @@ public class Bank {
         }
         System.out.println("Acc No.   Name   ");
         Account displayAccount;
-        for (int i=0;i<accountMap.size();i++){
-            displayAccount = accountMap.get(i+1);
+        for(Map.Entry<Integer, Account> entry : accountMap.entrySet()){
+            displayAccount = entry.getValue();
             System.out.println(displayAccount.getAccountNumber() + ":        " +
             displayAccount.customer.getCustomerName());
         }
@@ -175,40 +176,6 @@ public class Bank {
             System.out.println((i+1) + ":  " + displayAccount.getAccountNumber() + "    " +
             displayAccount.customer.getCustomerName());
         }
-    }
-
-    /**
-     * Display all accounts and then prompts the user to enter their account credentials.
-     * User has 3 attempts to succesfully log into the account.
-     * Requires: accountMap and security object
-     * @return Account ID of logged in account; else returns 0 on failure
-     * @deprecated PASS AWAY LIAO USE THE NEW ONE I MADE {@link BankSecurity#accountLogin(Scanner)}
-     */
-    public int accountLogin(){
-        displayAccounts();  // account display lmao 
-        int loginAccChoice = 0, attemptCount = 1;
-        String password;
-
-        while (attemptCount < 4){
-            System.out.println("Enter User ID:");
-            try {
-                loginAccChoice = Integer.parseInt(input.nextLine());
-                if(accountMap.containsKey(loginAccChoice)){
-                    System.out.println("Enter password:");
-                    password = input.nextLine();
-                    //if(secSession.validatePassword(loginAccChoice, password)){
-                    //    break;
-                    //}
-                } else {
-                    System.out.println("ID entered was not in database.");
-                }
-            } catch (NumberFormatException e){
-                System.out.println("Entered value was not an ID.");
-            }    
-            System.out.println("You have " + Integer.toString(3 - attemptCount) + " remaining attempts.");
-            attemptCount++;
-        }
-        return loginAccChoice;
     }
 
     public int accountRegister(){
@@ -372,6 +339,7 @@ public class Bank {
             case 3: // User wants to transfer money to another account
                 System.out.println("Select recipient's account ID.");
                 displayAccounts(accountId); // displays recipient accounts
+                System.out.println("Account ID:");
                 int recepientId = input.nextInt();
                 System.out.print("Enter the amount you want to transfer: ");
                 amt = input.nextDouble();

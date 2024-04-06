@@ -54,7 +54,7 @@ public class Customer {
         this.Address = "-";
         this.ContactNo = 00000000;
         this.MaritalStatus = "-";
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter("data/Account.csv",true))){
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter("data/Customer.csv",true))){
             writer.newLine();
             writer.append(ID + ",");
             writer.append(CustomerName + ",");
