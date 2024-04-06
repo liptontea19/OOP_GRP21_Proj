@@ -200,6 +200,7 @@ public class Insurance {
      * @deprecated Replaced by {@link #payMonthPremium()}
      * @see #payMonthPremium()
      */
+    @Deprecated
     public void payOffPremium(double amt){
         if (monthlyPremium >= amt){
             monthlyPremium -= amt;
