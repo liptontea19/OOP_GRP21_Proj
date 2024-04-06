@@ -106,6 +106,22 @@ public class Customer {
                     LocalDate endDate = LocalDate.parse(data[7]);
                     String status = data[8];
                     UUID loanID = UUID.fromString(data[0]);
+
+                    String paymentDatesString = data.length > 9 ? data[9] : "";
+                    ArrayList<LocalDate> paymentDates = new ArrayList<>();
+
+                    if (!paymentDatesString.isEmpty()) {
+                        String[] dateStrings = paymentDatesString.split(";"); // Assuming ";" is the delimiter used in your CSV
+                        for (String dateStr : dateStrings) {
+                            try {
+                                LocalDate date = LocalDate.parse(dateStr.trim());
+                                paymentDates.add(date);
+                            } catch (DateTimeParseException e) {
+                                System.err.println("Error parsing date: " + dateStr);
+                            }
+                        }
+                    }
+
                     /* 
                     String[] dateStrings = data[9].split(","); // Split the string into an array of date strings
                     ArrayList<LocalDate> paymentDates = new ArrayList<>();
@@ -126,6 +142,7 @@ public class Customer {
                     newLoan.setStartDate(startDate);
                     newLoan.setEndDate(endDate);
                     newLoan.setLoanID(loanID);
+                    newLoan.setPaymentDates(paymentDates);
                     //newLoan.setStatus(status);
                 }
             }

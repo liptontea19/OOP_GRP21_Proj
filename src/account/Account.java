@@ -182,7 +182,7 @@ public class Account {
             LoanUtil.saveLoanToCSV(selectedLoan);
 
             this.balance = accountBalance.subtract(monthlyPayment).doubleValue();
-            System.out.println("Loan repayment for loan ID " + selectedLoan.getLoanID() + " made successfully.");
+            //System.out.println("Loan repayment for loan ID " + selectedLoan.getLoanID() + " made successfully.");
         } else {
             System.out.println("Insufficient account balance for the monthly loan repayment.");
         }

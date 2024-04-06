@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LoanUtil {
 
@@ -31,7 +32,13 @@ public class LoanUtil {
                     sb.append(loan.getOutstandingAmount()).append(',');
                     sb.append(loan.getStartDate()).append(',');
                     sb.append(loan.getEndDate()).append(',');
-                    sb.append(loan.getStatus());
+                    sb.append(loan.getStatus()).append(',');
+
+                    String paymentDatesString = loan.getPaymentDates().stream()
+                                                    .map(Object::toString)
+                                                    .collect(Collectors.joining(";"));
+                    sb.append(paymentDatesString);
+
                     lines.add(sb.toString());
                     found = true;
                 } else {
@@ -49,7 +56,13 @@ public class LoanUtil {
                 sb.append(loan.getOutstandingAmount()).append(',');
                 sb.append(loan.getStartDate()).append(',');
                 sb.append(loan.getEndDate()).append(',');
-                sb.append(loan.getStatus());
+                sb.append(loan.getStatus()).append(',');
+
+                String paymentDatesString = loan.getPaymentDates().stream()
+                                                .map(Object::toString)
+                                                .collect(Collectors.joining(";"));
+                sb.append(paymentDatesString);
+
                 lines.add(sb.toString());
             }
         } catch (IOException e) {
