@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
@@ -234,7 +233,7 @@ public class BankSecurity {
     }
 
     public static void main(String[] args){
-        BankSecurity bigSecs = new BankSecurity("data\\UserPass2.csv");
+        BankSecurity bigSecs = new BankSecurity("data\\UserPass.csv");
         Scanner input = new Scanner(System.in);
 
         //System.out.println("Test: Log in Function");
@@ -249,13 +248,13 @@ public class BankSecurity {
         } catch (ExitException e){
             System.out.println("User ended their registration early.");
         }*/
-        try{
+        /*try{
             System.out.println(bigSecs.otpProcess(1, input));
         }catch(FailedLoginException e){
             System.err.println("You have failed to authenticate your account, logging out.");
-        }
+        }*/
         //System.out.println("\nTest: Updating UserPass.csv");
-        //bigSecs.editUserPassRecord();
+        bigSecs.editUserPassFile();
         input.close();
     }
 }

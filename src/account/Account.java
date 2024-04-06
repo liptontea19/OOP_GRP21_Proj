@@ -128,9 +128,8 @@ public class Account {
         }
     }
 
-    public void repayLoan() {
+    public void repayLoan(Scanner input) {
         List<Loan> loans = this.customer.getLoans();  // Assuming we can access the customer's loans
-        Scanner scanner = new Scanner(System.in);
 
         if (loans.isEmpty()) {
             System.out.println("No loans found for this customer.");
@@ -144,7 +143,7 @@ public class Account {
         }
 
         System.out.print("Enter the number of the loan to repay: ");
-        int choice = scanner.nextInt();
+        int choice = input.nextInt();
 
         if (choice < 1 || choice > loans.size()) {
             System.out.println("Invalid loan selection.");
