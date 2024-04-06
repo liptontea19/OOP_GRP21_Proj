@@ -205,7 +205,7 @@ public class Bank {
         
         displayAccounts();
         try {
-            secSession.accountLogin(input);
+            accountId = secSession.accountLogin(input);
         } catch (FailedLoginException e){
             return;
         }
@@ -458,7 +458,37 @@ public class Bank {
                     """);
             switch(input.nextInt()){
                 case 1:
-                    accountMap.get(accountId).customer.applyForLoan(7000,5.0,12);
+                    System.out.println("""
+                            (1): Property Loan
+                            (2): Education Loan
+                            (3): Car Loan
+                            (4): Business Loan
+                            """);
+                    int choice = input.nextInt();
+                    int principalAmt;
+                    double intRate;
+                    if(choice == 1){
+                        principalAmt = 100000;
+                        intRate = 3.0;
+                    }
+                    else if(choice == 2){
+                        principalAmt = 30000;
+                        intRate = 5.0;
+                    }
+                    else if(choice == 3){
+                        principalAmt = 50000;
+                        intRate = 4.0;
+                    }
+                    else if(choice == 4){
+                        principalAmt = 200000;
+                        intRate = 2.0;
+                    }
+                    else {
+                        System.out.println("Invalid Entry!");
+                        return;
+                    }
+
+                    accountMap.get(accountId).customer.applyForLoan(principalAmt,intRate,12);
                     break;
                 case 2:
                     accountMap.get(accountId).repayLoan(input);
@@ -477,7 +507,37 @@ public class Bank {
             System.out.println("Do you want to apply for Loan?\n(1) Yes\n(2) No");
             switch(input.nextInt()){
                 case 1:
-                    accountMap.get(accountId).customer.applyForLoan(7000,5.0,12);
+                    System.out.println("""
+                            (1): Property Loan
+                            (2): Education Loan
+                            (3): Car Loan
+                            (4): Business Loan
+                            """);
+                    int choice = input.nextInt();
+                    int principalAmt;
+                    double intRate;
+                    if(choice == 1){
+                        principalAmt = 100000;
+                        intRate = 3.0;
+                    }
+                    else if(choice == 2){
+                        principalAmt = 30000;
+                        intRate = 5.0;
+                    }
+                    else if(choice == 3){
+                        principalAmt = 50000;
+                        intRate = 4.0;
+                    }
+                    else if(choice == 4){
+                        principalAmt = 200000;
+                        intRate = 2.0;
+                    }
+                    else {
+                        System.out.println("Invalid Entry!");
+                        return;
+                    }
+
+                    accountMap.get(accountId).customer.applyForLoan(principalAmt,intRate,12);
                     accountMap.get(accountId).customer.printAllLoans();
                     break;
                 case 2:

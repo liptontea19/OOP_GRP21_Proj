@@ -157,7 +157,7 @@ public class Loan {
          } else if (var4.checkEligiblity()) {
             Loan var5 = new Loan(var1, var2, var3, var4.getCustomerID());
             var0.add(var5);
-            System.out.println("Applying for Loan.");
+            //System.out.println("Applying for Loan.");
             return var5;
          } else {
             System.out.println("Failure to apply for loan as credit score is too low.");
@@ -171,7 +171,7 @@ public class Loan {
 
    public void approveLoan() {
       this.setStatus("Approved");
-      System.out.println("Loan is approved.");
+      //System.out.println("Loan is approved.");
       BigDecimal var1 = this.principalAmount;
 
       for(int var2 = 1; var2 <= this.termInMonths; ++var2) {
@@ -205,12 +205,12 @@ public class Loan {
       System.out.println("Start Date: " + this.startDate);
       System.out.println("End Date: " + this.endDate);
       System.out.println("Customer ID: " + this.customerID);
-      System.out.println("Payment Dates: " + this.paymentDates);
+      //System.out.println("Payment Dates: " + this.paymentDates);
       System.out.println("Status: " + this.status);
 
-      for(int var5 = 0; var5 < this.paymentDates.size(); ++var5) {
-         System.out.println("Payment Date " + (var5 + 1) + ": " + this.paymentDates.get(var5));
-      }
+      //for(int var5 = 0; var5 < this.paymentDates.size(); ++var5) {
+      //   System.out.println("Payment Date " + (var5 + 1) + ": " + this.paymentDates.get(var5));
+      //}
 
    }
 

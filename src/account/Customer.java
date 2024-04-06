@@ -60,7 +60,6 @@ public class Customer {
                     this.CreditScore = Integer.parseInt(data[11]);
                     break;
                 }
-
             }
         }catch (FileNotFoundException e){
             e.printStackTrace();
@@ -360,11 +359,16 @@ public class Customer {
                 + "\nEmployer: " + Employer);
     }
     public static void main(String[] args){
-        Customer cust1 = new Customer("S1234A");
-        cust1.printCustomerDetails();
-        Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
-        cust1.reviewAndProcessLoan(newLoan);
-        cust1.printAllLoans();
+        try {
+            Customer cust1 = new Customer("S1234A");
+            cust1.printCustomerDetails();
+            Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
+            cust1.reviewAndProcessLoan(newLoan);
+            cust1.printAllLoans();
+
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
     }

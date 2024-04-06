@@ -26,7 +26,7 @@ public class Security {
     private Map<String, Integer> otpMap = new HashMap<String,Integer>();
 
     public Security() {
-        
+
     }
 
     public static void main(String[] args){
@@ -37,12 +37,12 @@ public class Security {
         String username, password="", salt, hashedPw;
         boolean validPw = false;
         while(true){
-            System.out.println("Username:");    
+            System.out.println("Username:");
             username = input.nextLine();
             if (username.equals("abc")){
                 break;
             }
-            
+
             System.out.println("Password:");
             /*while(!validPw){
                 password = input.nextLine();
@@ -145,7 +145,7 @@ public class Security {
         String var3 = generateSalt(); // generates salt
         String var4 = hashPassword(var2, var3);   // generates password
         this.setLoginAccount(var1, var2, var3);
-        ArrayList<String> var5 = new ArrayList<String>();
+        ArrayList var5 = new ArrayList();
         var5.add(var4);
         var5.add(var3);
         return var5;
@@ -165,7 +165,7 @@ public class Security {
      * @param accountName
      * @param hashedPW
      */
-    public void setLoginAccount(String accountName, String hashedPW){  
+    public void setLoginAccount(String accountName, String hashedPW){
         if(this.passwordMap.containsKey(accountName)) {
             this.passwordMap.replace(accountName,hashedPW);
         } else {
@@ -174,7 +174,7 @@ public class Security {
     }
 
     /**
-     * 
+     *
      * @param var1 username
      * @param var2 plain text password
      * @param var3 account's salt
@@ -193,7 +193,7 @@ public class Security {
         return passwordMap;
     }
 
-    /*public void logActivity(int var1, int var2) { 
+    /*public void logActivity(int var1, int var2) {
         switch (var2) {
             case 1:
             csv_update_help.generateCSVofSecurity("Login", var1);
