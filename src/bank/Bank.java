@@ -118,11 +118,7 @@ public class Bank {
     }
 
     public void makeAccounts(String[] accIdStrings){
-        /*for(int i=0;i<accIdStrings.length;i++){
-            accountMap.put(i+1, new Account(Integer.parseInt(accIdStrings[i])));
-            //accounts.add(new Account(Integer.parseInt(accIdStrings[i])));
-        }*/
-        int i=1, id;
+        int i = 1, id;
         String line;
         try (BufferedReader read = new BufferedReader(new FileReader("data/Account.csv"))){
             read.readLine();
@@ -170,11 +166,11 @@ public class Bank {
         }
         System.out.println("Acc No.   Name   ");
         Account displayAccount;
-        for (int i=0;i<accountMap.size();i++){
-            displayAccount = accountMap.get(i+1);
-            if(displayAccount.getAccountNumber()==userId){continue;}    // skip displaying input userId account
-            System.out.println((i+1) + ":  " + displayAccount.getAccountNumber() + "    " +
-            displayAccount.customer.getCustomerName());
+        for(Map.Entry<Integer, Account> entry : accountMap.entrySet()){
+            displayAccount = entry.getValue();
+            if(displayAccount.getAccountNumber()==userId){continue;}
+            System.out.println(displayAccount.getAccountNumber() + ":        " +
+                    displayAccount.customer.getCustomerName());
         }
     }
 
@@ -218,7 +214,7 @@ public class Bank {
                             (3): View Insurance Options
                             (4): View Foreign Currency Options
                             (5): View Loan Options
-                            (6): View Account Details
+                            (6): View Account Options
                             (7): Log out""");
             System.out.println("---------------------------------------------");
             userChoice = input.nextInt();
