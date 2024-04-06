@@ -148,7 +148,7 @@ public class Customer {
                 System.out.println("Loan is approved.");
             }
         } catch (ArithmeticException e) {
-            System.err.println("Failed to process loan due to an arithmetic error: " + e.getMessage());
+            //System.err.println("Failed to process loan due to an arithmetic error: " + e.getMessage());
             // Implement alternative logic or recovery here if possible
         }
     }
