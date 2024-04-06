@@ -1,7 +1,9 @@
 package account;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -77,7 +79,7 @@ public class Insurance {
      * @param polPeriod duration of insurance policy, uses Period object
      */
     public Insurance(int accountId,String policyId, LocalDate startDate, double monthlyPremium, double claimBalance, Period polPeriod){
-
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (policyId.charAt(0) == 'M'){
             this.insuranceType = "Medical";
         } else if (policyId.charAt(0) == 'P'){
@@ -93,6 +95,19 @@ public class Insurance {
         this.monthlyPremium = monthlyPremium;
         this.claimBalance = claimBalance;
         this.monthlyPremiumPaid = false;
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter("data/InsuranceAccounts.csv",true))){
+            writer.newLine();
+            writer.append(accountId + ",");
+            writer.append(policyId + ",");
+            writer.append(insuranceType + ",");
+            writer.append(Double.toString(monthlyPremium) + ",");
+            writer.append("No,");
+            writer.append(Double.toString(claimBalance) + ",");
+            writer.append(format.format(startDate) + ",");
+            writer.append(format.format(endDate));
+        } catch (IOException e){
+            e.printStackTrace();
+        }            
     }
     
     /**

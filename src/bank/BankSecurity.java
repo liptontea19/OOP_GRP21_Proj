@@ -104,7 +104,6 @@ public class BankSecurity {
      * @return  Success or failure of OTP authentication
      */
     public boolean otpProcess(int accId, Scanner userInput){
-    public boolean otpProcess(int accId, Scanner userInput){
         String accountName = Integer.toString(accId);
         int attemptCount = 1, otpVal=0;
         System.out.println("Generating OTP for your transaction...");

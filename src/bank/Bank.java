@@ -199,6 +199,7 @@ public class Bank {
 
     public int accountRegister(){
         int accountId=0, branchChoice, branchCode;
+        Account newAccount;
         try{
             accountId = secSession.registerUserCreds(input);
             System.out.println("Which branch are you opening your account at?");
@@ -209,7 +210,8 @@ public class Bank {
             } else {
                 branchCode = 297;   // default value in case user writes wrongly
             }
-            accountMap.put(accountId, new Account(accountId, branchCode,input));
+            newAccount = new Account(accountId, branchCode, input);
+            accountMap.put(accountId, newAccount);
             accountMap.get(accountId).printAccountDetails();
         } catch (ExitException e){
             e.getMessage();
@@ -257,7 +259,7 @@ public class Bank {
                     loanProcess(accountId);
                     break;
                 case 6:
-                    accountMap.get(accountId).printAccountDetails();
+                    accModProcess(accountId);
                     break;
                 case 7:
                     return; // exits the account process and returns user to log in area
@@ -666,11 +668,40 @@ public class Bank {
             System.out.println("Which policy would you like to add to your account?");
             insuranceCatalog.printInsuranceCatalog(true);
             System.out.println("Policy: ");
-            accountMap.get(accountId).addInsurance(insuranceCatalog.retrievePolicyMap(input.nextInt()));
+            accountMap.get(accountId).addInsurance(insuranceCatalog.retrievePolicyMap(input.nextInt()));            
+            editCSV("data/Account.csv", accountId, "InsurPolNum", accountMap.get(accountId).insurance.getPolicyNumber());
             if(accountMap.get(accountId).getInsurFlag()){
                 System.out.println("Successfully added insurance policy to your account!");
             }
         }
+    }
+
+    public void accModProcess(int accountId){
+        boolean cont = true;
+        while(cont){
+            System.out.println("""
+                (1) View Account Details
+                (2) Change Password
+                (3) Return
+                """);
+        int choice = input.nextInt();
+        input.nextLine();
+        switch(choice){
+            case 1:
+            accountMap.get(accountId).printAccountDetails();
+            break;
+            case 2:
+            try{
+                secSession.changeUserCreds(accountId, input);
+            } catch(ExitException e){
+                System.out.println("Returning to menu.");
+            }
+            break;
+            default:
+            return;
+        }
+        }
+        
     }
 
     public static void editCSV(String filename, int ID, String columnHeader, double newValue) {

@@ -3,7 +3,9 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -42,7 +44,6 @@ public class Account {
     public CreditCard creditCard;
     /** Account Customer Information */
     public Customer customer;
-    private int creditScore;
 
     public g11_FXE FXE;
     public Insurance insurance;
@@ -78,8 +79,23 @@ public class Account {
         } catch (NumberFormatException e){
             this.transferLimit = 2000;
         }
+        this.interestRate = 0.03f;
         addCard();
-        this.FXE = new g11_FXE();
+        addFX(this.accountNumber);
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter("data/Account.csv",true))){
+            writer.newLine();
+            writer.append(accountNumber + ",");
+            writer.append(accountType + ",");
+            writer.append(balance + ",");
+            writer.append(branchCode + ",");
+            writer.append(customer.getCustomerNRIC() + ",");
+            writer.append(transferLimit + ",");
+            writer.append(Float.toString(interestRate) + ",");
+            writer.append(creditCard.getCardNumber() + ",");
+            writer.append("-"); // no insurance policy yet
+        } catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -125,7 +141,6 @@ public class Account {
             }
             if (foundFlag == true){
                 this.customer = new Customer(custId);// replace with Customer csv constructor
-                this.creditScore = customer.getCreditScore();
                 if (!this.customer.getLoans().isEmpty()) {
                     loanFlag = true;
                 }
@@ -224,13 +239,40 @@ public class Account {
 
     public void addCard(){
         if (cardFlag == false){
+            String CSV_FILE = "data/CreditCard.csv";
             Random rand = new Random();
             long cardNumber = rand.nextLong(9999999999999999L);
             this.creditCard = new CreditCard(customer.getCustomerName(), accountNumber, cardNumber,3000);
             cardFlag = true;
+            try(BufferedWriter writer = new BufferedWriter(new FileWriter(CSV_FILE,true))){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate expiryDate = LocalDate.now().plusYears(5);
+                String formattedExpiryDate = formatter.format(expiryDate);
+                writer.newLine();
+                // Appending the values to the CSV file
+                writer.append(String.valueOf(cardNumber)).append(",");
+                writer.append(customer.getCustomerName()).append(",");
+                writer.append(String.valueOf(2000)).append(",");
+                writer.append(formattedExpiryDate).append(",");
+                writer.append(String.valueOf(getAccountNumber())).append(",");
+                writer.append(String.valueOf(this.balance));
+            } catch (IOException e){
+                e.printStackTrace();
+            }
         }
         else {
             System.err.println("Account " + Integer.toString(accountNumber) + " already has existing card");
+        }
+    }
+
+    public void addFX(int accountID){
+        this.FXE = new g11_FXE();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/FXacc.csv", true))) {
+            // Appending the values to the CSV file
+            writer.newLine();
+            writer.append(accountID + ",0,0");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -280,8 +322,15 @@ public class Account {
         return loanFlag;
     }
 
+    public double getAccBalance(){
+        return balance;
+    }
 
-    public int getBranchCreated(){
+    /**
+     * 
+     * @return Bank branch unique code 
+     */
+    public int getBranchCode(){
         return branchCode;
     }
 
@@ -289,6 +338,9 @@ public class Account {
         return interestRate;
     }
 
+    public String getAccountType(){
+        return accountType;
+    }
 
     /**
      * Pays for outstanding {@link Insurance} premium for the current month.
@@ -312,7 +364,6 @@ public class Account {
 
     public void makeCCPayment(double amount){
         // Make payment for outstanding credit card balance.
-        // creditCard.getCreditBalance() - amount;
         if (cardFlag == false){
             System.out.println("Account does not have a credit card associated with it.");
             return;
@@ -441,38 +492,7 @@ public class Account {
     }
 
     public static void main(String[] args) {
-        Account myAccount = new Account(1);
-        System.out.println("Welcome!");
-        myAccount.printAccountDetails();
-        HashMap<String,String> pol1 = new HashMap<>();
-        pol1.put("code", "MP03");
-        pol1.put("name", "Medical Policy 03");
-        pol1.put("type", "Medical");
-        pol1.put("annualCost","2000");
-        pol1.put("coverage", "20000");
-        pol1.put("duration", "P5Y3M");
-        Account insurAccount = new Account(3);
-        insurAccount.addInsurance(pol1);
-        insurAccount.printAccountDetails();
-
-        /*Customer cust1 = myAccount.getCustomer();  // Ensure this is not null
-        if (cust1 != null) {
-            cust1.printCustomerDetails();
-
-            /* Apply for a loan and review it
-            Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
-            if (newLoan != null) {
-                cust1.reviewAndProcessLoan(newLoan);  // This method should internally update the loan status and add it to the customer's loan list
-            }
-
-            // Now print all loans of the customer to confirm the loan has been added
-            cust1.printAllLoans();
-
-            // Repay a loan if any exists
-            myAccount.repayLoan();
-            myAccount.repayLoan();
-        } else {
-            System.out.println("Customer details not loaded correctly.");
-        }*/
+        Scanner input = new Scanner(System.in);
+        Account account = new Account(5734, 0, input);
     }
 }
