@@ -68,7 +68,7 @@ public class Customer {
 
         this.loans = new ArrayList<>();
 
-        String loansPath = "liptontea19/OOP_GRP21_Proj/data/Loans.csv"; // Path to the loans CSV file
+        String loansPath = "data/Loans.csv"; // Path to the loans CSV file
         try {
             List<String> lines = Files.readAllLines(Paths.get(loansPath));
             for (String line : lines) {

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class LoanUtil {
 
-    private static final String LOANS_FILE_PATH = "liptontea19/OOP_GRP21_Proj/data/Loans.csv";
+    private static final String LOANS_FILE_PATH = "data/Loans.csv";
 
     //calls this method after applying for a loan 
     public static void saveLoanToCSV(Loan loan) {
