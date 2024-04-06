@@ -425,7 +425,7 @@ public class Account {
         myAccount.printAccountDetails();
         HashMap<String,String> pol1 = new HashMap<>();
         pol1.put("code", "MP03");
-        pol1.put("name", "Nedical Policy 03");
+        pol1.put("name", "Medical Policy 03");
         pol1.put("type", "Medical");
         pol1.put("annualCost","2000");
         pol1.put("coverage", "20000");

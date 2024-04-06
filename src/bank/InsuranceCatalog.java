@@ -41,8 +41,7 @@ public class InsuranceCatalog {
             reader.readLine(); // skip column name line of CSV
             while ((line = reader.readLine()) != null) {    
                 parts = line.split(","); // Split by comma since it's CSV
-                parts[6] = parts[5]; // moves the ISO duration value to the 6th column
-                parts[5] = convertISOtoString(parts[5]);    // converts the duration ISO into a readable format
+                //parts[5] = convertISOtoString(parts[5]);    // converts the duration ISO into a readable format
                 policyInfo.add(parts);
             }
             reader.close();
@@ -75,7 +74,7 @@ public class InsuranceCatalog {
         policyMap.put("type", policyInfo.get(policyRowNum-1)[2]);
         policyMap.put("annualCost", policyInfo.get(policyRowNum-1)[3]);
         policyMap.put("coverage", policyInfo.get(policyRowNum-1)[4]);
-        policyMap.put("duration", policyInfo.get(policyRowNum-1)[6]);
+        policyMap.put("duration", policyInfo.get(policyRowNum-1)[5]);
 
         return policyMap;
     }
@@ -118,7 +117,7 @@ public class InsuranceCatalog {
         System.out.println("Name                    ID     Annual Premium     Claim Up To     Duration");
         for (String[] policyDetails: this.policyInfo){
             System.out.println(policyDetails[1] + "       " + policyDetails[0] + "   $" + 
-            policyDetails[3] + "            $" + policyDetails[4] + "        " + policyDetails[5]);
+            policyDetails[3] + "            $" + policyDetails[4] + "        " + policyDetails[6]);
         }
     }
 
@@ -131,13 +130,13 @@ public class InsuranceCatalog {
             System.out.println("No.| Name                    ID     Annual Premium     Claim Up To     Duration");
             for(int i=0; i< policyInfo.size(); i++){
                 System.out.println((i+1) + "  | " + policyInfo.get(i)[1] + "       " + policyInfo.get(i)[0] + "   $" + 
-                policyInfo.get(i)[3] + "            $" + policyInfo.get(i)[4] + "        " + policyInfo.get(i)[5]); 
+                policyInfo.get(i)[3] + "            $" + policyInfo.get(i)[4] + "        " + policyInfo.get(i)[6]); 
             }
         } else {
             System.out.println("Name                    ID     Annual Premium     Claim Up To     Duration");
             for (String[] policyDetails: this.policyInfo){
                 System.out.println(policyDetails[1] + "       " + policyDetails[0] + "   $" + 
-                policyDetails[3] + "            $" + policyDetails[4] + "        " + policyDetails[5]);
+                policyDetails[3] + "            $" + policyDetails[4] + "        " + policyDetails[6]);
         }
         }
     }
