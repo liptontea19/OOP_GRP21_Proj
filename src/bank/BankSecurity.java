@@ -104,7 +104,7 @@ public class BankSecurity {
      * @return  Success or failure of OTP authentication
      * @throws FailedLoginException
      */
-    public boolean otpProcess(int accId, Scanner userInput) throws FailedLoginException{
+    public boolean otpProcess(int accId, Scanner userInput){
         String accountName = Integer.toString(accId);
         int attemptCount = 1, otpVal=0;
         System.out.println("Generating OTP for your transaction...");
@@ -122,9 +122,7 @@ public class BankSecurity {
             }
             attemptCount++;
         }
-        if (attemptCount >= 4){
-            throw new FailedLoginException();
-        }
+
         return false;
     }
 
