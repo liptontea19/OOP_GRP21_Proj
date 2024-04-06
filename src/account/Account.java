@@ -189,9 +189,7 @@ public class Account {
                 this.insurance = new Insurance(accountNumber, policyInfo.get("code"), LocalDate.now(), 
                 (Double.parseDouble(policyInfo.get("annualCost"))/12), Double.parseDouble(policyInfo.get("coverage")), 
                 Period.parse(policyInfo.get("duration")));  // converts value into Period type
-
-
-
+                this.insurance.setInsuranceType(policyInfo.get("type"));
                 this.insureFlag = true;
             } catch (NullPointerException error){
                 System.err.println("Insurance policy record is incomplete.");

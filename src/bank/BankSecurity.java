@@ -45,9 +45,9 @@ public class BankSecurity {
     }
 
     /**
-     * 
-     * @param userId
-     * @param plainTextPw
+     * Authencation process that queries password list for a match of the given password.
+     * @param userId ID of account that wants to log in
+     * @param plainTextPw Plain-text password entered by user
      * @return
      */
     public boolean accAuthenticate(int userId, String plainTextPw){
@@ -55,34 +55,46 @@ public class BankSecurity {
         return secSession.authenticateUser(userIdString, plainTextPw, saltMap.get(userId));
     }
 
+    /**
+     * Account log in process.
+     * Gives user 3 chances to enter the correct password for their account or it'll return 0
+     * @param userInput System input scanner object.
+     * @return Returns the account ID number of the logged in account; 0 on failure.
+     * @throws FailedLoginException Thrown when user has failed to log in after 3 tries.
+     */
     public int accountLogin(Scanner userInput) throws FailedLoginException{
         int attemptCount = 1, userId;
         String password;
-
+        
         while (attemptCount < 4){
             System.out.println("Enter User ID:");
             try { 
-                userId = userInput.nextInt();
+                userId = Integer.parseInt(userInput.nextLine());
                 if(saltMap.containsKey(userId)){
-                    System.out.println("Enter password:");
-                    password = userInput.nextLine();
-                    if(accAuthenticate(userId, password)){
-                        return userId;
-                    } else {
-                        System.out.println("Wrong password.");
+                    while(attemptCount < 4){
+                        System.out.println("Enter password:");
+                        password = userInput.nextLine();
+                        if(accAuthenticate(userId, password)){
+                            return userId;
+                        } else {
+                            System.out.println("Wrong password.");
+                            System.out.println("You have " + Integer.toString(3 - attemptCount) + " remaining attempts to enter the correct password.");
+                        }
+                        attemptCount++;
+                    }             
+                    if (attemptCount >= 4){
+                        throw new FailedLoginException();
                     }
                 } else {
                     System.out.println("Entered User ID was not in database.");
                 }
             } catch(NullPointerException e){
                 System.out.println("Entered User ID is null.");
+            } catch(NumberFormatException e){
+                System.err.println("Entered ID is incorrect.");
             }
-            System.out.println("You have " + Integer.toString(3 - attemptCount) + " remaining attempts.");
-            attemptCount++;
         }
-        if (attemptCount >= 4){
-            throw new FailedLoginException();
-        }
+        
         return 0;
     }
 
