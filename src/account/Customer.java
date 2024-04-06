@@ -381,7 +381,6 @@ public class Customer {
     }
     public static void main(String[] args){
         try{
-            try {
             Customer cust1 = new Customer("-----");
                 cust1.printCustomerDetails();
                 Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
@@ -391,12 +390,6 @@ public class Customer {
             e.printStackTrace();
 
         }
-        
-
-        } catch(FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
 
     }
 }
