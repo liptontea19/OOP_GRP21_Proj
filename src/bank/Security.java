@@ -23,51 +23,46 @@ import javax.crypto.spec.PBEKeySpec;
  */
 public class Security {
     private Map<String, String> passwordMap = new HashMap<String,String>();
-    private Map<String, String> saltMap = new HashMap<String,String>();
     private Map<String, Integer> otpMap = new HashMap<String,Integer>();
 
-    public Security() { // as the class has no way of acessing existing account passwords
-        String filePath = "data\\UserPass.csv";
-        try(BufferedReader reader = new BufferedReader(new FileReader(filePath))){
-            String line;
-            String[] secDetails;
-            reader.readLine();
-            while((line = reader.readLine()) != null){
-               secDetails = line.split(",");
-               passwordMap.put(secDetails[0],secDetails[1]);
-               saltMap.put(secDetails[0],secDetails[2]);
-            }
-        } catch (FileNotFoundException e){
-            System.out.println("Uable to locate User Password file during initialisation.");
-        } catch (IOException e){
-            System.out.println("Error found while reading Password file.");
-        }
+    public Security() {
+        
     }
 
-    public static void main(){
+    public static void main(String[] args){
         Security secure = new Security();
         Scanner input = new Scanner(System.in);
-        System.out.println("Generate new passwords and shit");
-
-        String username, password;
+        System.out.println("1) Generate new passwords and shit\n2)Test PW");
+        int mode = Integer.parseInt(input.nextLine());
+        String username, password="", salt, hashedPw;
+        boolean validPw = false;
         while(true){
-            System.out.println("Username:");
+            System.out.println("Username:");    
             username = input.nextLine();
+            if (username.equals("abc")){
+                break;
+            }
+            
             System.out.println("Password:");
+            /*while(!validPw){
+                password = input.nextLine();
+                if (!secure.validatePassword(password)){
+                    System.out.println("Entered password does not pass the requirements.");
+                } else {
+                    validPw = true;
+                }
+            }*/
             password = input.nextLine();
-
+            if (mode == 1){
+                salt = generateSalt();
+                hashedPw = hashPassword(password, salt);
+                System.out.println("PW: " + hashedPw + "\nSalt: " + salt);
+                System.out.println("Testing plain text and hash");
+                secure.setLoginAccount(username, password, salt);
+                System.out.println(Boolean.toString(secure.authenticateUser(username, password, salt)));
+            }
         }
-
-    }
-
-    public String getSaltString(String username){   // added function to access saltMap
-        if(this.saltMap.containsKey(username)){
-            return this.saltMap.get(username);  
-        } else {
-            String newSalt = generateSalt();
-            saltMap.put(username, newSalt);
-            return newSalt;
-        }
+        input.close();
     }
 
     public boolean authenticateWithOTP(String var1, int var2) {
@@ -150,7 +145,7 @@ public class Security {
         String var3 = generateSalt(); // generates salt
         String var4 = hashPassword(var2, var3);   // generates password
         this.setLoginAccount(var1, var2, var3);
-        ArrayList var5 = new ArrayList();
+        ArrayList<String> var5 = new ArrayList<String>();
         var5.add(var4);
         var5.add(var3);
         return var5;
@@ -165,6 +160,26 @@ public class Security {
         this.passwordMap.put(var1, var4);
     }
 
+    /**
+     * Overload method of {@link #setLoginAccount()} for adding existing accounts into passwordMa
+     * @param accountName
+     * @param hashedPW
+     */
+    public void setLoginAccount(String accountName, String hashedPW){  
+        if(this.passwordMap.containsKey(accountName)) {
+            this.passwordMap.replace(accountName,hashedPW);
+        } else {
+            this.passwordMap.put(accountName, hashedPW);
+        }
+    }
+
+    /**
+     * 
+     * @param var1 username
+     * @param var2 plain text password
+     * @param var3 account's salt
+     * @return
+     */
     public boolean authenticateUser(String var1, String var2, String var3) {
         String var4 = hashPassword(var2, var3);
         return this.passwordMap.containsKey(var1) && this.passwordMap.containsValue(var4);
@@ -174,7 +189,11 @@ public class Security {
         return this.passwordMap.containsKey(var1);
     }
 
-    public void logActivity(int var1, int var2) { 
+    public Map<String,String> getPasswordMap(){
+        return passwordMap;
+    }
+
+    /*public void logActivity(int var1, int var2) { 
         switch (var2) {
             case 1:
             csv_update_help.generateCSVofSecurity("Login", var1);
@@ -192,5 +211,5 @@ public class Security {
             csv_update_help.generateCSVofSecurity("Withdraw", var1);
         }
 
-    }
+    }*/
 }

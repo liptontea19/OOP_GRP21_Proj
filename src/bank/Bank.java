@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.security.auth.login.FailedLoginException;
+
 import account.Account;
 import account.FXAccount;
 import account.Insurance;
@@ -26,7 +28,7 @@ public class Bank {
     private static String bankName;
     private static Insurance insurancePolicies; // will be deprecated soon after main1's removal
     private static Branch branches;
-    private Security secSession;
+    private BankSecurity secSession;
     private DecimalFormat moneyFormat = new DecimalFormat("#,###.00");
     private Scanner input = new Scanner(System.in);
 
@@ -45,7 +47,7 @@ public class Bank {
         branchMap = new HashMap<>();
         fxMap = new HashMap<>();
         insuranceCatalog = new InsuranceCatalog();
-        secSession = new Security(60);
+        secSession = new BankSecurity("data\\Userpass.csv");
         String[] accountCSVLine, branchCodeCSVLine;
 
         String csvFile = "data/Bank.csv";
@@ -171,6 +173,7 @@ public class Bank {
      * User has 3 attempts to succesfully log into the account.
      * Requires: accountMap and security object
      * @return Account ID of logged in account; else returns 0 on failure
+     * @deprecated Please try {@link BankSecurity#accountLogin(Scanner)}
      */
     public int accountLogin(){
         displayAccounts();  // account display lmao 
@@ -180,11 +183,11 @@ public class Bank {
         while (attemptCount < 4){
             System.out.println("Enter User ID:");
             try {
-                loginAccChoice = Integer.parseInt(input.nextLine());
+                loginAccChoice = Integer.parseInt(input.nextLine());    // parses value into int
                 if(accountMap.containsKey(loginAccChoice)){
                     System.out.println("Enter password:");
                     password = input.nextLine();
-                    if(secSession.validatePassword(loginAccChoice, password)){
+                    if(secSession.accAuthenticate(loginAccChoice, password)){
                         break;
                     }
                 } else {
@@ -207,8 +210,11 @@ public class Bank {
         int accountId = 0, userChoice;    //account ID of logged in account
         boolean contAccount = true;
         
-        accountId = accountLogin();   // user logs into account 
-        if (accountId == 0){
+        displayAccounts();  // display all user accounts
+        try{
+            accountId = secSession.accountLogin(input); // account log in authentication process
+        } catch (FailedLoginException e){
+            System.err.println("You have failed to log in, page will now return to main menu.");
             return;
         }
 
@@ -226,8 +232,6 @@ public class Bank {
                             (7): Log out""");
             System.out.println("---------------------------------------------");
             userChoice = input.nextInt();
-            double amt;
-            int branchChoice;
             switch (userChoice) {
                 case 1: // dep,with,trans method     
                     accProcess(accountId);                   
@@ -435,6 +439,31 @@ public class Bank {
         }
     }
     
+    public void accOpProcess(int accountId){
+        System.out.println("""
+                View and Change Settings
+                (1): Change Password
+                (2): View Account Details 
+                (3): Return to previous page
+                """);
+        int choice = input.nextInt();
+        switch(choice) {
+            case 1:
+            try{
+                secSession.changeUserCreds(accountId,input);
+            } catch(ExitException e){
+                System.out.println("Please retry.");
+            }
+            break;
+            case 2:
+            accountMap.get(accountId).printAccountDetails();
+            break;
+
+            default:
+            return;
+        }
+    }
+
     public void displayBranches() {
         System.out.println("Branch Name    Branch Code    Current Reserves    Opening Hours");
         Branch selectedBranch;
@@ -447,7 +476,7 @@ public class Bank {
     }
 
     /**
-     * 
+     * Joel's Old Display Bank Menu Thing, remove before release.
      * @param listofAccs
      * @deprecated
      */
