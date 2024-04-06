@@ -70,6 +70,14 @@ public class FXAccount extends Account{
         }
     }
 
+    public double getJPYBalance(){
+        return JPYbalance;
+    }
+
+    public double getUSDBalance(){
+        return USDbalance;
+    }
+
     public void printFXBalance(){
         System.out.println("Account ID: " + accountID + "\nForeign Balances:\nUSD: " + USDbalance + "\nJPY " + JPYbalance);
     }

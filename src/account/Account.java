@@ -1,8 +1,5 @@
 package account;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -48,7 +45,7 @@ public class Account {
 
     public g11_FXE FXE;
     public Insurance insurance;
-    private boolean insureFlag = false, cardFlag = false;
+    private boolean insureFlag = false, cardFlag = false, loanFlag = false;
 
     /*public Account(int accountNumber, String accountType, int branchCode,
                     double balance, Customer customer, double transferLimit){
@@ -106,6 +103,9 @@ public class Account {
             if (foundFlag == true){
                 this.customer = new Customer(custId);// replace with Customer csv constructor
                 this.creditScore = customer.getCreditScore();
+                if (!this.customer.getLoans().isEmpty()) {
+                    loanFlag = true;
+                }
                 if (cardNumber != ""){
                     cardFlag = true;
                     this.creditCard = new CreditCard(Long.parseLong(cardNumber));
@@ -157,6 +157,7 @@ public class Account {
 
         if (accountBalance.compareTo(monthlyPayment) >= 0) {
             selectedLoan.repay(String.valueOf(this.accountNumber), accountBalance);
+            LoanUtil.saveLoanToCSV(selectedLoan);
 
             this.balance = accountBalance.subtract(monthlyPayment).doubleValue();
             System.out.println("Loan repayment for loan ID " + selectedLoan.getLoanID() + " made successfully.");
@@ -188,6 +189,9 @@ public class Account {
                 this.insurance = new Insurance(accountNumber, policyInfo.get("code"), LocalDate.now(), 
                 (Double.parseDouble(policyInfo.get("annualCost"))/12), Double.parseDouble(policyInfo.get("coverage")), 
                 Period.parse(policyInfo.get("duration")));  // converts value into Period type
+
+
+
                 this.insureFlag = true;
             } catch (NullPointerException error){
                 System.err.println("Insurance policy record is incomplete.");
@@ -196,6 +200,10 @@ public class Account {
         else {
             System.err.println("User already has existing insurance policy.");
         }
+    }
+
+    public void addInsuranceCSV(){
+
     }
 
     public void addCard(){
@@ -248,6 +256,10 @@ public class Account {
 
     public Boolean getInsurFlag(){
         return insureFlag;
+    }
+
+    public Boolean getLoanFlag(){
+        return loanFlag;
     }
 
 
@@ -419,16 +431,17 @@ public class Account {
         if (cust1 != null) {
             cust1.printCustomerDetails();
 
-            // Apply for a loan and review it
+            /* Apply for a loan and review it
             Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
             if (newLoan != null) {
                 cust1.reviewAndProcessLoan(newLoan);  // This method should internally update the loan status and add it to the customer's loan list
             }
-
+            */
             // Now print all loans of the customer to confirm the loan has been added
             cust1.printAllLoans();
 
             // Repay a loan if any exists
+            myAccount.repayLoan();
             myAccount.repayLoan();
         } else {
             System.out.println("Customer details not loaded correctly.");
