@@ -1,5 +1,6 @@
 package bank;
 import java.io.*;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -287,16 +288,26 @@ public class Bank {
                 System.out.println("Select branch you would like to deposit to.");
                 displayBranches();
                 branchChoice = input.nextInt();
-                accountMap.get(accountId).deposit(amt);
-                branchMap.get(branchChoice).depositReserve(amt);
+                input.nextLine();
+                if(secSession.otpProcess(accountId,input))
+                {
+                    accountMap.get(accountId).deposit(amt);
+                    branchMap.get(branchChoice).depositReserve(amt);
 
-                branchID = branchMap.get(branchChoice).getBranchCode();
+                    branchID = branchMap.get(branchChoice).getBranchCode();
 
-                totalBalance = accountMap.get(accountId).checkBalance();
-                totalReserves = branchMap.get(branchChoice).getBranchReserve();
+                    totalBalance = accountMap.get(accountId).checkBalance();
+                    totalReserves = branchMap.get(branchChoice).getBranchReserve();
 
-                editCSV("data/Account.csv",accountId,"Balance",totalBalance);
-                editCSV("data/Branch.csv",branchID,"BranchReserve",totalReserves);
+                    editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                    editCSV("data/Branch.csv",branchID,"BranchReserve",totalReserves);
+                }
+                else{
+                    System.out.println("Oops! Please try again!");
+                    return;
+                }
+
+
                 break;
 
             case 2: // User wants to withdraw money from a branch
@@ -324,16 +335,23 @@ public class Bank {
                 System.out.println("Select branch you would like to withdraw from.");
                 displayBranches();
                 branchChoice = input.nextInt();
-                accountMap.get(accountId).withdraw(amt);
-                branchMap.get(branchChoice).withdrawReserve(amt);
+                input.nextLine();
+                if(secSession.otpProcess(accountId,input)){
+                    accountMap.get(accountId).withdraw(amt);
+                    branchMap.get(branchChoice).withdrawReserve(amt);
 
-                branchID = branchMap.get(branchChoice).getBranchCode();
+                    branchID = branchMap.get(branchChoice).getBranchCode();
 
-                totalBalance = accountMap.get(accountId).checkBalance();
-                totalReserves = branchMap.get(branchChoice).getBranchReserve();
+                    totalBalance = accountMap.get(accountId).checkBalance();
+                    totalReserves = branchMap.get(branchChoice).getBranchReserve();
 
-                editCSV("data/Account.csv",accountId,"Balance",totalBalance);
-                editCSV("data/Branch.csv",branchID,"BranchReserve",totalReserves);
+                    editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                    editCSV("data/Branch.csv",branchID,"BranchReserve",totalReserves);
+                }
+                else {
+                    System.out.println("Oops! Please try again!");
+                }
+
                 break;
             case 3: // User wants to transfer money to another account
                 System.out.println("Select recipient's account ID.");
@@ -341,18 +359,25 @@ public class Bank {
                 int recepientId = input.nextInt();
                 System.out.print("Enter the amount you want to transfer: ");
                 amt = input.nextDouble();
-                if (accountMap.containsKey(recepientId)){
-                    accountMap.get(accountId).withdraw(amt);
-                    accountMap.get(recepientId).deposit(amt);
+                input.nextLine();
+                if(secSession.otpProcess(accountId,input)){
+                    if (accountMap.containsKey(recepientId)){
+                        accountMap.get(accountId).withdraw(amt);
+                        accountMap.get(recepientId).deposit(amt);
 
-                    totalBalance = accountMap.get(accountId).checkBalance();
-                    double recepientBalance = accountMap.get(recepientId).checkBalance();
+                        totalBalance = accountMap.get(accountId).checkBalance();
+                        double recepientBalance = accountMap.get(recepientId).checkBalance();
 
-                    editCSV("data/Account.csv",accountId,"Balance",totalBalance);
-                    editCSV("data/Account.csv",recepientId,"Balance",recepientBalance);
-                } else {
-                    System.out.println("There is no such account in our bank.");
+                        editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                        editCSV("data/Account.csv",recepientId,"Balance",recepientBalance);
+                    } else {
+                        System.out.println("There is no such account in our bank.");
+                    }
                 }
+                else {
+                    System.out.println("Oops! Please try again!");
+                }
+
                 break;
             case 4:
                 return;
@@ -385,16 +410,34 @@ public class Bank {
                     if (credBalance>0){
                         System.out.println("Amount to pay: ");
                         double payAmount = input.nextDouble();
-                        accountMap.get(accountId).makeCCPayment(payAmount);
+                        input.nextLine();
+                        if(secSession.otpProcess(accountId,input)){
+                            accountMap.get(accountId).makeCCPayment(payAmount);
+                            double cBalance = accountMap.get(accountId).creditCard.getCreditBalance();
+                            long CreditId = accountMap.get(accountId).creditCard.getCardNumber();
+                            double totalBalance = accountMap.get(accountId).checkBalance();
+                            editCSV("data/CreditCard.csv",CreditId,"Balance",cBalance);
+                            editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                        }
+                        else{
+                            System.out.println("Oops! Please try again!");
+                        }
+
                     }
                     break;
                 case 2:
                     System.out.println("New Transfer Limit: ");
                     double newLimit = input.nextDouble();
-                    accountMap.get(accountId).setTransferLimit(newLimit);
-                    double limitBalance = accountMap.get(accountId).checkTransferLimit();
-                    long CreditId = accountMap.get(accountId).creditCard.getCardNumber();
-                    editCSV("data/CreditCard.csv",CreditId,"CreditLimit",limitBalance);
+                    input.nextLine();
+                    if(secSession.otpProcess(accountId,input)){
+                        accountMap.get(accountId).setTransferLimit(newLimit);
+                        double limitBalance = accountMap.get(accountId).checkTransferLimit();
+                        long CreditId = accountMap.get(accountId).creditCard.getCardNumber();
+                        editCSV("data/CreditCard.csv",CreditId,"CreditLimit",limitBalance);
+                    }
+                    else {
+                        System.out.println("Oops! Please try again!");
+                    }
                     break;
                 case 3:
                     return;
@@ -419,17 +462,23 @@ public class Bank {
                 System.out.println("Enter the amount you want to exchange:");
                 exchangeAmt = input.nextDouble();
 
-                fxMap.get(accountId).makeExchange(firstChoice,secondChoice,exchangeAmt);
-                accountMap.get(accountId).makeExchange(firstChoice,secondChoice,exchangeAmt);
-                totalBalance = accountMap.get(accountId).checkBalance();
-                totalJPYBalance = fxMap.get(accountId).getJPYBalance();
-                totalUSDBalance = fxMap.get(accountId).getUSDBalance();
+                input.nextLine();
+                if(secSession.otpProcess(accountId,input)){
+                    fxMap.get(accountId).makeExchange(firstChoice,secondChoice,exchangeAmt);
+                    accountMap.get(accountId).makeExchange(firstChoice,secondChoice,exchangeAmt);
+                    totalBalance = accountMap.get(accountId).checkBalance();
+                    totalJPYBalance = fxMap.get(accountId).getJPYBalance();
+                    totalUSDBalance = fxMap.get(accountId).getUSDBalance();
 
 
-                editCSV("data/Account.csv",accountId,"Balance",totalBalance);
-                editCSV("data/FXacc.csv",accountId,"JPYBal",totalJPYBalance);
-                editCSV("data/FXacc.csv",accountId,"USDBal",totalUSDBalance);
+                    editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                    editCSV("data/FXacc.csv",accountId,"JPYBal",totalJPYBalance);
+                    editCSV("data/FXacc.csv",accountId,"USDBal",totalUSDBalance);
 
+                }
+                else {
+                    System.out.println("Oops! Please try again!");
+                }
                 break;
             case 2:
                 fxMap.get(accountId).printFXBalance();
@@ -437,18 +486,23 @@ public class Bank {
                 secondChoice = input.nextInt();
                 System.out.println("Enter the amount you want to exchange:");
                 exchangeAmt = input.nextDouble();
+                input.nextLine();
+                if(secSession.otpProcess(accountId,input))
+                {
+                    fxMap.get(accountId).makeExchange(firstChoice,secondChoice,exchangeAmt);
+                    accountMap.get(accountId).makeExchange(firstChoice,secondChoice,exchangeAmt);
 
-                fxMap.get(accountId).makeExchange(firstChoice,secondChoice,exchangeAmt);
-                accountMap.get(accountId).makeExchange(firstChoice,secondChoice,exchangeAmt);
+                    totalBalance = accountMap.get(accountId).checkBalance();
+                    totalJPYBalance = fxMap.get(accountId).getJPYBalance();
+                    totalUSDBalance = fxMap.get(accountId).getUSDBalance();
 
-                totalBalance = accountMap.get(accountId).checkBalance();
-                totalJPYBalance = fxMap.get(accountId).getJPYBalance();
-                totalUSDBalance = fxMap.get(accountId).getUSDBalance();
-
-                editCSV("data/Account.csv",accountId,"Balance",totalBalance);
-                editCSV("data/FXacc.csv",accountId,"JPYBal",totalJPYBalance);
-                editCSV("data/FXacc.csv",accountId,"USDBal",totalUSDBalance);
-
+                    editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                    editCSV("data/FXacc.csv",accountId,"JPYBal",totalJPYBalance);
+                    editCSV("data/FXacc.csv",accountId,"USDBal",totalUSDBalance);
+                }
+                else{
+                    System.out.println("Oops! Please try again!");
+                }
                 break;
             case 3:
                 fxMap.get(accountId).printFXBalance();
@@ -472,11 +526,51 @@ public class Bank {
                     """);
             switch(input.nextInt()){
                 case 1:
-                    accountMap.get(accountId).customer.applyForLoan(7000,5.0,12);
-
+                    System.out.println("""
+                            (1): Property Loan
+                            (2): Education Loan
+                            (3): Car Loan
+                            (4): Business Loan
+                            """);
+                    int choice = input.nextInt();
+                    int principalAmt;
+                    double intRate;
+                    if(choice == 1){
+                        principalAmt = 100000;
+                        intRate = 3.0;
+                    }
+                    else if(choice == 2){
+                        principalAmt = 30000;
+                        intRate = 5.0;
+                    }
+                    else if(choice == 3){
+                        principalAmt = 50000;
+                        intRate = 4.0;
+                    }
+                    else if(choice == 4){
+                        principalAmt = 200000;
+                        intRate = 2.0;
+                    }
+                    else {
+                        System.out.println("Invalid Entry!");
+                        return;
+                    }
+                    input.nextLine();
+                    if(secSession.otpProcess(accountId,input)){
+                        accountMap.get(accountId).customer.applyForLoan(principalAmt,intRate,12);
+                    }
+                    else {
+                        System.out.println("Oops! Please try again!");
+                    }
                     break;
                 case 2:
-                    accountMap.get(accountId).repayLoan(input);
+                    input.nextLine();
+                    if(secSession.otpProcess(accountId,input)){
+                        accountMap.get(accountId).repayLoan(input);
+                    }
+                    else {
+                        System.out.println("Oops! Please try again!");
+                    }
                     break;
                 case 3:
                     accountMap.get(accountId).customer.printAllLoans();
@@ -492,7 +586,36 @@ public class Bank {
             System.out.println("Do you want to apply for Loan?\n(1) Yes\n(2) No");
             switch(input.nextInt()){
                 case 1:
-                    accountMap.get(accountId).customer.applyForLoan(7000,5.0,12);
+                    System.out.println("""
+                            (1): Property Loan
+                            (2): Education Loan
+                            (3): Car Loan
+                            (4): Business Loan
+                            """);
+                    int choice = input.nextInt();
+                    int principalAmt;
+                    double intRate;
+                    if(choice == 1){
+                        principalAmt = 100000;
+                        intRate = 3.0;
+                    }
+                    else if(choice == 2){
+                        principalAmt = 30000;
+                        intRate = 5.0;
+                    }
+                    else if(choice == 3){
+                        principalAmt = 50000;
+                        intRate = 4.0;
+                    }
+                    else if(choice == 4){
+                        principalAmt = 200000;
+                        intRate = 2.0;
+                    }
+                    else {
+                        System.out.println("Invalid Entry!");
+                        return;
+                    }
+                    accountMap.get(accountId).customer.applyForLoan(principalAmt,intRate,12);
                     accountMap.get(accountId).customer.printAllLoans();
                     break;
                 case 2:
@@ -516,10 +639,16 @@ public class Bank {
 
             switch (input.nextInt()) {
                 case 1:
-                    accountMap.get(accountId).payInsurancePremium();
-                    totalBalance = accountMap.get(accountId).checkBalance();
-                    editCSV("data/Account.csv",accountId,"Balance",totalBalance);
-                    editCSV("data/InsuranceAccounts.csv",accountId,"Premium Paid","Yes");
+                    input.nextLine();
+                    if(secSession.otpProcess(accountId,input)){
+                        accountMap.get(accountId).payInsurancePremium();
+                        totalBalance = accountMap.get(accountId).checkBalance();
+                        editCSV("data/Account.csv",accountId,"Balance",totalBalance);
+                        editCSV("data/InsuranceAccounts.csv",accountId,"Premium Paid","Yes");
+                    }
+                    else {
+                        System.out.println("Oops! Please try again!");
+                    }
                     break;
                 case 2:
                     System.out.println("        Insurance Policy");

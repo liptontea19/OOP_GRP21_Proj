@@ -222,10 +222,6 @@ public class Account {
         }
     }
 
-    public void addInsuranceCSV(){
-
-    }
-
     public void addCard(){
         if (cardFlag == false){
             Random rand = new Random();
@@ -468,7 +464,7 @@ public class Account {
             if (newLoan != null) {
                 cust1.reviewAndProcessLoan(newLoan);  // This method should internally update the loan status and add it to the customer's loan list
             }
-            
+
             // Now print all loans of the customer to confirm the loan has been added
             cust1.printAllLoans();
 
