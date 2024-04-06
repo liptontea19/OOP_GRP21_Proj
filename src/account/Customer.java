@@ -106,7 +106,6 @@ public class Customer {
             if (newLoan != null) {
                 //loan already added to the list in the loan.applyForLoan method, so inside customer not required
                 System.out.println("Loan applied successfully.");
-                LoanUtil.saveLoanToCSV(newLoan);
             } else {
                 System.out.println("Loan application failed.");
             }
@@ -339,14 +338,10 @@ public class Customer {
     }
     public static void main(String[] args){
         Customer cust1 = new Customer("S1234A");
-        Customer cust2 = new Customer("S1235B");
         cust1.printCustomerDetails();
-        //Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
-        //cust1.reviewAndProcessLoan(newLoan);
-        Loan newLoan = cust2.applyForLoan(7000, 5.0, 12);
-        cust2.reviewAndProcessLoan(newLoan);
+        Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
+        cust1.reviewAndProcessLoan(newLoan);
         cust1.printAllLoans();
-        cust2.printAllLoans();
         
 
     }
