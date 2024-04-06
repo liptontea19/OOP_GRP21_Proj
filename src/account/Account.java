@@ -423,8 +423,18 @@ public class Account {
         Account myAccount = new Account(1);
         System.out.println("Welcome!");
         myAccount.printAccountDetails();
+        HashMap<String,String> pol1 = new HashMap<>();
+        pol1.put("code", "MP03");
+        pol1.put("name", "Nedical Policy 03");
+        pol1.put("type", "Medical");
+        pol1.put("annualCost","2000");
+        pol1.put("coverage", "20000");
+        pol1.put("duration", "P5Y3M");
+        Account insurAccount = new Account(3);
+        insurAccount.addInsurance(pol1);
+        insurAccount.printAccountDetails();
 
-        Customer cust1 = myAccount.getCustomer();  // Ensure this is not null
+        /*Customer cust1 = myAccount.getCustomer();  // Ensure this is not null
         if (cust1 != null) {
             cust1.printCustomerDetails();
 
@@ -433,7 +443,7 @@ public class Account {
             if (newLoan != null) {
                 cust1.reviewAndProcessLoan(newLoan);  // This method should internally update the loan status and add it to the customer's loan list
             }
-            */
+            
             // Now print all loans of the customer to confirm the loan has been added
             cust1.printAllLoans();
 
@@ -442,6 +452,6 @@ public class Account {
             myAccount.repayLoan();
         } else {
             System.out.println("Customer details not loaded correctly.");
-        }
+        }*/
     }
 }

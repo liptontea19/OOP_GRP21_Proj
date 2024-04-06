@@ -41,7 +41,8 @@ public class InsuranceCatalog {
             reader.readLine(); // skip column name line of CSV
             while ((line = reader.readLine()) != null) {    
                 parts = line.split(","); // Split by comma since it's CSV
-                parts[5] = convertISOtoString(parts[5]);
+                parts[6] = parts[5]; // moves the ISO duration value to the 6th column
+                parts[5] = convertISOtoString(parts[5]);    // converts the duration ISO into a readable format
                 policyInfo.add(parts);
             }
             reader.close();
@@ -74,7 +75,7 @@ public class InsuranceCatalog {
         policyMap.put("type", policyInfo.get(policyRowNum-1)[2]);
         policyMap.put("annualCost", policyInfo.get(policyRowNum-1)[3]);
         policyMap.put("coverage", policyInfo.get(policyRowNum-1)[4]);
-        policyMap.put("duration", policyInfo.get(policyRowNum-1)[5]);
+        policyMap.put("duration", policyInfo.get(policyRowNum-1)[6]);
 
         return policyMap;
     }
