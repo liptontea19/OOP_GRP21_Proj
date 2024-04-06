@@ -128,7 +128,6 @@ public class Account {
         }
     }
 
-
     public void repayLoan() {
         List<Loan> loans = this.customer.getLoans();  // Assuming we can access the customer's loans
         Scanner scanner = new Scanner(System.in);
@@ -158,6 +157,7 @@ public class Account {
 
         if (accountBalance.compareTo(monthlyPayment) >= 0) {
             selectedLoan.repay(String.valueOf(this.accountNumber), accountBalance);
+            LoanUtil.saveLoanToCSV(selectedLoan);
 
             this.balance = accountBalance.subtract(monthlyPayment).doubleValue();
             System.out.println("Loan repayment for loan ID " + selectedLoan.getLoanID() + " made successfully.");
@@ -441,6 +441,7 @@ public class Account {
             cust1.printAllLoans();
 
             // Repay a loan if any exists
+            myAccount.repayLoan();
             myAccount.repayLoan();
         } else {
             System.out.println("Customer details not loaded correctly.");
