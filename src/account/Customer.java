@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -65,6 +67,31 @@ public class Customer {
         }
 
         this.loans = new ArrayList<>();
+
+        String loansPath = "liptontea19/OOP_GRP21_Proj/data/Loans.csv"; // Path to the loans CSV file
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(loansPath));
+            for (String line : lines) {
+                String[] data = line.split(",");
+                if (data[1].equals(this.ID)) {
+                    BigDecimal principal = new BigDecimal(data[2]);
+                    BigDecimal interestRate = new BigDecimal(data[3]);
+                    int termInMonths = Integer.parseInt(data[4]);
+
+                    // Create a dummy Credit object with customer's ID and CreditScore
+                    // Assuming the existence of a Credit class constructor that takes these parameters
+                    Credit credit = new Credit(this.ID, this.CreditScore);
+
+                    // Use the applyForLoan method to create and add the loan
+                    Loan newLoan = Loan.applyForLoan(this.loans, principal, interestRate, termInMonths, credit);
+                    this.reviewAndProcessLoan(newLoan);
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error reading loans file.");
+        }
     }
 
     public Loan applyForLoan(double principalAmount, double interestRate, int termInMonths) {
@@ -79,6 +106,7 @@ public class Customer {
             if (newLoan != null) {
                 //loan already added to the list in the loan.applyForLoan method, so inside customer not required
                 System.out.println("Loan applied successfully.");
+                LoanUtil.saveLoanToCSV(newLoan);
             } else {
                 System.out.println("Loan application failed.");
             }
@@ -311,10 +339,14 @@ public class Customer {
     }
     public static void main(String[] args){
         Customer cust1 = new Customer("S1234A");
+        Customer cust2 = new Customer("S1235B");
         cust1.printCustomerDetails();
-        Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
-        cust1.reviewAndProcessLoan(newLoan);
+        //Loan newLoan = cust1.applyForLoan(7000, 5.0, 12);
+        //cust1.reviewAndProcessLoan(newLoan);
+        Loan newLoan = cust2.applyForLoan(7000, 5.0, 12);
+        cust2.reviewAndProcessLoan(newLoan);
         cust1.printAllLoans();
+        cust2.printAllLoans();
         
 
     }
