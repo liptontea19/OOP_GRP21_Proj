@@ -93,6 +93,7 @@ public class Customer {
 
         this.loans = new ArrayList<>();
 
+        //fetches the loan attributes and assigned it to variables for further use
         String loansPath = "data/Loans.csv"; // Path to the loans CSV file
         try {
             List<String> lines = Files.readAllLines(Paths.get(loansPath));
@@ -123,20 +124,12 @@ public class Customer {
                         }
                     }
 
-                    /* 
-                    String[] dateStrings = data[9].split(","); // Split the string into an array of date strings
-                    ArrayList<LocalDate> paymentDates = new ArrayList<>();
-                    for (String dateString : dateStrings) {
-                        LocalDate date = LocalDate.parse(dateString.trim()); // Trim to remove any leading or trailing whitespace
-                        paymentDates.add(date);
-                    }
-                    */
-
                     // Create a dummy Credit object with customer's ID and CreditScore
                     // Assuming the existence of a Credit class constructor that takes these parameters
                     Credit credit = new Credit(this.ID, this.CreditScore);
 
-                    // Use the applyForLoan method to create and add the loan
+                    // Use the applyForLoan method to create and add loans based on the saved loans information from CSV
+                    //update the loan attributes based on the CSV using loan class setter methods
                     Loan newLoan = Loan.applyForLoan(this.loans, principal, interestRate, termInMonths, credit);
                     this.reviewAndProcessLoan(newLoan);
                     newLoan.setOutstandingAmount(outstandingAmount);
@@ -144,7 +137,6 @@ public class Customer {
                     newLoan.setEndDate(endDate);
                     newLoan.setLoanID(loanID);
                     newLoan.setPaymentDates(paymentDates);
-                    //newLoan.setStatus(status);
                 }
             }
         } catch (Exception e) {
@@ -153,6 +145,18 @@ public class Customer {
         }
     }
 
+    /**
+     * creates a new loan onject and appends onto customer attribute List<Loan> loans;
+     * before loan can be created, customer creditscore must be elligible for application
+     * if customer is ellible, loan is automatically approved calling the reviewAndProcessLoan method
+     * after loan is created, the loan information is saved into a CSV so it is consistent across every program execution
+     * 
+     * 
+     * @param principalAmount Starting amount borrowed, will not change
+     * @param interestRate  monthly rates
+     * @param termInMonths  total months of loan period
+     * @return new Loan object
+     */
     public Loan applyForLoan(double principalAmount, double interestRate, int termInMonths) {
         Credit credit = new Credit(this.ID, this.CreditScore);  // Create Credit object using customer's ID and credit score
 
@@ -176,8 +180,12 @@ public class Customer {
             return null;
         }
     }
-
-
+    
+    /**
+     * To change status of loans from "pending" to "approved"
+     * 
+     * @param loan object that needs to be approved
+     * */
     public void reviewAndProcessLoan(Loan loan) {
         try {
             if (loan != null) {
@@ -208,6 +216,10 @@ public class Customer {
         }
     }
 
+    /**
+     * Returns customer's List of loan objects
+     * @return loan object
+     * */
     public List<Loan> getLoans() {
         return loans;
     }

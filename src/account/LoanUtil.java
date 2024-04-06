@@ -40,6 +40,8 @@ public class LoanUtil {
      * 
      * If the loan does not exist in the CSV, 
      * append the loan at the end of the CSV.
+     * 
+     * @param loan object to be saved to CSV
      */
 
     public static void saveLoanToCSV(Loan loan) {
